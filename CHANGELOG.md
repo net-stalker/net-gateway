@@ -8,4 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-0763c42] - 2023-12-08
+
+Feature/cu 86939ue0d: initial rust project structure (#1)
+
+* added initial rust project structure
+
+* added README.md file and github workflows for changelog.md maintaining, building and testing the project
 <!-- [END AUTO UPDATE] -->
