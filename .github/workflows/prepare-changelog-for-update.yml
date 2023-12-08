@@ -1,0 +1,74 @@
+name: Prepare CHANGELOG.md for update
+
+on:
+  pull_request:
+    branches: [ "*" ]
+  
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  prepare-changelog:
+    name: prepare-changelog
+    
+    permissions:
+      contents: write
+    
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+
+      - name: Install Python deps
+        env:
+          REQUIREMENTS: https://raw.github.com/net-stalker/net-registry-index/develop/scripts/requirements.txt
+        run: |
+          wget $REQUIREMENTS
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Set up GIT credentials
+        run: |
+          git config --global credential.helper store
+          echo "https://${{ secrets.BOT_USER_NAME }}:${{ secrets.BOT_PAT }}@github.com" > ~/.git-credentials
+          git config --global user.email ${{ secrets.BOT_EMAIL }}
+          git config --global user.name ${{ secrets.BOT_USER_NAME }}
+      
+      - name: Get script for changelog prepearing
+        env:
+          CHANGELOG_PREPARATOR: https://raw.github.com/net-stalker/net-registry-index/develop/scripts/changelog_preparator.py
+        run: |
+          wget $CHANGELOG_PREPARATOR
+          chmod +x changelog_preparator.py
+
+      - name: Fetch branch for possible commiting
+        run: |
+          git fetch origin "${{ steps.branch-name.outputs.current_branch }}" 
+          git checkout "${{ steps.branch-name.outputs.current_branch }}"
+
+      - name: Prepare CHANGELOG.md for a new log
+        env:
+          CARGO_MANIFEST_DIR: ${{ github.workspace }}
+        run: |
+          cat CHANGELOG.md
+          export PREPARATOR_RESULT=$(./changelog_preparator.py $CARGO_MANIFEST_DIR)
+          echo "$PREPARATOR_RESULT"
+          if [ "$PREPARATOR_RESULT" == "updated" ]; then
+            cat CHANGELOG.md
+            git add CHANGELOG.md
+            git commit -m "${{ steps.branch-name.outputs.current_branch }}: prepared CHANGELOG.md"
+            git push
+            echo "CHANGELOG.md has been prepared for updation"
+          elif [ "$PREPARATOR_RESULT" == "correct" ]; then
+            echo "CHANGELOG.md has been already updated previously"
+          fi
