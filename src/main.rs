@@ -1,10 +1,15 @@
-fn main() {
-    init_log();
-    log::info!("run net-gateway service");
-}
+use actix_web::App;
+use actix_web::HttpServer;
+use net_gateway::endpoints::chart::chart;
+use net_gateway::endpoints::dashboard::*;
 
-fn init_log() {
-    let config_str = include_str!("log4rs.yml");
-    let config = serde_yaml::from_str(config_str).unwrap();
-    log4rs::init_raw_config(config).unwrap();
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| App::new()
+            .service(dashboard)
+            .service(chart)
+        )
+        .bind("127.0.0.1:8080")?
+        .run()
+        .await
 }

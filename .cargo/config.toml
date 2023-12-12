@@ -1,0 +1,5 @@
+[env]
+RUST_LOG = "debug"
+
+[registries]
+net-registry = { index = "https://github.com/net-stalker/net-registry-index.git" }
