@@ -4,7 +4,8 @@ use actix_web::web;
 use net_gateway::app_state::AppState;
 
 #[actix_web::main]
-async fn main() -> std::io::Result<()> {
+async fn main() -> std::io::Result<()> { 
+    #[cfg(debug_assertions)]
     init_log();
     let app_state = AppState::new().await;
     HttpServer::new(move || App::new()
@@ -19,6 +20,7 @@ async fn main() -> std::io::Result<()> {
         .await
 }
 
+#[cfg(debug_assertions)]
 fn init_log() {
     let config_str = include_str!("log4rs.yml");
     let config = serde_yaml::from_str(config_str).unwrap();

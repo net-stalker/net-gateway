@@ -3,22 +3,17 @@ name = "net-gateway"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 log = "0.4.17"
 log4rs = "1.2.0"
-serde_yaml = "0.9.21" # uses to parse log4rs config
+serde_yaml = "0.9.21"
 actix-web = "4.4.0"
 json = "0.12.4"
 serde = { version = "1.0.193", features = ["derive"] }
 validator = { version = "0.16.1", features = ["derive"] }
 async-trait = "0.1.74"
-derive_more = "0.99.17"
 serde_json = "1.0.108"
-tokio = { version = "1.35.0", features = ["rt", "rt-multi-thread"] }
 async-tungstenite = { version = "0.24.0", features = ["tokio-runtime"] }
-futures-util = "0.3.29"
 futures = "0.3.29"
 
 
