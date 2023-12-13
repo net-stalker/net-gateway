@@ -1,2 +1,2 @@
 pub mod dashboards;
-pub mod chart;
+pub mod charts;
