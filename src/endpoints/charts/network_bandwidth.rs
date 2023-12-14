@@ -30,9 +30,6 @@ async fn get_network_bandwidth(state: web::Data<AppState>, client_data: web::Que
         Message::Binary(data) => {
             HttpResponse::Ok().json(data)
         },
-        Message::Text(data) => {
-            HttpResponse::Ok().json(data)
-        },
         _ => {
             HttpResponse::ExpectationFailed().json("Failed to read")
         }

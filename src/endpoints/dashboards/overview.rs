@@ -13,6 +13,8 @@ use async_tungstenite::tokio;
 
 #[get("/dashboard/overview")]
 async fn get_overview(state: web::Data<AppState>, client_data: web::Query<ClientData>, params: web::Query<GeneralFilters>) -> impl Responder {
+    log::info!("Received request for overview dashboard, params: {:?}", params);
+    log::info!("Client data: {:?}", client_data);
     let (mut consumer, _) = tokio::connect_async(state.get_ws_url())
         .await
         .expect("Failed to connect");
@@ -37,9 +39,6 @@ async fn get_overview(state: web::Data<AppState>, client_data: web::Query<Client
     };
     match response {
         Message::Binary(data) => {
-            HttpResponse::Ok().json(data)
-        },
-        Message::Text(data) => {
             HttpResponse::Ok().json(data)
         },
         _ => {
