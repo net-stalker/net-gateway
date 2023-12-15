@@ -27,6 +27,7 @@ async fn get_overview(state: web::Data<AppState>, client_data: web::Query<Client
         Envelope::new(Some(client_data.group_id.as_str()), None, NetworkBandwidthRequestDTO::get_data_type(), nb_request.encode().as_slice()),
     ].as_slice()).encode();
     let envelope = Envelope::new(Some(client_data.group_id.as_str()), None, DashboardRequestDTO::get_data_type(), dashboard_request.as_slice());
+    // TODO: move this boilerplate to a macros
     consumer.send(Message::Binary(envelope.encode())).await.expect("Failed to write");
     let response = consumer.next().await.unwrap();
     let response = match response {
@@ -39,7 +40,7 @@ async fn get_overview(state: web::Data<AppState>, client_data: web::Query<Client
     };
     match response {
         Message::Binary(data) => {
-            HttpResponse::Ok().json(data)
+            HttpResponse::Ok().body(data)
         },
         _ => {
             HttpResponse::ExpectationFailed().json("Failed to read")

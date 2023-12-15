@@ -17,6 +17,7 @@ async fn get_network_bandwidth(state: web::Data<AppState>, client_data: web::Que
     let nt_request = NetworkBandwidthRequestDTO::new(params.start_date, params.end_date).encode();
     let envelope = Envelope::new(Some(client_data.group_id.as_str()), None, NetworkBandwidthRequestDTO::get_data_type(), nt_request.as_slice());
     consumer.send(Message::Binary(envelope.encode())).await.expect("Failed to write");
+    // TODO: move this boilerplate to a macros
     let response = consumer.next().await.unwrap();
     let response = match response {
         Ok(response) => response,

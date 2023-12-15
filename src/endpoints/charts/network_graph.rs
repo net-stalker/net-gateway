@@ -16,6 +16,7 @@ async fn get_network_graph(state: web::Data<AppState>, client_data: web::Query<C
         .expect("Failed to connect");
     let nt_request = NetworkGraphRequestDTO::new(params.start_date, params.end_date, false).encode();
     let envelope = Envelope::new(Some(client_data.group_id.as_str()), None, NetworkGraphRequestDTO::get_data_type(), nt_request.as_slice());
+    // TODO: move this boilerplate to a macros
     consumer.send(Message::Binary(envelope.encode())).await.expect("Failed to write");
     let response = consumer.next().await.unwrap();
     let response = match response {
