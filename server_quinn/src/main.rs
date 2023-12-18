@@ -18,19 +18,17 @@ async fn main() {
     let conn = incoming_conn.await.unwrap();
     let (mut write, mut read) = conn.accept_bi().await.unwrap();
     let mut counter = 0;
-    println!("?????????");
     loop {
         if counter < 10 {
             counter += 1;
         } else {
             break;
         }
-        let mut message = String::new();
         let mut buffer = [0; 1024];
-        let bytes = read..read(&mut buffer).await.unwrap().unwrap();
-        println!("received message: {:?}", buffer);
+        let bytes = read.read(&mut buffer).await.unwrap().unwrap();
+        let message = format!("received message: {:?}", buffer);
+        println!("{}", message);
+        println!("received {} bytes", bytes);
         write.write_all(message.as_bytes()).await.unwrap();
     }
-    
-
 }
