@@ -2,7 +2,9 @@
 
 members = [
   "net-gateway",
-  "quinn_test",
+  "client_quinn",
+  "server_quinn",
+  "core",
 ]
 
 

@@ -1,4 +1,7 @@
 use quinn::{ClientConfig, Endpoint, ServerConfig};
+use rustls::Certificate;
+use rustls_pki_types::{CertificateDer, PrivatePkcs1KeyDer};
+use x509_parser::nom::AsBytes;
 use std::{error::Error, net::SocketAddr, sync::Arc};
 
 /// Constructs a QUIC endpoint configured for use a client only.
@@ -9,9 +12,9 @@ use std::{error::Error, net::SocketAddr, sync::Arc};
 #[allow(unused)]
 pub fn make_client_endpoint(
     bind_addr: SocketAddr,
-    server_certs: &[&[u8]],
+    server_certs: Vec<CertificateDer<'static>>,
 ) -> Result<Endpoint, Box<dyn Error>> {
-    let client_cfg = configure_client(server_certs)?;
+    let client_cfg = configure_client(server_certs.as_slice())?;
     let mut endpoint = Endpoint::client(bind_addr)?;
     endpoint.set_default_client_config(client_cfg);
     Ok(endpoint)
@@ -25,10 +28,10 @@ pub fn make_client_endpoint(
 /// - a stream of incoming QUIC connections
 /// - server certificate serialized into DER format
 #[allow(unused)]
-pub fn make_server_endpoint(bind_addr: SocketAddr) -> Result<(Endpoint, Vec<u8>), Box<dyn Error>> {
-    let (server_config, server_cert) = configure_server()?;
+pub fn make_server_endpoint(bind_addr: SocketAddr, cert: CertificateDer<'static>, key: PrivatePkcs1KeyDer<'static>) -> Result<Endpoint, Box<dyn Error>> {
+    let server_config = configure_server(cert, key)?;
     let endpoint = Endpoint::server(server_config, bind_addr)?;
-    Ok((endpoint, server_cert))
+    Ok(endpoint)
 }
 
 /// Builds default quinn client config and trusts given certificates.
@@ -36,10 +39,10 @@ pub fn make_server_endpoint(bind_addr: SocketAddr) -> Result<(Endpoint, Vec<u8>)
 /// ## Args
 ///
 /// - server_certs: a list of trusted certificates in DER format.
-fn configure_client(server_certs: &[&[u8]]) -> Result<ClientConfig, Box<dyn Error>> {
+fn configure_client(server_certs: &[CertificateDer<'static>]) -> Result<ClientConfig, Box<dyn Error>> {
     let mut certs = rustls::RootCertStore::empty();
     for cert in server_certs {
-        certs.add(&rustls::Certificate(cert.to_vec()))?;
+        certs.add(&Certificate(cert.as_bytes().to_vec()))?;
     }
 
     let client_config = ClientConfig::with_root_certificates(certs);
@@ -47,19 +50,13 @@ fn configure_client(server_certs: &[&[u8]]) -> Result<ClientConfig, Box<dyn Erro
 }
 
 /// Returns default server configuration along with its certificate.
-fn configure_server() -> Result<(ServerConfig, Vec<u8>), Box<dyn Error>> {
-    let cert = rcgen::generate_simple_self_signed(vec!["localhost".into()]).unwrap();
-    let cert_der = cert.serialize_der().unwrap();
-    let priv_key = cert.serialize_private_key_der();
-    let priv_key = rustls::PrivateKey(priv_key);
-    let cert_chain = vec![rustls::Certificate(cert_der.clone())];
-
-    let mut server_config = ServerConfig::with_single_cert(cert_chain, priv_key)?;
+fn configure_server(cert: CertificateDer<'static>, key: PrivatePkcs1KeyDer<'static>) -> Result<ServerConfig, Box<dyn Error>> {
+    let cert_der = Certificate(cert.as_bytes().to_vec());
+    let priv_key = rustls::PrivateKey(key.secret_pkcs1_der().to_vec());
+    
+    let mut server_config = ServerConfig::with_single_cert(vec![cert_der], priv_key)?;
     let transport_config = Arc::get_mut(&mut server_config.transport).unwrap();
     transport_config.max_concurrent_uni_streams(0_u8.into());
 
-    Ok((server_config, cert_der))
+    Ok(server_config)
 }
-
-#[allow(unused)]
-pub const ALPN_QUIC_HTTP: &[&[u8]] = &[b"hq-29"];

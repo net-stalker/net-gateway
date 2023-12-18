@@ -1,5 +1,5 @@
 [package]
-name = "quinn_test"
+name = "core"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,3 +10,6 @@ quinn = "0.10.2"
 rcgen = "0.11.3"
 tokio = { version = "1.28.1", features = ["rt", "rt-multi-thread", "time", "macros", "sync"] }
 rustls = { version = "0.21.0", default-features = false, features = ["quic", "dangerous_configuration"] }
+x509-parser = "0.15.1"
+rustls-pemfile = "2.0.0"
+rustls-pki-types = "1.0.1"
