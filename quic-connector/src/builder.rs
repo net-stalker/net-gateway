@@ -12,7 +12,7 @@ pub enum ConnectorType {
 }
 
 pub struct QuicConnectorBuilder {
-    pub certs: Vec<CertificateDer<'static>>,
+    pub certs: Option<Vec<CertificateDer<'static>>>,
     pub key: Option<PrivatePkcs1KeyDer<'static>>,
     pub addr: Option<SocketAddr>,
     pub application: Option<String>,
@@ -23,7 +23,7 @@ pub struct QuicConnectorBuilder {
 impl Default for QuicConnectorBuilder {
     fn default() -> Self {
         Self {
-            certs: vec![],
+            certs: None,
             key: None,
             addr: None,
             application: None,
@@ -35,7 +35,10 @@ impl Default for QuicConnectorBuilder {
 
 impl QuicConnectorBuilder {
     pub fn with_cert(mut self, cert: CertificateDer<'static>) -> Self {
-        self.certs.push(cert);
+        if self.certs.is_none() {
+            self.certs = Some(vec![]);
+        }
+        self.certs.as_mut().unwrap().push(cert);
         self
     }
 
@@ -77,7 +80,7 @@ impl QuicConnectorBuilder {
                 make_server_endpoint(
                     self.addr.unwrap(),
                     self.certs,
-                    self.key.unwrap(),
+                    self.key,
                 // TODO: replace this unwrap with a proper error
                 ).unwrap()
             },

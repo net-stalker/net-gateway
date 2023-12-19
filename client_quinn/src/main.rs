@@ -10,7 +10,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>>{
     // let certs = vec![core::certs::read_certificate_from_file(SERVER_CERT)?];
     let der_certs = vec![quic_core::certs::read_pem_cert(SERVER_CERT)?];
 
-    let endpoint = make_client_endpoint("0.0.0.0:0".parse()?, der_certs)?;
+    let endpoint = make_client_endpoint("0.0.0.0:0".parse()?, Some(der_certs))?;
     let connection = endpoint
         .connect(addr, "server")?
         .await?;

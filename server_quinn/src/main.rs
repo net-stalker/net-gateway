@@ -9,7 +9,7 @@ async fn main() {
     let server_addr = "127.0.0.1:5000".parse().unwrap();
     let certificate = certs::read_pem_cert(CERT_PATH).unwrap();
     let key = certs::read_pem_key(KEY_PATH).unwrap();
-    let endpoint = make_server_endpoint(server_addr, vec![certificate], key).unwrap();
+    let endpoint = make_server_endpoint(server_addr, Some(vec![certificate]), Some(key)).unwrap();
     // accept a single connection
     // tokio::spawn(async move {
     println!("waiting for incoming connection");
