@@ -75,17 +75,17 @@ mod tests {
             // panic!("{}", conn.err().unwrap());
             let conn = conn.unwrap();
 
-            let read = conn.accept_uni().await;
-            let mut read = match read {
-                Err(quinn::ConnectionError::ApplicationClosed(frame)) => {
-                   let f = frame.to_string();
-                   panic!("{}", f);
-                },
-                Err(e) => {
-                    panic!("{}", e);
-                }
-                Ok(s) => s,
-            };
+            let mut read = conn.accept_uni().await.unwrap();
+            // let mut read = match read {
+            //     Err(quinn::ConnectionError::ApplicationClosed(frame)) => {
+            //        let f = frame.to_string();
+            //        panic!("{}", f);
+            //     },
+            //     Err(e) => {
+            //         panic!("{}", e);
+            //     }
+            //     Ok(s) => s,
+            // };
             // assert!(read.is_ok());
             // let mut read = read.unwrap();
 
@@ -121,6 +121,9 @@ mod tests {
             let write_result = write.write(BYTES_TO_SEND.as_ref()).await;
             assert!(write_result.is_ok());
             assert_eq!(write_result.unwrap(), BYTES_TO_SEND.len());
+            drop(connection);
+            // Make sure the server has a chance to clean up
+            connector.endpoint.wait_idle().await;
 
             ConnectorState::Message("AloneClientHandler".to_string())
         }
@@ -196,18 +199,6 @@ mod tests {
 
     #[tokio::test]
     async fn test_binding_and_running_simple_handler_with_client() {
-        let server_task = tokio::spawn(async {
-            let server_connector = QuicConnectorBuilder::default()
-                .with_addr(TEST_ADDRESS.parse().unwrap())
-                .with_application(TEST_APPLICATION.to_string())
-                .with_connector_type(ConnectorType::Server)
-                .with_handler(Box::new(UniServerHandler {}))
-                .build();
-            assert!(server_connector.is_ok());
-            let server_connector = server_connector.unwrap();
-            let (_server_connector, connector_state) = server_connector.activate().await;
-            connector_state
-        });
         let client_task = tokio::spawn(async {
             let client_connector = QuicConnectorBuilder::default()
             .with_addr("0.0.0.0:0".parse().unwrap())
@@ -220,7 +211,21 @@ mod tests {
             let (_client_connector, connector_state) = client_connector.activate().await;
             connector_state
         });
-        tokio::try_join!(client_task, server_task).unwrap();
+        let server_task = tokio::spawn(async {
+            let server_connector = QuicConnectorBuilder::default()
+                .with_addr(TEST_ADDRESS.parse().unwrap())
+                .with_application(TEST_APPLICATION.to_string())
+                .with_connector_type(ConnectorType::Server)
+                .with_handler(Box::new(UniServerHandler {}))
+                .build();
+            assert!(server_connector.is_ok());
+            let server_connector = server_connector.unwrap();
+            let (_server_connector, connector_state) = server_connector.activate().await;
+            connector_state
+        });
+        client_task.await.unwrap();
+        server_task.await.unwrap();
+        // tokio::try_join!(client_task, server_task).unwrap();
         // let server_task = tokio::spawn(async {
         //     let server_connector = QuicConnectorBuilder::default()
         //         .with_addr(TEST_ADDRESS.parse().unwrap())
