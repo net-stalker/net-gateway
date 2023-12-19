@@ -1,16 +1,21 @@
-use crate::core::Handler;
+use crate::handler::ConnectorHandler;
 
 pub struct QuicConnector {
     pub endpoint: quinn::Endpoint,
-    pub handler: Box<dyn Handler>,
+    pub handler: Option<Box<dyn ConnectorHandler>>,
     pub application: String,    
 }
 impl QuicConnector {
-    pub fn new(endpoint: quinn::Endpoint, handler: Box<dyn Handler>, application: String) -> Self {
+    pub fn new(endpoint: quinn::Endpoint, handler: Box<dyn ConnectorHandler>, application: String) -> Self {
         Self {
             endpoint,
-            handler,
+            handler: Some(handler),
             application
         }
+    }
+
+    pub async fn bind(mut self) {
+        let handler = self.handler.take().expect("handler is not set");
+        handler.handle(self).await;
     }
 }

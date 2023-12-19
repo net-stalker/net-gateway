@@ -1,12 +1,9 @@
-use core::common::{make_server_endpoint, make_client_endpoint};
+use quic_core::common::{make_server_endpoint, make_client_endpoint};
 use std::net::SocketAddr;
 use std::vec;
-
 use rustls_pki_types::{CertificateDer, PrivatePkcs1KeyDer};
-
 use crate::connector::QuicConnector;
-
-use crate::core::Handler;
+use crate::handler::ConnectorHandler;
 
 // TODO: may be expandable in future, if we want to create something like zmq patterns
 pub enum ConnectorType {
@@ -20,7 +17,7 @@ pub struct QuicConnectorBuilder {
     pub addr: Option<SocketAddr>,
     pub application: Option<String>,
     pub connector_type: Option<ConnectorType>,
-    pub handler: Option<Box<dyn Handler>>,
+    pub handler: Option<Box<dyn ConnectorHandler>>,
 }
 
 impl Default for QuicConnectorBuilder {
@@ -62,7 +59,7 @@ impl QuicConnectorBuilder {
         self
     }
 
-    pub fn with_handler(mut self, handler: Box<dyn Handler>) -> Self {
+    pub fn with_handler(mut self, handler: Box<dyn ConnectorHandler>) -> Self {
         self.handler = Some(handler);
         self
     }

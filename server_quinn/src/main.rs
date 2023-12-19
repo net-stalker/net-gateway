@@ -1,15 +1,15 @@
-use core::certs;
-use core::common::make_server_endpoint;
+use quic_core::certs;
+use quic_core::common::make_server_endpoint;
 
-const CERT_PATH: &str = "core/certs/cert.pem"; 
-const KEY_PATH: &str = "core/certs/private.pem";
+const CERT_PATH: &str = "quic_core/certs/cert.pem"; 
+const KEY_PATH: &str = "quic_core/certs/private.pem";
 
 #[tokio::main]
 async fn main() {
     let server_addr = "127.0.0.1:5000".parse().unwrap();
     let certificate = certs::read_pem_cert(CERT_PATH).unwrap();
     let key = certs::read_pem_key(KEY_PATH).unwrap();
-    let endpoint = make_server_endpoint(server_addr, certificate, key).unwrap();
+    let endpoint = make_server_endpoint(server_addr, vec![certificate], key).unwrap();
     // accept a single connection
     // tokio::spawn(async move {
     println!("waiting for incoming connection");
