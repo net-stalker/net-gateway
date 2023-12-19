@@ -4,7 +4,8 @@ members = [
   "net-gateway",
   "client_quinn",
   "server_quinn",
-  "core",
+  "quic-core",
+  "quic-connector",
 ]
 
 

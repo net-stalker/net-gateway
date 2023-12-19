@@ -28,7 +28,7 @@ pub fn make_client_endpoint(
 /// - a stream of incoming QUIC connections
 /// - server certificate serialized into DER format
 #[allow(unused)]
-pub fn make_server_endpoint(bind_addr: SocketAddr, cert: CertificateDer<'static>, key: PrivatePkcs1KeyDer<'static>) -> Result<Endpoint, Box<dyn Error>> {
+pub fn make_server_endpoint(bind_addr: SocketAddr, cert: Vec<CertificateDer<'static>>, key: PrivatePkcs1KeyDer<'static>) -> Result<Endpoint, Box<dyn Error>> {
     let server_config = configure_server(cert, key)?;
     let endpoint = Endpoint::server(server_config, bind_addr)?;
     Ok(endpoint)
@@ -50,11 +50,14 @@ fn configure_client(server_certs: &[CertificateDer<'static>]) -> Result<ClientCo
 }
 
 /// Returns default server configuration along with its certificate.
-fn configure_server(cert: CertificateDer<'static>, key: PrivatePkcs1KeyDer<'static>) -> Result<ServerConfig, Box<dyn Error>> {
-    let cert_der = Certificate(cert.as_bytes().to_vec());
+fn configure_server(certs: Vec<CertificateDer<'static>>, key: PrivatePkcs1KeyDer<'static>) -> Result<ServerConfig, Box<dyn Error>> {
+    let cert_der: Vec<Certificate> = certs
+        .into_iter()
+        .map(|cert| Certificate(cert.as_bytes().to_vec()))
+        .collect();
     let priv_key = rustls::PrivateKey(key.secret_pkcs1_der().to_vec());
     
-    let mut server_config = ServerConfig::with_single_cert(vec![cert_der], priv_key)?;
+    let mut server_config = ServerConfig::with_single_cert(cert_der, priv_key)?;
     let transport_config = Arc::get_mut(&mut server_config.transport).unwrap();
     transport_config.max_concurrent_uni_streams(0_u8.into());
 
