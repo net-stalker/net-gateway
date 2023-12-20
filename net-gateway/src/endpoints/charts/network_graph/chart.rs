@@ -17,6 +17,16 @@ impl NetworkGraph {
     }
 }
 
+impl Default for NetworkGraph {
+    fn default() -> Self {
+        log::info!("warning: default NetworkGraph is being constructed");
+        Self { 
+            nodes: Vec::default(),
+            links: Vec::default()
+        }
+    }
+}
+
 impl From<NetworkGraphDTO> for NetworkGraph {
     fn from(value: NetworkGraphDTO) -> Self {
         // TODO: need to remove these clones

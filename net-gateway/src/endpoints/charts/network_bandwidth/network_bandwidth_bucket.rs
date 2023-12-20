@@ -1,7 +1,7 @@
 use net_timescale_api::api::network_bandwidth::bandwidth_bucket;
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct NetworkBandwidthBucket {
     #[serde(rename = "bucketTimestamp")]
     bucket_timestamp: u64,

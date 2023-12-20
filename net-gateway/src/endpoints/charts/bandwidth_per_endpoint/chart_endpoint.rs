@@ -1,7 +1,7 @@
 use net_timescale_api::api::bandwidth_per_endpoint::endpoint::EndpointDTO;
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct ChartEndpoint {
     id: String,
     #[serde(rename = "totalBytesReceived")]

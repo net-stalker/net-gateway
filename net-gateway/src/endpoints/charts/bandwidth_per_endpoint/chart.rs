@@ -16,6 +16,15 @@ impl BandwidthPerEndpoint {
     }
 }
 
+impl Default for BandwidthPerEndpoint {
+    fn default() -> Self {
+        log::info!("warinng: default BandwidthPerEndpoint is being constructed");
+        Self {
+            endpoints: Vec::new()
+        }
+    }
+}
+
 impl From<BandwidthPerEndpointDTO> for BandwidthPerEndpoint {
     fn from(value: BandwidthPerEndpointDTO) -> Self {
         let endpoints = value

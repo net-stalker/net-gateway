@@ -16,6 +16,13 @@ impl NetworkBandwidth {
     }
 }
 
+impl Default for NetworkBandwidth {
+    fn default() -> Self {
+        log::info!("warinng: default NetworkBandwidth is being constructed");
+        Self { buckets: Vec::new() }
+    }
+}
+
 impl From<NetworkBandwidthDTO> for NetworkBandwidth {
     fn from(data: NetworkBandwidthDTO) -> Self {
         let buckets = data

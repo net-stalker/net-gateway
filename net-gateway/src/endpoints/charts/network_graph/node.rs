@@ -1,7 +1,7 @@
 use net_timescale_api::api::network_graph::graph_node;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Node {
     id: String,
 }

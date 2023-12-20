@@ -10,7 +10,6 @@ async fn main() -> std::io::Result<()> {
     init_log();
     let app_state = AppState::new().await;
     HttpServer::new(move || App::new()
-            // TODO: Remove permissive CORS
             .wrap(
                 Cors::default()
                     .allow_any_origin()
@@ -19,7 +18,7 @@ async fn main() -> std::io::Result<()> {
                     .max_age(3600)
             )
             .app_data(web::Data::new(app_state.clone()))
-            .service(net_gateway::endpoints::dashboards::overview::get_overview)
+            .service(net_gateway::endpoints::dashboards::overview::endpoint::get_overview)
             .service(net_gateway::endpoints::charts::network_graph::endpoint::get_network_graph)
             .service(net_gateway::endpoints::charts::bandwidth_per_endpoint::endpoint::get_bandwidth_per_endpoint)
             .service(net_gateway::endpoints::charts::network_bandwidth::endpoint::get_network_bandwidth)
