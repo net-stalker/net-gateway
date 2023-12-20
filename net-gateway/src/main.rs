@@ -1,3 +1,4 @@
+use actix_cors::Cors;
 use actix_web::App;
 use actix_web::HttpServer;
 use actix_web::web;
@@ -9,6 +10,14 @@ async fn main() -> std::io::Result<()> {
     init_log();
     let app_state = AppState::new().await;
     HttpServer::new(move || App::new()
+            // TODO: Remove permissive CORS
+            .wrap(
+                Cors::default()
+                    .allow_any_origin()
+                    .allow_any_method()
+                    .allow_any_header()
+                    .max_age(3600)
+            )
             .app_data(web::Data::new(app_state.clone()))
             .service(net_gateway::endpoints::dashboards::overview::get_overview)
             .service(net_gateway::endpoints::charts::network_graph::get_network_graph)
