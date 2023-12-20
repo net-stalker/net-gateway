@@ -20,7 +20,7 @@ async fn main() -> std::io::Result<()> {
             )
             .app_data(web::Data::new(app_state.clone()))
             .service(net_gateway::endpoints::dashboards::overview::get_overview)
-            .service(net_gateway::endpoints::charts::network_graph::get_network_graph)
+            .service(net_gateway::endpoints::charts::network_graph::endpoint::get_network_graph)
             .service(net_gateway::endpoints::charts::bandwidth_per_endpoint::get_bandwidth_per_endpoint)
             .service(net_gateway::endpoints::charts::network_bandwidth::get_network_bandwidth)
         )
