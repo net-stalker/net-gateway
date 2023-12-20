@@ -29,7 +29,7 @@ impl From<BandwidthPerEndpointDTO> for BandwidthPerEndpoint {
     fn from(value: BandwidthPerEndpointDTO) -> Self {
         let endpoints = value
             .get_endpoints()
-            .into_iter()
+            .iter()
             .map(|endpoint| ChartEndpoint::from(endpoint.clone()))
             .collect::<Vec<ChartEndpoint>>();
         Self {
