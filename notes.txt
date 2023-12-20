@@ -1,0 +1,10 @@
+In the old version of resutl and quic
+They have the following flow
+1) Create ServerConfig
+2) Create ClientConfig
+Both of them need certificates to make the connection possible, or we must use unsecure connection (which I really don't know where to look for
+in a new version of rustls)
+3) Create server endpoint using Endpoint::server(server_config, bind_addr)
+Then server will ba able to accept connections and perform communication with endpoints
+4) Create client endpoint using Endpoint::client(bind_addr), client.set_default_client_config(client_config)
+The client will then be able to connect to the server and perform communication

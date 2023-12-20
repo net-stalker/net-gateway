@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-5ac754a] - 2023-12-20
+
+Feature/cu 8693bdt94: providing quinn and implementing quinn connectors (#4)
+
+* add quic-core module and connector module
+
+* implemented base QuicConnector, updated dependencies
+
+* implemented tests
 <!-- [END AUTO UPDATE] -->
 ## [-8b6f49e] - 2023-12-15
 
