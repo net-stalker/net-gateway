@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-8b6f49e] - 2023-12-15
 
 feature/CU-8693bdt94: reorginized prohject into workspace, added quinn_test crate for quinn testing (#3)
-<!-- [END AUTO UPDATE] -->
 ## [-0763c42] - 2023-12-08
 
 Feature/cu 86939ue0d: initial rust project structure (#1)
