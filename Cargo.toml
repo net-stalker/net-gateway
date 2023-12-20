@@ -2,7 +2,8 @@
 
 members = [
   "net-gateway",
-  "quinn_test",
+  "quic-core",
+  "quic-connector",
 ]
 
 
