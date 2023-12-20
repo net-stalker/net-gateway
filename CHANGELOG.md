@@ -8,19 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
-## [-5fbb8df] - 2023-12-15
+## [-8b6f49e] - 2023-12-15
 
-Feature/cu 86939ue2u: added actix_web and implemented initial endpoints for charts and overview dashboard (#2)
-
-* added actix web, added initial endpoints. Need to think more about communication between services
-
-* added  tokio_tungstenite for communication between net-hub and net-gateway
-
-* managed to send a request to net-hub
-
-* added endpoints for charts and overview dashboard
-
-* need to update code to use macros for boilerplate
+feature/CU-8693bdt94: reorginized prohject into workspace, added quinn_test crate for quinn testing (#3)
 <!-- [END AUTO UPDATE] -->
 ## [-0763c42] - 2023-12-08
 
