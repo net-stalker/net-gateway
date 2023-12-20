@@ -4,7 +4,7 @@ use serde::{Serialize, Deserialize};
 
 use crate::endpoints::charts::{network_bandwidth::chart::NetworkBandwidth, bandwidth_per_endpoint::chart::BandwidthPerEndpoint, network_graph::chart::NetworkGraph};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct OverviewDashboard {
     #[serde(rename = "networkBandwidth")]
     pub network_bandwidth: NetworkBandwidth,
