@@ -28,8 +28,8 @@ pub fn read_pem_cert(file_path: &str) -> io::Result<CertificateDer<'static>> {
 pub fn read_pem_key(file_path: &str) -> io::Result<PrivatePkcs1KeyDer<'static>> {
     let file = File::open(file_path)?;
     let mut reader = BufReader::new(file);
-    let keys = rsa_private_keys(&mut reader);
-    for key in keys {
+    let mut keys = rsa_private_keys(&mut reader);
+    if let Some(key) = keys.next() {
         match key {
             Ok(pem) => {
                 // Handle the Pem object

@@ -2,7 +2,7 @@ use quinn::{ClientConfig, Endpoint, ServerConfig};
 use rustls::Certificate;
 use rustls_pki_types::{CertificateDer, PrivatePkcs1KeyDer};
 use x509_parser::nom::AsBytes;
-use std::{error::Error, net::SocketAddr, sync::Arc, time::Duration};
+use std::{error::Error, net::SocketAddr, sync::Arc};
 
 /// Constructs a QUIC endpoint configured for use a client only.
 ///
@@ -70,6 +70,7 @@ fn configure_server(certs: Vec<CertificateDer<'static>>, key: PrivatePkcs1KeyDer
     
     let mut server_config = ServerConfig::with_single_cert(cert_der, priv_key)?;
     let transport_config = Arc::get_mut(&mut server_config.transport).unwrap();
+    // TODO: make transport config configurable from connector builder
     transport_config.max_concurrent_uni_streams(0_u8.into());
 
     Ok(server_config)

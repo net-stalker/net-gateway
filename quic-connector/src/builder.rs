@@ -11,6 +11,7 @@ pub enum ConnectorType {
     Server,
 }
 
+#[derive(Default)]
 pub struct QuicConnectorBuilder {
     pub certs: Option<Vec<CertificateDer<'static>>>,
     pub key: Option<PrivatePkcs1KeyDer<'static>>,
@@ -18,19 +19,6 @@ pub struct QuicConnectorBuilder {
     pub application: Option<String>,
     pub connector_type: Option<ConnectorType>,
     pub handler: Option<Box<dyn ConnectorHandler>>,
-}
-
-impl Default for QuicConnectorBuilder {
-    fn default() -> Self {
-        Self {
-            certs: None,
-            key: None,
-            addr: None,
-            application: None,
-            connector_type: None,
-            handler: None,
-        }
-    }
 }
 
 impl QuicConnectorBuilder {
