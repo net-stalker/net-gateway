@@ -22,7 +22,7 @@ async fn main() -> std::io::Result<()> {
             .service(net_gateway::endpoints::dashboards::overview::get_overview)
             .service(net_gateway::endpoints::charts::network_graph::endpoint::get_network_graph)
             .service(net_gateway::endpoints::charts::bandwidth_per_endpoint::endpoint::get_bandwidth_per_endpoint)
-            .service(net_gateway::endpoints::charts::network_bandwidth::get_network_bandwidth)
+            .service(net_gateway::endpoints::charts::network_bandwidth::endpoint::get_network_bandwidth)
         )
         .bind("127.0.0.1:8080")?
         .run()
