@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-d9f7243] - 2023-12-20
 
 feature/CU-8693cd1hk: cleaned repo (#6)
-<!-- [END AUTO UPDATE] -->
 ## [-8b6f49e] - 2023-12-15
 
 feature/CU-8693bdt94: reorginized prohject into workspace, added quinn_test crate for quinn testing (#3)
