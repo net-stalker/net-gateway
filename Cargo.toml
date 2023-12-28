@@ -2,8 +2,6 @@
 
 members = [
   "net-gateway",
-  "quic-core",
-  "quic-connector",
 ]
 
 
