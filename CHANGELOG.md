@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-f179722] - 2023-12-28
 
 feature/CU-8693cd1hk: updating endpoints with netstalker.io/v1 api  (#5)
@@ -18,7 +19,6 @@ feature/CU-8693cd1hk: updating endpoints with netstalker.io/v1 api  (#5)
 
 * add Default implementation to OverviewDashboard
 struct
-<!-- [END AUTO UPDATE] -->
 ## [-cc655d4] - 2023-12-28
 
 Removed quinn connector and quinn core due to its move to net-transport (#7)
