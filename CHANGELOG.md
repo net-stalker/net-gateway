@@ -8,12 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-cc655d4] - 2023-12-28
 
 Removed quinn connector and quinn core due to its move to net-transport (#7)
+## [-5ac754a] - 2023-12-20
 
-* Removed quinn connector and quinn core due to its move to net-transport
-<!-- [END AUTO UPDATE] -->
+* add quic-core module and connector module
+
+* implemented base QuicConnector, updated dependencies
+
+* implemented tests
 ## [-d9f7243] - 2023-12-20
 
 feature/CU-8693cd1hk: cleaned repo (#6)
