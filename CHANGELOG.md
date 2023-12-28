@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-cc655d4] - 2023-12-28
+
+Removed quinn connector and quinn core due to its move to net-transport (#7)
+
+* Removed quinn connector and quinn core due to its move to net-transport
 <!-- [END AUTO UPDATE] -->
 ## [-d9f7243] - 2023-12-20
 
