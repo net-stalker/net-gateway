@@ -1,6 +1,7 @@
 use actix_cors::Cors;
 use actix_web::App;
 use actix_web::HttpServer;
+use actix_web::http::header;
 use actix_web::web;
 use net_gateway::app_state::AppState;
 
@@ -12,10 +13,10 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || App::new()
             .wrap(
                 Cors::default()
-                    .allow_any_origin()
-                    .allow_any_method()
-                    .allow_any_header()
-                    .max_age(3600)
+                    // for profuction use this will be changed
+                    .allowed_origin("https://localhost:4000")
+                    .allowed_methods(vec!["GET"])
+                    .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
             )
             .app_data(web::Data::new(app_state.clone()))
             .service(net_gateway::endpoints::dashboards::overview::endpoint::get_overview)

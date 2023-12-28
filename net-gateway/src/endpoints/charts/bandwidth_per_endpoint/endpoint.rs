@@ -1,4 +1,4 @@
-use actix_web::{HttpResponse, Responder, get, web};
+use actix_web::{HttpResponse, Responder, get, web, HttpRequest};
 use async_tungstenite::tungstenite::Message;
 use net_proto_api::decoder_api::Decoder;
 use net_proto_api::{typed_api::Typed, encoder_api::Encoder, envelope::envelope::Envelope};
@@ -6,6 +6,8 @@ use net_timescale_api::api::bandwidth_per_endpoint::bandwidth_per_endpoint::Band
 use net_timescale_api::api::bandwidth_per_endpoint::bandwidth_per_endpoint_request::BandwidthPerEndpointRequestDTO;
 use futures::prelude::*;
 use crate::app_state::AppState;
+use crate::authorization::Authorization;
+use crate::authorization::mock_authenticator::MockAuthenticator;
 use crate::client_data::ClientData;
 use crate::endpoints::charts::bandwidth_per_endpoint::chart::BandwidthPerEndpoint;
 use async_tungstenite::tokio;
@@ -13,7 +15,15 @@ use crate::general_filters::GeneralFilters;
 
 
 #[get("/chart/bandwidth_per_endpoint")]
-async fn get_bandwidth_per_endpoint(state: web::Data<AppState>, client_data: web::Query<ClientData>, params: web::Query<GeneralFilters>) -> impl Responder {
+async fn get_bandwidth_per_endpoint(
+    state: web::Data<AppState>,
+    client_data: web::Query<ClientData>,
+    params: web::Query<GeneralFilters>,
+    req: HttpRequest,
+) -> impl Responder {
+    if let Err(response) = Authorization::authorize(req, MockAuthenticator {}).await {
+        return response;
+    }
     let (mut consumer, _) = tokio::connect_async(state.get_ws_url())
         .await
         .expect("Failed to connect");
