@@ -9,15 +9,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
 <!-- [END AUTO UPDATE] -->
-## [-5ac754a] - 2023-12-20
+## [-cc655d4] - 2023-12-28
 
-Feature/cu 8693bdt94: providing quinn and implementing quinn connectors (#4)
+Removed quinn connector and quinn core due to its move to net-transport (#7)
+## [-5ac754a] - 2023-12-20
 
 * add quic-core module and connector module
 
 * implemented base QuicConnector, updated dependencies
 
 * implemented tests
+## [-d9f7243] - 2023-12-20
+
+feature/CU-8693cd1hk: cleaned repo (#6)
 ## [-8b6f49e] - 2023-12-15
 
 feature/CU-8693bdt94: reorginized prohject into workspace, added quinn_test crate for quinn testing (#3)
