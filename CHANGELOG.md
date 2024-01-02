@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-8815f67] - 2024-01-02
+
+feature/CU-8693e7869: updated allowed origin in Cors configuration (#9)
+
+* updated allowed origin in Cors configuration
 <!-- [END AUTO UPDATE] -->
 ## [-67ceea8] - 2024-01-02
 
