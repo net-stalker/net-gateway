@@ -14,7 +14,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(
                 Cors::default()
                     // for profuction use this will be changed
-                    .allowed_origin("https://localhost:4000")
+                    .allowed_origin("http://localhost:4000")
                     .allowed_methods(vec!["GET"])
                     .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
             )
