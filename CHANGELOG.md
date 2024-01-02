@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-67ceea8] - 2024-01-02
 
 feature/CU-8693dfdxv: added authorization module (#8)
 
 * added authorization module and tests, modified endpoints, modified cors config
-<!-- [END AUTO UPDATE] -->
 ## [-f179722] - 2023-12-28
 
 feature/CU-8693cd1hk: updating endpoints with netstalker.io/v1 api  (#5)
