@@ -6,17 +6,18 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+actix-cors = "0.6.5"
+actix-web = "4.4.0"
 log.workspace = true
 log4rs.workspace = true
 serde_yaml = "0.9.21"
-actix-web = "4.4.0"
-json = "0.12.4"
 serde = { version = "1.0.193", features = ["derive"] }
 validator = { version = "0.16.1", features = ["derive"] }
 async-trait = "0.1.74"
 serde_json = "1.0.108"
+futures = "0.3.30"
+json = "0.12.4"
 async-tungstenite = { version = "0.24.0", features = ["tokio-runtime"] }
-futures = "0.3.29"
 net-timescale-api = { version = "=0.1.2-faf3b68", registry = "net-registry" }
 net-proto-api = { version = "=0.1.1-da85a0a", registry = "net-registry" }
-actix-cors = "0.6.5"
+net-transport = { version = "=0.1.1-f6b5826", registry = "net-registry", features = ["quinn"]}
