@@ -66,7 +66,7 @@ async fn get_overview(
         let client_endpoint_build_result = ClientQuicConnectorBuilder::default()
             .with_addr(state_clone.get_quinn_client_addres().parse().unwrap())
             .build();
-        if let Err(e) = client_endpoint_build_result {
+        if client_endpoint_build_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }
@@ -78,7 +78,7 @@ async fn get_overview(
             state_clone.get_quinn_server_addres().parse().unwrap(),
             state_clone.get_quinn_server_application()
         ).await;
-        if let Err(e) = server_connection_result {
+        if server_connection_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }
@@ -87,7 +87,7 @@ async fn get_overview(
     
         //Sending out data (request) to the server
         let sending_result = server_connection.send_all_reliable(&bytes_to_send).await;
-        if let Err(e) = sending_result {
+        if sending_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }
@@ -95,7 +95,7 @@ async fn get_overview(
     
         //Waiting on new data and reading message from the server
         let receiving_result = server_connection.receive_reliable().await;
-        if let Err(e) = sending_result {
+        if sending_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }
@@ -136,7 +136,7 @@ async fn get_overview(
         let client_endpoint_build_result = ClientQuicConnectorBuilder::default()
             .with_addr(state_clone.get_quinn_client_addres().parse().unwrap())
             .build();
-        if let Err(e) = client_endpoint_build_result {
+        if client_endpoint_build_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }
@@ -148,7 +148,7 @@ async fn get_overview(
             state_clone.get_quinn_server_addres().parse().unwrap(),
             state_clone.get_quinn_server_application()
         ).await;
-        if let Err(e) = server_connection_result {
+        if server_connection_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }
@@ -157,7 +157,7 @@ async fn get_overview(
 
         //Sending out data (request) to the server
         let sending_result = server_connection.send_all_reliable(&bytes_to_send).await;
-        if let Err(e) = sending_result {
+        if sending_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }
@@ -165,7 +165,7 @@ async fn get_overview(
 
         //Waiting on new data and reading message from the server
         let receiving_result = server_connection.receive_reliable().await;
-        if let Err(e) = sending_result {
+        if sending_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }
@@ -207,7 +207,7 @@ async fn get_overview(
         let client_endpoint_build_result = ClientQuicConnectorBuilder::default()
             .with_addr(state_clone.get_quinn_client_addres().parse().unwrap())
             .build();
-        if let Err(e) = client_endpoint_build_result {
+        if client_endpoint_build_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }
@@ -219,7 +219,7 @@ async fn get_overview(
             state_clone.get_quinn_server_addres().parse().unwrap(),
             state_clone.get_quinn_server_application()
         ).await;
-        if let Err(e) = server_connection_result {
+        if server_connection_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }
@@ -228,7 +228,7 @@ async fn get_overview(
 
         //Sending out data (request) to the server
         let sending_result = server_connection.send_all_reliable(&bytes_to_send).await;
-        if let Err(e) = sending_result {
+        if sending_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }
@@ -236,7 +236,7 @@ async fn get_overview(
 
         //Waiting on new data and reading message from the server
         let receiving_result = server_connection.receive_reliable().await;
-        if let Err(e) = sending_result {
+        if sending_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }
