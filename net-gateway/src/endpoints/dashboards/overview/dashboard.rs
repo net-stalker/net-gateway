@@ -1,8 +1,17 @@
-use net_proto_api::{typed_api::Typed, decoder_api::Decoder};
-use net_timescale_api::api::{dashboard::dashboard::DashboardDTO, network_bandwidth::network_bandwidth::NetworkBandwidthDTO, bandwidth_per_endpoint::bandwidth_per_endpoint::BandwidthPerEndpointDTO, network_graph::network_graph::NetworkGraphDTO};
-use serde::{Serialize, Deserialize};
+use serde::Deserialize;
+use serde::Serialize;
 
-use crate::endpoints::charts::{network_bandwidth::chart::NetworkBandwidth, bandwidth_per_endpoint::chart::BandwidthPerEndpoint, network_graph::chart::NetworkGraph};
+use net_proto_api::decoder_api::Decoder;
+use net_proto_api::typed_api::Typed;
+
+use net_timescale_api::api::network_graph::network_graph::NetworkGraphDTO;
+use net_timescale_api::api::bandwidth_per_endpoint::bandwidth_per_endpoint::BandwidthPerEndpointDTO;
+use net_timescale_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
+use net_timescale_api::api::dashboard::dashboard::DashboardDTO;
+
+use crate::endpoints::charts::bandwidth_per_endpoint::chart::BandwidthPerEndpoint;
+use crate::endpoints::charts::network_bandwidth::chart::NetworkBandwidth;
+use crate::endpoints::charts::network_graph::chart::NetworkGraph;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct OverviewDashboard {

@@ -1,2 +1,2 @@
-pub mod dashboard;
 pub mod endpoint;
+pub mod dashboard;
