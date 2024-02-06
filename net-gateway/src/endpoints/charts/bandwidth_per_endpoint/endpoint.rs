@@ -35,7 +35,6 @@ async fn get_bandwidth_per_endpoint(
         return response;
     }
 
-
     //Form request to the server
     let bandwidth_per_endpoint_request = BandwidthPerEndpointRequestDTO::new(
         params.start_date,

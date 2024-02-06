@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-#[derive(Debug, Deserialize, Serialize, Validate)]
+#[derive(Debug, Deserialize, Serialize, Validate, Clone, Copy)]
 pub struct GeneralFilters {
     #[serde(rename = "startDate")]
     pub start_date: i64,
