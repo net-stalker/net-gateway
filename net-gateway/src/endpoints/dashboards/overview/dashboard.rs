@@ -1,13 +1,13 @@
 use serde::Deserialize;
 use serde::Serialize;
 
-use net_proto_api::decoder_api::Decoder;
-use net_proto_api::typed_api::Typed;
+use net_core_api::decoder_api::Decoder;
+use net_core_api::typed_api::Typed;
 
-use net_timescale_api::api::network_graph::network_graph::NetworkGraphDTO;
-use net_timescale_api::api::bandwidth_per_endpoint::bandwidth_per_endpoint::BandwidthPerEndpointDTO;
-use net_timescale_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
-use net_timescale_api::api::dashboard::dashboard::DashboardDTO;
+use net_reporter_api::api::network_graph::network_graph::NetworkGraphDTO;
+use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointDTO;
+use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
+use net_reporter_api::api::dashboard::dashboard::DashboardDTO;
 
 use crate::endpoints::charts::bandwidth_per_endpoint::chart::BandwidthPerEndpoint;
 use crate::endpoints::charts::network_bandwidth::chart::NetworkBandwidth;
@@ -40,8 +40,8 @@ impl From<DashboardDTO> for OverviewDashboard {
         for chart in charts {
             if chart.get_type() == NetworkBandwidthDTO::get_data_type() {
                 network_bandwidth = Some(NetworkBandwidth::from(NetworkBandwidthDTO::decode(chart.get_data())));
-            } else if chart.get_type() == BandwidthPerEndpointDTO::get_data_type() {
-                bandwidth_per_endpoint = Some(BandwidthPerEndpoint::from(BandwidthPerEndpointDTO::decode(chart.get_data())));
+            } else if chart.get_type() == NetworkBandwidthPerEndpointDTO::get_data_type() {
+                bandwidth_per_endpoint = Some(BandwidthPerEndpoint::from(NetworkBandwidthPerEndpointDTO::decode(chart.get_data())));
             } else if chart.get_type() == NetworkGraphDTO::get_data_type() {
                 network_graph = Some(NetworkGraph::from(NetworkGraphDTO::decode(chart.get_data())));
             } else {
