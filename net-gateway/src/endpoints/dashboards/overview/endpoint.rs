@@ -6,19 +6,21 @@ use actix_web::Responder;
 use actix_web::HttpResponse;
 use actix_web::HttpRequest;
 
-use net_proto_api::decoder_api::Decoder;
-use net_proto_api::encoder_api::Encoder;
-use net_proto_api::envelope::envelope::Envelope;
-use net_proto_api::typed_api::Typed;
+use net_core_api::decoder_api::Decoder;
+use net_core_api::encoder_api::Encoder;
+use net_core_api::envelope::envelope::Envelope;
+use net_core_api::typed_api::Typed;
 
-use net_timescale_api::api::bandwidth_per_endpoint::bandwidth_per_endpoint::BandwidthPerEndpointDTO;
-use net_timescale_api::api::bandwidth_per_endpoint::bandwidth_per_endpoint_request::BandwidthPerEndpointRequestDTO;
-use net_timescale_api::api::dashboard::dashboard::DashboardDTO;
-use net_timescale_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
-use net_timescale_api::api::network_bandwidth::network_bandwidth_request::NetworkBandwidthRequestDTO;
-use net_timescale_api::api::network_graph::network_graph::NetworkGraphDTO;
-use net_timescale_api::api::network_graph::network_graph_request::NetworkGraphRequestDTO;
-use net_transport::quinn::client::builder::ClientQuicConnectorBuilder;
+use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointDTO;
+use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per_endpoint_request::NetworkBandwidthPerEndpointRequestDTO;
+use net_reporter_api::api::dashboard::dashboard::DashboardDTO;
+use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
+use net_reporter_api::api::network_bandwidth::network_bandwidth_request::NetworkBandwidthRequestDTO;
+use net_reporter_api::api::network_graph::network_graph::NetworkGraphDTO;
+use net_reporter_api::api::network_graph::network_graph_request::NetworkGraphRequestDTO;
+
+use net_transport::quinn::client::builder::ClientQuicEndpointBuilder;
+
 use tokio::sync::Mutex;
 
 use crate::authorization::Authorization;
@@ -49,21 +51,21 @@ async fn get_overview(
     let params_clone = params.clone();
     let bandwidth_per_endpoint_task = tokio::spawn(async move {    
         //Form request to the server
-        let bandwidth_per_endpoint_request = BandwidthPerEndpointRequestDTO::new(
+        let bandwidth_per_endpoint_request = NetworkBandwidthPerEndpointRequestDTO::new(
             params_clone.start_date,
             params_clone.end_date
         );
         let enveloped_bandwidth_per_endpoint_request = Envelope::new(
             Some(client_data_clone.group_id.as_str()),
             None,
-            BandwidthPerEndpointRequestDTO::get_data_type(),
+            NetworkBandwidthPerEndpointRequestDTO::get_data_type(),
             &bandwidth_per_endpoint_request.encode()
         );
         let bytes_to_send = enveloped_bandwidth_per_endpoint_request.encode();
     
     
         //Creating Quinn Client Endpoint
-        let client_endpoint_build_result = ClientQuicConnectorBuilder::default()
+        let client_endpoint_build_result = ClientQuicEndpointBuilder::default()
             .with_addr(state_clone.get_quinn_client_addres().parse().unwrap())
             .build();
         if client_endpoint_build_result.is_err() {
@@ -105,7 +107,7 @@ async fn get_overview(
 
     
         //TODO: Think about letting it all sit here. Maybe this checking is not necessary
-        if received_envelope.get_type() != BandwidthPerEndpointDTO::get_data_type() {
+        if received_envelope.get_type() != NetworkBandwidthPerEndpointDTO::get_data_type() {
             //TODO: Write appropriate error returning
             return;
         }
@@ -133,7 +135,7 @@ async fn get_overview(
 
 
         //Creating Quinn Client Endpoint
-        let client_endpoint_build_result = ClientQuicConnectorBuilder::default()
+        let client_endpoint_build_result = ClientQuicEndpointBuilder::default()
             .with_addr(state_clone.get_quinn_client_addres().parse().unwrap())
             .build();
         if client_endpoint_build_result.is_err() {
@@ -204,7 +206,7 @@ async fn get_overview(
 
 
         //Creating Quinn Client Endpoint
-        let client_endpoint_build_result = ClientQuicConnectorBuilder::default()
+        let client_endpoint_build_result = ClientQuicEndpointBuilder::default()
             .with_addr(state_clone.get_quinn_client_addres().parse().unwrap())
             .build();
         if client_endpoint_build_result.is_err() {

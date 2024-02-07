@@ -1,5 +1,7 @@
-use net_timescale_api::api::bandwidth_per_endpoint::bandwidth_per_endpoint::BandwidthPerEndpointDTO;
-use serde::{Serialize, Deserialize};
+use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointDTO;
+
+use serde::Deserialize;
+use serde::Serialize;
 
 use super::chart_endpoint::ChartEndpoint;
 
@@ -25,8 +27,8 @@ impl Default for BandwidthPerEndpoint {
     }
 }
 
-impl From<BandwidthPerEndpointDTO> for BandwidthPerEndpoint {
-    fn from(value: BandwidthPerEndpointDTO) -> Self {
+impl From<NetworkBandwidthPerEndpointDTO> for BandwidthPerEndpoint {
+    fn from(value: NetworkBandwidthPerEndpointDTO) -> Self {
         let endpoints = value
             .get_endpoints()
             .iter()

@@ -1,5 +1,7 @@
-use net_timescale_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
-use serde::{Serialize, Deserialize};
+use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
+
+use serde::Deserialize;
+use serde::Serialize;
 
 use super::network_bandwidth_bucket::NetworkBandwidthBucket;
 

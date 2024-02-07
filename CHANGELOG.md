@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-857e491] - 2024-02-06
 
 Feature/NS-18/async-gateway (#10)
@@ -15,7 +16,6 @@ Feature/NS-18/async-gateway (#10)
 * Rewrite all the charts, so they will be queried in async way
 
 * Rewrite dashboard endpoint, so it will query all the charts in async way
-<!-- [END AUTO UPDATE] -->
 ## [-8815f67] - 2024-01-02
 
 feature/CU-8693e7869: updated allowed origin in Cors configuration (#9)

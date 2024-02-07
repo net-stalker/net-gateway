@@ -4,14 +4,15 @@ use actix_web::Responder;
 use actix_web::HttpResponse;
 use actix_web::HttpRequest;
 
-use net_proto_api::decoder_api::Decoder;
-use net_proto_api::encoder_api::Encoder;
-use net_proto_api::envelope::envelope::Envelope;
-use net_proto_api::typed_api::Typed;
+use net_core_api::decoder_api::Decoder;
+use net_core_api::encoder_api::Encoder;
+use net_core_api::envelope::envelope::Envelope;
+use net_core_api::typed_api::Typed;
 
-use net_timescale_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
-use net_timescale_api::api::network_bandwidth::network_bandwidth_request::NetworkBandwidthRequestDTO;
-use net_transport::quinn::client::builder::ClientQuicConnectorBuilder;
+use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
+use net_reporter_api::api::network_bandwidth::network_bandwidth_request::NetworkBandwidthRequestDTO;
+
+use net_transport::quinn::client::builder::ClientQuicEndpointBuilder;
 
 use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
@@ -49,7 +50,7 @@ async fn get_network_bandwidth(
 
 
     //Creating Quinn Client Endpoint
-    let client_endpoint_build_result = ClientQuicConnectorBuilder::default()
+    let client_endpoint_build_result = ClientQuicEndpointBuilder::default()
         .with_addr(state.get_quinn_client_addres().parse().unwrap())
         .build();
     if let Err(e) = client_endpoint_build_result {
