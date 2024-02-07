@@ -25,10 +25,10 @@ use tokio::sync::Mutex;
 
 use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
-use crate::app_state::AppState;
-use crate::client_data::ClientData;
+use crate::core::app_state::AppState;
+use crate::core::client_data::ClientData;
+use crate::core::general_filters::GeneralFilters;
 use crate::endpoints::dashboards::overview::dashboard::OverviewDashboard;
-use crate::general_filters::GeneralFilters;
 
 
 #[get("/dashboard/overview")]

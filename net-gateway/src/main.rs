@@ -3,7 +3,7 @@ use actix_web::App;
 use actix_web::HttpServer;
 use actix_web::http::header;
 use actix_web::web;
-use net_gateway::app_state::AppState;
+use net_gateway::core::app_state::AppState;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> { 

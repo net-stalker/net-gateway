@@ -16,10 +16,10 @@ use net_transport::quinn::client::builder::ClientQuicEndpointBuilder;
 
 use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
-use crate::app_state::AppState;
-use crate::client_data::ClientData;
+use crate::core::app_state::AppState;
+use crate::core::client_data::ClientData;
+use crate::core::general_filters::GeneralFilters;
 use crate::endpoints::charts::network_graph::chart::NetworkGraph;
-use crate::general_filters::GeneralFilters;
 
 
 #[get("/chart/network_graph")]
