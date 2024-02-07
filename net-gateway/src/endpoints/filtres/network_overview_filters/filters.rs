@@ -1,1 +1,0 @@
-// here we need to impl MapFilterToDTO for our DTO type which we still need to update

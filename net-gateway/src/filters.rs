@@ -4,16 +4,15 @@ use validator::Validate;
 #[derive(Debug, Deserialize, Serialize, Validate, Clone)]
 pub struct Filters {
     #[serde(rename = "filters")]
-    pub filters: String
+    pub filters: Option<String>,
 }
 
 impl Filters {
     pub fn new(filters: String) -> Self {
-        Self { filters }
+        Self { filters: Some(filters) }
     }
 }
 
 pub trait MapFiltersToDTO {
-    type DTO;
-    fn map_filters(self) -> Self::DTO;
+    fn map_filters(filters: Filters) -> Self;
 }
