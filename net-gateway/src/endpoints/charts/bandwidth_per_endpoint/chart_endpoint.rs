@@ -1,5 +1,7 @@
-use net_timescale_api::api::bandwidth_per_endpoint::endpoint::EndpointDTO;
-use serde::{Serialize, Deserialize};
+use net_reporter_api::api::network_bandwidth_per_endpoint::endpoint::EndpointDTO;
+
+use serde::Deserialize;
+use serde::Serialize;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct ChartEndpoint {
