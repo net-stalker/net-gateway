@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-70c3008] - 2024-02-07
 
 NS-98/update-libs (#11)
 
 * Moved from local registry to crates.io published libs
-<!-- [END AUTO UPDATE] -->
 ## [-857e491] - 2024-02-06
 
 Feature/NS-18/async-gateway (#10)
