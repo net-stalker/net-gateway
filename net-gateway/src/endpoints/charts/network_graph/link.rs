@@ -1,5 +1,7 @@
-use net_timescale_api::api::network_graph::graph_edge;
-use serde::{Serialize, Deserialize};
+use net_reporter_api::api::network_graph::graph_edge;
+
+use serde::Deserialize;
+use serde::Serialize;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Link {

@@ -1,6 +1,10 @@
-use net_timescale_api::api::network_graph::network_graph::NetworkGraphDTO;
-use serde::{Deserialize, Serialize};
-use super::{node::Node, link::Link};
+use net_reporter_api::api::network_graph::network_graph::NetworkGraphDTO;
+
+use serde::Serialize;
+use serde::Deserialize;
+
+use super::link::Link;
+use super::node::Node;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct NetworkGraph {
