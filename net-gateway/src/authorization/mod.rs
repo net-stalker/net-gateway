@@ -1,6 +1,7 @@
 use actix_web::{HttpResponse, HttpRequest, http::header};
 pub mod authenticator;
 pub mod mock_authenticator;
+pub mod jwt_authenticator;
 
 pub struct Authorization {}
 
