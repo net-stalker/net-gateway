@@ -6,11 +6,11 @@ use serde::Serialize;
 use super::chart_endpoint::ChartEndpoint;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct BandwidthPerEndpoint {
+pub struct NetworkBandwidthPerEndpoint {
     endpoints: Vec<ChartEndpoint>
 }
 
-impl BandwidthPerEndpoint {
+impl NetworkBandwidthPerEndpoint {
     pub fn new(endpoints: Vec<ChartEndpoint>) -> Self {
         Self {
             endpoints
@@ -18,7 +18,7 @@ impl BandwidthPerEndpoint {
     }
 }
 
-impl Default for BandwidthPerEndpoint {
+impl Default for NetworkBandwidthPerEndpoint {
     fn default() -> Self {
         log::info!("warinng: default BandwidthPerEndpoint is being constructed");
         Self {
@@ -27,7 +27,7 @@ impl Default for BandwidthPerEndpoint {
     }
 }
 
-impl From<NetworkBandwidthPerEndpointDTO> for BandwidthPerEndpoint {
+impl From<NetworkBandwidthPerEndpointDTO> for NetworkBandwidthPerEndpoint {
     fn from(value: NetworkBandwidthPerEndpointDTO) -> Self {
         let endpoints = value
             .get_endpoints()

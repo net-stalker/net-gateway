@@ -19,12 +19,12 @@ use crate::authorization::mock_authenticator::MockAuthenticator;
 use crate::core::app_state::AppState;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
-use crate::endpoints::charts::bandwidth_per_endpoint::chart::BandwidthPerEndpoint;
+use crate::endpoints::charts::network_bandwidth_per_endpoint::chart::NetworkBandwidthPerEndpoint;
 
 
 //TODO: Create cool error handling
 //TODO: Move all the repeatable code of creating and connecting to the server to the macro(s)
-#[get("/chart/bandwidth_per_endpoint")]
+#[get("/chart/network_bandwidth_per_endpoint")]
 async fn get_bandwidth_per_endpoint(
     state: web::Data<AppState>,
     client_data: web::Query<ClientData>,
@@ -100,7 +100,7 @@ async fn get_bandwidth_per_endpoint(
 
 
     let received_chart = NetworkBandwidthPerEndpointDTO::decode(received_envelope.get_data());
-    let chart = BandwidthPerEndpoint::from(received_chart);
+    let chart = NetworkBandwidthPerEndpoint::from(received_chart);
     
     HttpResponse::Ok().json(chart)
 }
