@@ -70,7 +70,7 @@ async fn get_overview(
             state_clone.get_quinn_server_addres(),
             state_clone.get_quinn_server_application()
         ).await;
-        if let Err(e) = server_connection_result {
+        if server_connection_result.is_err() {
             //TODO: Write appropriate error returning
             return;
         }

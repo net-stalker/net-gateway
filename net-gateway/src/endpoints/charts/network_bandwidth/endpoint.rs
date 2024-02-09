@@ -12,8 +12,6 @@ use net_core_api::typed_api::Typed;
 use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
 use net_reporter_api::api::network_bandwidth::network_bandwidth_request::NetworkBandwidthRequestDTO;
 
-use net_transport::quinn::client::builder::ClientQuicEndpointBuilder;
-
 use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
 use crate::core::app_state::AppState;
