@@ -12,13 +12,12 @@ use net_core_api::typed_api::Typed;
 use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
 use net_reporter_api::api::network_bandwidth::network_bandwidth_request::NetworkBandwidthRequestDTO;
 
-use net_transport::quinn::client::builder::ClientQuicEndpointBuilder;
-
 use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
 use crate::core::app_state::AppState;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
+use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::endpoints::charts::network_bandwidth::chart::NetworkBandwidth;
 
 
@@ -49,20 +48,9 @@ async fn get_network_bandwidth(
     let bytes_to_send = enveloped_network_bandwidth_request.encode();
 
 
-    //Creating Quinn Client Endpoint
-    let client_endpoint_build_result = ClientQuicEndpointBuilder::default()
-        .with_addr(state.get_quinn_client_addres().parse().unwrap())
-        .build();
-    if let Err(e) = client_endpoint_build_result {
-        //TODO: Write appropriate error returning
-        return HttpResponse::InternalServerError().body(e);
-    }
-    let mut client_endpoint = client_endpoint_build_result.unwrap();
-
-
-    //Connecting with Quinn Client Endpoint to the server
-    let server_connection_result = client_endpoint.connect(
-        state.get_quinn_server_addres().parse().unwrap(),
+    let server_connection_result = QuinnClientEndpointManager::start_server_connection(
+        state.get_quinn_client_addres(),
+        state.get_quinn_server_addres(),
         state.get_quinn_server_application()
     ).await;
     if let Err(e) = server_connection_result {
