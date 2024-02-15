@@ -9,7 +9,7 @@ use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per
 use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
 use net_reporter_api::api::dashboard::dashboard::DashboardDTO;
 
-use crate::endpoints::charts::network_bandwidth_per_endpoint::chart::NetworkBandwidthPerEndpoint;
+use crate::endpoints::charts::network_bandwidth_per_endpoint::chart::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointResponse;
 use crate::endpoints::charts::network_bandwidth::chart::NetworkBandwidth;
 use crate::endpoints::charts::network_graph::chart::NetworkGraph;
 
@@ -18,14 +18,14 @@ pub struct OverviewDashboard {
     #[serde(rename = "networkBandwidth")]
     pub network_bandwidth: NetworkBandwidth,
     #[serde(rename = "bandwidthPerEndpoint")]
-    pub bandwidth_per_endpoint: NetworkBandwidthPerEndpoint,
+    pub bandwidth_per_endpoint: NetworkBandwidthPerEndpointResponse,
     #[serde(rename = "networkGraph")]
     pub network_graph: NetworkGraph,
     // TODO: add pie chart
 }
 
 impl OverviewDashboard {
-    pub fn new(network_bandwidth: NetworkBandwidth, bandwidth_per_endpoint: NetworkBandwidthPerEndpoint, network_graph: NetworkGraph) -> Self {
+    pub fn new(network_bandwidth: NetworkBandwidth, bandwidth_per_endpoint: NetworkBandwidthPerEndpointResponse, network_graph: NetworkGraph) -> Self {
         Self { network_bandwidth, bandwidth_per_endpoint, network_graph }
     }
 }
@@ -41,7 +41,7 @@ impl From<DashboardDTO> for OverviewDashboard {
             if chart.get_type() == NetworkBandwidthDTO::get_data_type() {
                 network_bandwidth = Some(NetworkBandwidth::from(NetworkBandwidthDTO::decode(chart.get_data())));
             } else if chart.get_type() == NetworkBandwidthPerEndpointDTO::get_data_type() {
-                bandwidth_per_endpoint = Some(NetworkBandwidthPerEndpoint::from(NetworkBandwidthPerEndpointDTO::decode(chart.get_data())));
+                bandwidth_per_endpoint = Some(NetworkBandwidthPerEndpointResponse::from(NetworkBandwidthPerEndpointDTO::decode(chart.get_data())));
             } else if chart.get_type() == NetworkGraphDTO::get_data_type() {
                 network_graph = Some(NetworkGraph::from(NetworkGraphDTO::decode(chart.get_data())));
             } else {

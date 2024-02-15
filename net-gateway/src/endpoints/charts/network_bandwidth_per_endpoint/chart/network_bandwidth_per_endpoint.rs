@@ -3,37 +3,36 @@ use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per
 use serde::Deserialize;
 use serde::Serialize;
 
-use super::chart_endpoint::ChartEndpoint;
+use super::endpoint::EndpointResponse;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct NetworkBandwidthPerEndpoint {
-    endpoints: Vec<ChartEndpoint>
+pub struct NetworkBandwidthPerEndpointResponse {
+    endpoints: Vec<EndpointResponse>
 }
 
-impl NetworkBandwidthPerEndpoint {
-    pub fn new(endpoints: Vec<ChartEndpoint>) -> Self {
+impl NetworkBandwidthPerEndpointResponse {
+    pub fn new(endpoints: Vec<EndpointResponse>) -> Self {
         Self {
             endpoints
         }
     }
 }
 
-impl Default for NetworkBandwidthPerEndpoint {
+impl Default for NetworkBandwidthPerEndpointResponse {
     fn default() -> Self {
-        log::info!("warinng: default BandwidthPerEndpoint is being constructed");
         Self {
             endpoints: Vec::new()
         }
     }
 }
 
-impl From<NetworkBandwidthPerEndpointDTO> for NetworkBandwidthPerEndpoint {
+impl From<NetworkBandwidthPerEndpointDTO> for NetworkBandwidthPerEndpointResponse {
     fn from(value: NetworkBandwidthPerEndpointDTO) -> Self {
         let endpoints = value
             .get_endpoints()
             .iter()
-            .map(|endpoint| ChartEndpoint::from(endpoint.clone()))
-            .collect::<Vec<ChartEndpoint>>();
+            .map(|endpoint| EndpointResponse::from(endpoint.clone()))
+            .collect::<Vec<EndpointResponse>>();
         Self {
             endpoints
         }
