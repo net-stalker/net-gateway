@@ -3,25 +3,21 @@ use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per
 use serde::Deserialize;
 use serde::Serialize;
 
+use crate::core::chart_requester::ChartResponse;
+
 use super::endpoint::EndpointResponse;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct NetworkBandwidthPerEndpointResponse {
     endpoints: Vec<EndpointResponse>
 }
+
+impl ChartResponse<NetworkBandwidthPerEndpointDTO> for NetworkBandwidthPerEndpointResponse {}
 
 impl NetworkBandwidthPerEndpointResponse {
     pub fn new(endpoints: Vec<EndpointResponse>) -> Self {
         Self {
             endpoints
-        }
-    }
-}
-
-impl Default for NetworkBandwidthPerEndpointResponse {
-    fn default() -> Self {
-        Self {
-            endpoints: Vec::new()
         }
     }
 }
