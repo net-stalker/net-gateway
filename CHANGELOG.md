@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-7014dda] - 2024-02-15
+
+NS-72/endpoint-managers (#13)
+
+* NS-71/endpoint-managers: Add QuinnClientEndpointManager
+
+* NS-72/endpoint-managers: Rename bandwidth_per_endpoint -> network_bandwidth_per_endpoint
 <!-- [END AUTO UPDATE] -->
 ## [-1b23c46] - 2024-02-07
 
