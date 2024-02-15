@@ -28,6 +28,7 @@ use crate::authorization::mock_authenticator::MockAuthenticator;
 use crate::core::app_state::AppState;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
+use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::endpoints::dashboards::overview::dashboard::OverviewDashboard;
 
 
@@ -64,20 +65,9 @@ async fn get_overview(
         let bytes_to_send = enveloped_bandwidth_per_endpoint_request.encode();
     
     
-        //Creating Quinn Client Endpoint
-        let client_endpoint_build_result = ClientQuicEndpointBuilder::default()
-            .with_addr(state_clone.get_quinn_client_addres().parse().unwrap())
-            .build();
-        if client_endpoint_build_result.is_err() {
-            //TODO: Write appropriate error returning
-            return;
-        }
-        let mut client_endpoint = client_endpoint_build_result.unwrap();
-    
-    
-        //Connecting with Quinn Client Endpoint to the server
-        let server_connection_result = client_endpoint.connect(
-            state_clone.get_quinn_server_addres().parse().unwrap(),
+        let server_connection_result = QuinnClientEndpointManager::start_server_connection(
+            state_clone.get_quinn_client_addres(),
+            state_clone.get_quinn_server_addres(),
             state_clone.get_quinn_server_application()
         ).await;
         if server_connection_result.is_err() {
