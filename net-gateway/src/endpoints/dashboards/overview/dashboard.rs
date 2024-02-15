@@ -9,7 +9,7 @@ use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per
 use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
 use net_reporter_api::api::dashboard::dashboard::DashboardDTO;
 
-use crate::endpoints::charts::network_bandwidth_per_endpoint::chart::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointResponse;
+use crate::endpoints::charts::network_bandwidth_per_endpoint::response::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointResponse;
 use crate::endpoints::charts::network_bandwidth::chart::NetworkBandwidth;
 use crate::endpoints::charts::network_graph::chart::NetworkGraph;
 

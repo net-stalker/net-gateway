@@ -17,7 +17,7 @@ use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::core::request_former::RequestFormer;
-use crate::endpoints::charts::network_bandwidth_per_endpoint::chart::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointResponse;
+use crate::endpoints::charts::network_bandwidth_per_endpoint::response::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointResponse;
 use crate::endpoints::charts::network_bandwidth_per_endpoint::request::request_former::NetworkBandwidthPerEndpointRequestFormer;
 
 
