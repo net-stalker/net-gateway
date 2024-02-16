@@ -1,8 +1,5 @@
 use actix_web::web;
 
-use serde::Deserialize;
-use serde::Serialize;
-
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 
 use super::app_state::AppState;
@@ -10,8 +7,6 @@ use super::chart_requester::ChartRequester;
 use super::client_data::ClientData;
 use super::general_filters::GeneralFilters;
 use super::request_former::RequestFormer;
-
-pub trait ChartResponse<DTO>: Serialize + for<'a> Deserialize<'a> + From<DTO> {}
 
 #[async_trait::async_trait]
 pub trait ChartRequestManagaer {
