@@ -11,7 +11,7 @@ use net_reporter_api::api::dashboard::dashboard::DashboardDTO;
 
 use crate::endpoints::charts::network_bandwidth_per_endpoint::response::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointResponse;
 use crate::endpoints::charts::network_bandwidth::response::network_bandwidth::NetworkBandwidthResponse;
-use crate::endpoints::charts::network_graph::chart::NetworkGraph;
+use crate::endpoints::charts::network_graph::response::network_graph::NetworkGraphResponse;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct OverviewDashboard {
@@ -20,12 +20,16 @@ pub struct OverviewDashboard {
     #[serde(rename = "bandwidthPerEndpoint")]
     pub bandwidth_per_endpoint: NetworkBandwidthPerEndpointResponse,
     #[serde(rename = "networkGraph")]
-    pub network_graph: NetworkGraph,
+    pub network_graph: NetworkGraphResponse,
     // TODO: add pie chart
 }
 
 impl OverviewDashboard {
-    pub fn new(network_bandwidth: NetworkBandwidthResponse, bandwidth_per_endpoint: NetworkBandwidthPerEndpointResponse, network_graph: NetworkGraph) -> Self {
+    pub fn new(
+        network_bandwidth: NetworkBandwidthResponse,
+        bandwidth_per_endpoint: NetworkBandwidthPerEndpointResponse,
+        network_graph: NetworkGraphResponse
+    ) -> Self {
         Self { network_bandwidth, bandwidth_per_endpoint, network_graph }
     }
 }
@@ -43,7 +47,7 @@ impl From<DashboardDTO> for OverviewDashboard {
             } else if chart.get_type() == NetworkBandwidthPerEndpointDTO::get_data_type() {
                 bandwidth_per_endpoint = Some(NetworkBandwidthPerEndpointResponse::from(NetworkBandwidthPerEndpointDTO::decode(chart.get_data())));
             } else if chart.get_type() == NetworkGraphDTO::get_data_type() {
-                network_graph = Some(NetworkGraph::from(NetworkGraphDTO::decode(chart.get_data())));
+                network_graph = Some(NetworkGraphResponse::from(NetworkGraphDTO::decode(chart.get_data())));
             } else {
                 log::error!("received unknown chart type: {}", chart.get_type());
             }

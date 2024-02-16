@@ -4,19 +4,19 @@ use serde::Deserialize;
 use serde::Serialize;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
-pub struct Node {
+pub struct GraphNodeResponse {
     id: String,
 }
 
-impl Node {
+impl GraphNodeResponse {
     pub fn new(id: String) -> Self {
-        Node { id }
+        GraphNodeResponse { id }
     }
 }
 
-impl From<graph_node::GraphNodeDTO> for Node {
+impl From<graph_node::GraphNodeDTO> for GraphNodeResponse {
     fn from(value: graph_node::GraphNodeDTO) -> Self {
-        Node {
+        GraphNodeResponse {
             id: value.get_node_id().to_string(),
         }
     }
