@@ -1,0 +1,12 @@
+use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
+
+use super::chart_requester::NetworkGraphChartRequester;
+use super::request_former::NetworkGraphRequestFormer;
+
+pub struct NetworkGraphChartManager {}
+
+#[async_trait::async_trait]
+impl ChartRequestManagaer for NetworkGraphChartManager {
+    type RequestCreator = NetworkGraphRequestFormer;
+    type Requester = NetworkGraphChartRequester;
+}

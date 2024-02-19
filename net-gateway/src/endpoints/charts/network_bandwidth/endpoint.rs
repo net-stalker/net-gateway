@@ -4,21 +4,13 @@ use actix_web::Responder;
 use actix_web::HttpResponse;
 use actix_web::HttpRequest;
 
-use net_core_api::decoder_api::Decoder;
-use net_core_api::encoder_api::Encoder;
-use net_core_api::envelope::envelope::Envelope;
-use net_core_api::typed_api::Typed;
-
-use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
-use net_reporter_api::api::network_bandwidth::network_bandwidth_request::NetworkBandwidthRequestDTO;
-
 use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
 use crate::core::app_state::AppState;
+use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
-use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
-use crate::endpoints::charts::network_bandwidth::chart::NetworkBandwidth;
+use crate::endpoints::charts::network_bandwidth_per_endpoint::request::manager::NetworkBandwidthPerEndpointChartManager;
 
 
 #[get("/chart/network_bandwidth")]
@@ -33,61 +25,16 @@ async fn get_network_bandwidth(
         return response;
     }
 
-
-    //Form request to the server
-    let network_bandwidth_request = NetworkBandwidthRequestDTO::new(
-        params.start_date,
-        params.end_date
-    );
-    let enveloped_network_bandwidth_request = Envelope::new(
-        Some(client_data.group_id.as_str()),
-        None,
-        NetworkBandwidthRequestDTO::get_data_type(),
-        &network_bandwidth_request.encode()
-    );
-    let bytes_to_send = enveloped_network_bandwidth_request.encode();
-
-
-    let server_connection_result = QuinnClientEndpointManager::start_server_connection(
-        state.get_quinn_client_addres(),
-        state.get_quinn_server_addres(),
-        state.get_quinn_server_application()
+    let chart_request_result = NetworkBandwidthPerEndpointChartManager::request_chart(
+        state,
+        client_data,
+        params
     ).await;
-    if let Err(e) = server_connection_result {
+    if let Err(e) = chart_request_result {
         //TODO: Write appropriate error returning
         return HttpResponse::InternalServerError().body(e);
     }
-    let mut server_connection = server_connection_result.unwrap();
-
-
-    //Sending out data (request) to the server
-    let sending_result = server_connection.send_all_reliable(&bytes_to_send).await;
-    if let Err(e) = sending_result {
-        //TODO: Write appropriate error returning
-        return HttpResponse::InternalServerError().body(e);
-    }
-
-
-    //Waiting on new data and reading message from the server
-    let receiving_result = server_connection.receive_reliable().await;
-    if let Err(e) = sending_result {
-        //TODO: Write appropriate error returning
-        return HttpResponse::InternalServerError().body(e);
-    }
-    let received_bytes = receiving_result.unwrap();
-
-    let received_envelope = Envelope::decode(&received_bytes);
-
-
-    //TODO: Think about letting it all sit here. Maybe this checking is not necessary
-    if received_envelope.get_type() != NetworkBandwidthDTO::get_data_type() {
-        //TODO: Write appropriate error returning
-        return HttpResponse::InternalServerError().finish();
-    }
-
-
-    let received_chart = NetworkBandwidthDTO::decode(received_envelope.get_data());
-    let chart = NetworkBandwidth::from(received_chart);
+    let chart = chart_request_result.unwrap();
     
     HttpResponse::Ok().json(chart)
 }
