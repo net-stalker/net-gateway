@@ -36,5 +36,7 @@ async fn get_network_graph(
     }
     let chart = chart_request_result.unwrap();
     
-    HttpResponse::Ok().json(chart)
+    let chart_json = chart.get_json();
+    
+    HttpResponse::Ok().json(chart_json)
 }

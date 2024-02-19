@@ -38,5 +38,7 @@ async fn get_bandwidth_per_endpoint(
     }
     let chart = chart_request_result.unwrap();
     
-    HttpResponse::Ok().json(chart)
+    let chart_json = chart.get_json();
+    
+    HttpResponse::Ok().json(chart_json)
 }

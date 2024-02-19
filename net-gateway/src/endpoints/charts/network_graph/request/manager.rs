@@ -7,7 +7,7 @@ use net_core_api::typed_api::Typed;
 use net_reporter_api::api::network_graph::network_graph::NetworkGraphDTO;
 use net_reporter_api::api::network_graph::network_graph_request::NetworkGraphRequestDTO;
 
-use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
+use crate::core::chart_management::chart_request_manager::{ChartRequestManagaer, ChartResponse};
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
 use crate::endpoints::charts::network_graph::response::network_graph::NetworkGraphResponse;
@@ -22,7 +22,11 @@ impl NetworkGraphChartManager {
 }
 
 #[async_trait::async_trait]
-impl ChartRequestManagaer<NetworkGraphResponse> for NetworkGraphChartManager {
+impl ChartRequestManagaer for NetworkGraphChartManager {
+    fn get_requesting_type(&self) -> &'static str {
+        NetworkGraphDTO::get_data_type()
+    }
+
     fn get_request_type(&self) -> &'static str {
         NetworkGraphRequestDTO::get_data_type()
     }
@@ -43,9 +47,9 @@ impl ChartRequestManagaer<NetworkGraphResponse> for NetworkGraphChartManager {
     fn decode_received_envelope(
         &self,
         received_envelope: Envelope
-    ) -> Result<NetworkGraphResponse, String> {
-        Ok(NetworkGraphResponse::from(
+    ) -> Result<Box<dyn ChartResponse>, String> {
+        Ok(Box::new(NetworkGraphResponse::from(
             NetworkGraphDTO::decode(received_envelope.get_data())
-        ))
+        )))
     }
 }

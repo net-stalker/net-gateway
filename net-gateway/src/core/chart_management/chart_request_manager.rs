@@ -12,18 +12,19 @@ use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 
-pub trait ChartResponse {}
+pub trait ChartResponse {
+    fn get_json(&self) -> serde_json::Value;
+}
 
 #[async_trait::async_trait]
-pub trait ChartRequestManagaer<R> 
-where R : ChartResponse {
+pub trait ChartRequestManagaer {
     //Requesting chart
     async fn request_chart(
         &self,
         state: web::Data<AppState>,
         client_data: web::Query<ClientData>,
         params: web::Query<GeneralFilters>,
-    ) -> Result<R, String> {
+    ) -> Result<Box<dyn ChartResponse>, String> {
         //Form request to the server
         let bytes_to_send = self.form_request(params, client_data);
 
@@ -47,7 +48,7 @@ where R : ChartResponse {
         &self,
         request: &[u8],
         mut server_connection: QuicConnection,
-    ) -> Result<R, String> {
+    ) -> Result<Box<dyn ChartResponse>, String> {
         //Sending out data (request) to the server
         server_connection.send_all_reliable(request).await?;
 
@@ -63,7 +64,9 @@ where R : ChartResponse {
     fn decode_received_envelope(
         &self,
         received_envelope: Envelope
-    ) -> Result<R, String>;
+    ) -> Result<Box<dyn ChartResponse>, String>;
+
+    fn get_requesting_type(&self) -> &'static str;
 
     //Request creating
     fn get_request_type(&self) -> &'static str;

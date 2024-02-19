@@ -14,7 +14,11 @@ pub struct NetworkGraphResponse {
     pub links: Vec<GraphEdgeResponse>,
 }
 
-impl ChartResponse for NetworkGraphResponse {}
+impl ChartResponse for NetworkGraphResponse {
+    fn get_json(&self) -> serde_json::Value {
+        serde_json::to_value(self).unwrap()
+    }
+}
 
 impl NetworkGraphResponse {
     pub fn new(nodes: Vec<GraphNodeResponse>, links: Vec<GraphEdgeResponse>) -> Self {

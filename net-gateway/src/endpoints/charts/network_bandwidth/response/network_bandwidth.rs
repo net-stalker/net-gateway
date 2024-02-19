@@ -13,7 +13,11 @@ pub struct NetworkBandwidthResponse {
     #[serde(rename = "networkBandwidthBuckets")]
     pub buckets: Vec<NetworkBandwidthBucketResponse>,
 }
-impl ChartResponse for NetworkBandwidthResponse {}
+impl ChartResponse for NetworkBandwidthResponse {
+    fn get_json(&self) -> serde_json::Value {
+        serde_json::to_value(self).unwrap()
+    }
+}
 
 impl NetworkBandwidthResponse {
     pub fn new(buckets: Vec<NetworkBandwidthBucketResponse>) -> Self {

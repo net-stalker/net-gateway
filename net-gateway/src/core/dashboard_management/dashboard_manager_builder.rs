@@ -1,19 +1,22 @@
-use crate::core::chart_management::chart_request_manager::ChartResponse;
+use std::collections::HashMap;
+
+// use crate::core::chart_management::chart_request_manager::ChartResponse;
 use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 
 use super::dashboard_manager::DashboardManager;
 
 #[derive(Default)]
 pub struct DashboardManagerBuilder {
-    chart_requesters: Vec<Box<dyn ChartRequestManagaer<dyn ChartResponse>>>,
+    chart_requesters: HashMap<&'static str, Box<dyn ChartRequestManagaer>>,
 }
 
 impl DashboardManagerBuilder {
     pub fn add_chart_requester (
         mut self,
-        chart_requester: Box<dyn ChartRequestManagaer<dyn ChartResponse>>
+        chart_requester: Box<dyn ChartRequestManagaer>
     ) -> Self {
-        self.chart_requesters.push(chart_requester);
+        //TODO: Create Error handling here
+        let _ = self.chart_requesters.insert(chart_requester.get_request_type(), chart_requester);
         self
     }
 

@@ -7,7 +7,7 @@ use net_core_api::typed_api::Typed;
 use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
 use net_reporter_api::api::network_bandwidth::network_bandwidth_request::NetworkBandwidthRequestDTO;
 
-use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
+use crate::core::chart_management::chart_request_manager::{ChartRequestManagaer, ChartResponse};
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
 use crate::endpoints::charts::network_bandwidth::response::network_bandwidth::NetworkBandwidthResponse;
@@ -22,7 +22,11 @@ impl NetworkBandwidthChartManager {
 }
 
 #[async_trait::async_trait]
-impl ChartRequestManagaer<NetworkBandwidthResponse> for NetworkBandwidthChartManager {
+impl ChartRequestManagaer for NetworkBandwidthChartManager {
+    fn get_requesting_type(&self) -> &'static str {
+        NetworkBandwidthDTO::get_data_type()
+    }
+
     fn get_request_type(&self) -> &'static str {
         NetworkBandwidthRequestDTO::get_data_type()
     }
@@ -42,9 +46,9 @@ impl ChartRequestManagaer<NetworkBandwidthResponse> for NetworkBandwidthChartMan
     fn decode_received_envelope(
         &self,
         received_envelope: Envelope
-    ) -> Result<NetworkBandwidthResponse, String> {
-        Ok(NetworkBandwidthResponse::from(
+    ) -> Result<Box<dyn ChartResponse>, std::string::String> {
+        Ok(Box::new(NetworkBandwidthResponse::from(
             NetworkBandwidthDTO::decode(received_envelope.get_data())
-        ))
+        )))
     }
 }

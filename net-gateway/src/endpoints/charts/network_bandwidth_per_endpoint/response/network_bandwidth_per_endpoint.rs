@@ -12,7 +12,11 @@ pub struct NetworkBandwidthPerEndpointResponse {
     endpoints: Vec<EndpointResponse>
 }
 
-impl ChartResponse for NetworkBandwidthPerEndpointResponse {}
+impl ChartResponse for NetworkBandwidthPerEndpointResponse {
+    fn get_json(&self) -> serde_json::Value {
+        todo!()
+    }
+}
 
 impl NetworkBandwidthPerEndpointResponse {
     pub fn new(endpoints: Vec<EndpointResponse>) -> Self {

@@ -35,6 +35,8 @@ async fn get_network_bandwidth(
         return HttpResponse::InternalServerError().body(e);
     }
     let chart = chart_request_result.unwrap();
+
+    let chart_json = chart.get_json();
     
-    HttpResponse::Ok().json(chart)
+    HttpResponse::Ok().json(chart_json)
 }
