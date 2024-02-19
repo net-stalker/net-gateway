@@ -3,7 +3,7 @@ use net_reporter_api::api::network_graph::network_graph::NetworkGraphDTO;
 use serde::Serialize;
 use serde::Deserialize;
 
-use crate::core::chart_management::chart_requester::ChartResponse;
+use crate::core::chart_management::chart_request_manager::ChartResponse;
 
 use super::graph_edge::GraphEdgeResponse;
 use super::graph_node::GraphNodeResponse;
@@ -14,7 +14,7 @@ pub struct NetworkGraphResponse {
     pub links: Vec<GraphEdgeResponse>,
 }
 
-impl ChartResponse<NetworkGraphDTO> for NetworkGraphResponse {}
+impl ChartResponse for NetworkGraphResponse {}
 
 impl NetworkGraphResponse {
     pub fn new(nodes: Vec<GraphNodeResponse>, links: Vec<GraphEdgeResponse>) -> Self {

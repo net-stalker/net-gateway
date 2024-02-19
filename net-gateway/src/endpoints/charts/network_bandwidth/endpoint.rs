@@ -10,7 +10,7 @@ use crate::core::app_state::AppState;
 use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
-use crate::endpoints::charts::network_bandwidth_per_endpoint::request::manager::NetworkBandwidthPerEndpointChartManager;
+use crate::endpoints::charts::network_bandwidth::request::manager::NetworkBandwidthChartManager;
 
 
 #[get("/chart/network_bandwidth")]
@@ -24,8 +24,8 @@ async fn get_network_bandwidth(
     if let Err(response) = Authorization::authorize(req, MockAuthenticator {}).await {
         return response;
     }
-
-    let chart_request_result = NetworkBandwidthPerEndpointChartManager::request_chart(
+    
+    let chart_request_result = NetworkBandwidthChartManager::default().request_chart(
         state,
         client_data,
         params
