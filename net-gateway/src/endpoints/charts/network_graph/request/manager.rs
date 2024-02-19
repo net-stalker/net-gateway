@@ -40,7 +40,7 @@ impl ChartRequestManagaer<NetworkGraphResponse> for NetworkGraphChartManager {
         ))
     }
 
-    fn decode_resieved_envelope(
+    fn decode_received_envelope(
         &self,
         received_envelope: Envelope
     ) -> Result<NetworkGraphResponse, String> {
