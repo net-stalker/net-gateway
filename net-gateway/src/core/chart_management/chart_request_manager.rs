@@ -82,7 +82,7 @@ where R : ChartResponse {
         Envelope::new(
             Some(&client_data.group_id),
             None,
-            &self.get_request_type(),
+            self.get_request_type(),
             &self.form_dto_request(
                 params,
                 &client_data
