@@ -21,11 +21,14 @@ impl DashboardManager {
     }
 
     pub fn request_dashboard(
-        &self,
+        self,
         state: web::Data<AppState>,
         client_data: web::Query<ClientData>,
         params: web::Query<GeneralFilters>
-    ) {
+    ) -> HashMap<&'static str, serde_json::Value> {
+        // for (requesting_type, chart_requester) in self.chart_requesters {
+
+        // }
         todo!()
     }
 }

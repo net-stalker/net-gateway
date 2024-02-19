@@ -24,7 +24,7 @@ pub trait ChartRequestManagaer {
         state: web::Data<AppState>,
         client_data: web::Query<ClientData>,
         params: web::Query<GeneralFilters>,
-    ) -> Result<Box<dyn ChartResponse>, String> {
+    ) -> Result<serde_json::Value, String> {
         //Form request to the server
         let bytes_to_send = self.form_request(params, client_data);
 
@@ -37,10 +37,14 @@ pub trait ChartRequestManagaer {
         ).await;
         let server_connection = server_connection_result?;
 
-        self.request_chart_from_server(
+        let chart_request_result = self.request_chart_from_server(
             &bytes_to_send,
             server_connection
-        ).await
+        ).await;
+
+        let chart_request = chart_request_result?;
+
+        Ok(chart_request.get_json())
     }
 
     //Requesting chart from server
