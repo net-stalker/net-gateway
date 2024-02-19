@@ -31,7 +31,7 @@ impl ChartRequestManagaer<NetworkBandwidthPerEndpointResponse> for NetworkBandwi
         ))
     }
 
-    fn decode_resieved_envelope(
+    fn decode_received_envelope(
         &self,
         received_envelope: Envelope
     ) -> Result<NetworkBandwidthPerEndpointResponse, String> {

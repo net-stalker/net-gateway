@@ -57,10 +57,10 @@ where R : ChartResponse {
 
         let received_envelope = Envelope::decode(&received_bytes);
 
-        self.decode_resieved_envelope(received_envelope)
+        self.decode_received_envelope(received_envelope)
     }
 
-    fn decode_resieved_envelope(
+    fn decode_received_envelope(
         &self,
         received_envelope: Envelope
     ) -> Result<R, String>;
