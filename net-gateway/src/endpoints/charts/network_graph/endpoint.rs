@@ -25,7 +25,7 @@ async fn get_network_graph(
         return response;
     }
 
-    let chart_request_result = NetworkGraphChartManager::request_chart(
+    let chart_request_result = NetworkGraphChartManager::default().request_chart(
         state,
         client_data,
         params

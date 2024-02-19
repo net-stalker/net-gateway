@@ -3,7 +3,7 @@ use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidt
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::core::chart_management::chart_requester::ChartResponse;
+use crate::core::chart_management::chart_request_manager::ChartResponse;
 
 use super::network_bandwidth_bucket::NetworkBandwidthBucketResponse;
 
@@ -13,8 +13,7 @@ pub struct NetworkBandwidthResponse {
     #[serde(rename = "networkBandwidthBuckets")]
     pub buckets: Vec<NetworkBandwidthBucketResponse>,
 }
-
-impl ChartResponse<NetworkBandwidthDTO> for NetworkBandwidthResponse {}
+impl ChartResponse for NetworkBandwidthResponse {}
 
 impl NetworkBandwidthResponse {
     pub fn new(buckets: Vec<NetworkBandwidthBucketResponse>) -> Self {

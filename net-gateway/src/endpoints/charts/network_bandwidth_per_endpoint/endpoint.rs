@@ -27,7 +27,7 @@ async fn get_bandwidth_per_endpoint(
         return response;
     }
 
-    let chart_request_result = NetworkBandwidthPerEndpointChartManager::request_chart(
+    let chart_request_result = NetworkBandwidthPerEndpointChartManager::default().request_chart(
         state,
         client_data,
         params
