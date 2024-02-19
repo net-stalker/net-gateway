@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use actix_web::web;
 
 use net_core_api::api::API;
@@ -33,9 +35,9 @@ impl ChartRequestManagaer for NetworkGraphChartManager {
 
     fn form_dto_request(
         &self,
-        params: web::Query<GeneralFilters>,
+        params: Arc<web::Query<GeneralFilters>>,
         #[allow(unused_variables)]
-        client_data: &web::Query<ClientData>
+        client_data: Arc<web::Query<ClientData>>
     ) -> Box<dyn API> {
         Box::new(NetworkGraphRequestDTO::new(
             params.start_date,

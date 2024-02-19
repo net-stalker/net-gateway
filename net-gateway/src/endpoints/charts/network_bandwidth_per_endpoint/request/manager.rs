@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use actix_web::web;
 use net_core_api::{api::API, decoder_api::Decoder, envelope::envelope::Envelope, typed_api::Typed};
 use net_reporter_api::api::network_bandwidth_per_endpoint::{network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointDTO, network_bandwidth_per_endpoint_request::NetworkBandwidthPerEndpointRequestDTO};
@@ -25,9 +27,9 @@ impl ChartRequestManagaer for NetworkBandwidthPerEndpointChartManager {
 
     fn form_dto_request(
         &self,
-        params: web::Query<GeneralFilters>,
+        params: Arc<web::Query<GeneralFilters>>,
         #[allow(unused_variables)]
-        client_data: &web::Query<ClientData>
+        client_data: Arc<web::Query<ClientData>>
     ) -> Box<dyn API> {
         Box::new(NetworkBandwidthPerEndpointRequestDTO::new(
             params.start_date,

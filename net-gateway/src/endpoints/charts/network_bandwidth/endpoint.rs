@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use actix_web::get;
 use actix_web::web;
 use actix_web::Responder;
@@ -26,9 +28,9 @@ async fn get_network_bandwidth(
     }
     
     let chart_request_result = NetworkBandwidthChartManager::default().request_chart(
-        state,
-        client_data,
-        params
+        Arc::new(state),
+        Arc::new(client_data),
+        Arc::new(params)
     ).await;
     if let Err(e) = chart_request_result {
         //TODO: Write appropriate error returning
