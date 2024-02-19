@@ -1,6 +1,6 @@
 use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
 
-use crate::core::chart_requester::ChartRequester;
+use crate::core::chart_management::chart_requester::ChartRequester;
 use crate::endpoints::charts::network_bandwidth::response::network_bandwidth::NetworkBandwidthResponse;
 
 pub struct NetworkBandwidthChartRequester {}

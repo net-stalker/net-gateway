@@ -2,9 +2,9 @@ use actix_web::web;
 
 use net_reporter_api::api::network_bandwidth::network_bandwidth_request::NetworkBandwidthRequestDTO;
 
+use crate::core::chart_management::request_creator::RequestCreator;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
-use crate::core::request_creator::RequestCreator;
 
 pub struct NetworkBandwidthRequestFormer {}
 

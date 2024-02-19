@@ -5,8 +5,8 @@ use net_core_api::encoder_api::Encoder;
 use net_core_api::envelope::envelope::Envelope;
 use net_core_api::typed_api::Typed;
 
-use super::client_data::ClientData;
-use super::general_filters::GeneralFilters;
+use crate::core::client_data::ClientData;
+use crate::core::general_filters::GeneralFilters;
 
 pub trait RequestCreator {
     type RequestDTO: API;

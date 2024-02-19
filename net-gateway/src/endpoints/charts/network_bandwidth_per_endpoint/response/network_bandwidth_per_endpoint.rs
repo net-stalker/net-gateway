@@ -3,7 +3,7 @@ use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::core::chart_requester::ChartResponse;
+use crate::core::chart_management::chart_requester::ChartResponse;
 
 use super::endpoint::EndpointResponse;
 

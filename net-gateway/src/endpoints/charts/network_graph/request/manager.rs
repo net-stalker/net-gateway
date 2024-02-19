@@ -1,4 +1,4 @@
-use crate::core::chart_request_manager::ChartRequestManagaer;
+use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 
 use super::chart_requester::NetworkGraphChartRequester;
 use super::request_former::NetworkGraphRequestFormer;

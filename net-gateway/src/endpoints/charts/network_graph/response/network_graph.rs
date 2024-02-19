@@ -3,7 +3,7 @@ use net_reporter_api::api::network_graph::network_graph::NetworkGraphDTO;
 use serde::Serialize;
 use serde::Deserialize;
 
-use crate::core::chart_requester::ChartResponse;
+use crate::core::chart_management::chart_requester::ChartResponse;
 
 use super::graph_edge::GraphEdgeResponse;
 use super::graph_node::GraphNodeResponse;

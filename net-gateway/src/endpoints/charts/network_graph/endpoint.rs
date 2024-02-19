@@ -7,7 +7,7 @@ use actix_web::HttpRequest;
 use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
 use crate::core::app_state::AppState;
-use crate::core::chart_request_manager::ChartRequestManagaer;
+use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
 use crate::endpoints::charts::network_graph::request::manager::NetworkGraphChartManager;
