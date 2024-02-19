@@ -7,6 +7,6 @@ pub struct NetworkBandwidthPerEndpointChartManager {}
 
 #[async_trait::async_trait]
 impl ChartRequestManagaer for NetworkBandwidthPerEndpointChartManager {
-    type RequestFormer = NetworkBandwidthPerEndpointRequestFormer;
+    type RequestCreator = NetworkBandwidthPerEndpointRequestFormer;
     type Requester = NetworkBandwidthPerEndpointChartRequester;
 }

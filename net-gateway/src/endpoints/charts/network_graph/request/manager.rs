@@ -7,6 +7,6 @@ pub struct NetworkGraphChartManager {}
 
 #[async_trait::async_trait]
 impl ChartRequestManagaer for NetworkGraphChartManager {
-    type RequestFormer = NetworkGraphRequestFormer;
+    type RequestCreator = NetworkGraphRequestFormer;
     type Requester = NetworkGraphChartRequester;
 }

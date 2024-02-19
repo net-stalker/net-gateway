@@ -6,11 +6,11 @@ use super::app_state::AppState;
 use super::chart_requester::ChartRequester;
 use super::client_data::ClientData;
 use super::general_filters::GeneralFilters;
-use super::request_former::RequestFormer;
+use super::request_creator::RequestCreator;
 
 #[async_trait::async_trait]
 pub trait ChartRequestManagaer {
-    type RequestFormer: RequestFormer;
+    type RequestCreator: RequestCreator;
     type Requester: ChartRequester;
     
     async fn request_chart(
@@ -19,7 +19,7 @@ pub trait ChartRequestManagaer {
         params: web::Query<GeneralFilters>,
     ) -> Result<<Self::Requester as ChartRequester>::Response, String> {
         //Form request to the server
-        let bytes_to_send = Self::RequestFormer::form_request(params, client_data);
+        let bytes_to_send = Self::RequestCreator::form_request(params, client_data);
 
         //Creating Quinn Client Endpoint
         //Connecting with Quinn Client Endpoint to the server

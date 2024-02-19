@@ -8,7 +8,7 @@ use net_core_api::typed_api::Typed;
 use super::client_data::ClientData;
 use super::general_filters::GeneralFilters;
 
-pub trait RequestFormer {
+pub trait RequestCreator {
     type RequestDTO: API;
 
     fn form_dto_request(
