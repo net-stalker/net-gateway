@@ -8,11 +8,21 @@ pub struct FiltersWrapper {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Filter {
-    pub mode: String,
+    mode: String,
     #[serde(rename = "filterEntity")]
     pub filter_entity: String,
     #[serde(rename = "filterValue")]
     pub filter_value: String,
+}
+
+impl Filter {
+    pub fn get_mode(&self) -> Option<bool> {
+        match self.mode.as_str() {
+            "include" => Some(true),
+            "exclude" => Some(false),
+            _ => None
+        }
+    }
 }
 
 #[derive(Debug, Clone, Default)]
