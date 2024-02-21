@@ -4,7 +4,7 @@ use serde::Deserialize;
 use serde::Serialize;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
-pub struct ChartEndpoint {
+pub struct EndpointResponse {
     id: String,
     #[serde(rename = "totalBytesReceived")]
     total_bytes_rec: u64,
@@ -12,7 +12,7 @@ pub struct ChartEndpoint {
     total_bytes_sent: u64,
 }
 
-impl ChartEndpoint {
+impl EndpointResponse {
     pub fn new(id: String, total_bytes_rec: u64, total_bytes_sent: u64) -> Self {
         Self {
             id,
@@ -22,7 +22,7 @@ impl ChartEndpoint {
     }
 }
 
-impl From<EndpointDTO> for ChartEndpoint {
+impl From<EndpointDTO> for EndpointResponse {
     fn from(endpoint_dto: EndpointDTO) -> Self {
         Self {
             id: endpoint_dto.get_id().to_owned(),

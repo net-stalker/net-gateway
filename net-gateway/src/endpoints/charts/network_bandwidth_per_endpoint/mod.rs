@@ -1,3 +1,3 @@
-pub mod chart;
+pub mod response;
 pub mod endpoint;
-pub mod chart_endpoint;
+pub mod request;
