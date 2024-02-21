@@ -9,7 +9,7 @@ use crate::core::chart_management::chart_response::ChartResponse;
 
 use super::endpoint::EndpointResponse;
 
-const JSON_TYPE: &'static str = "networkBandwidthPerEndpoint";
+const JSON_TYPE: &str = "networkBandwidthPerEndpoint";
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct NetworkBandwidthPerEndpointResponse {

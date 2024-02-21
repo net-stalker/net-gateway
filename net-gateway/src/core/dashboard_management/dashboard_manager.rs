@@ -75,7 +75,8 @@ impl DashboardManager {
                     params_clone,
                 ).await;
 
-                if let Err(_) = request_result {
+                //TODO: Add Error propper handling
+                if request_result.is_err() {
                     panic!()
                 }
                 let requested_chart = request_result.unwrap();

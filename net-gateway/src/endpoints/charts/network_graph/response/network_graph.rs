@@ -10,7 +10,7 @@ use crate::core::chart_management::chart_response::ChartResponse;
 use super::graph_edge::GraphEdgeResponse;
 use super::graph_node::GraphNodeResponse;
 
-const JSON_TYPE: &'static str = "networkGraph";
+const JSON_TYPE: &str = "networkGraph";
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct NetworkGraphResponse {

@@ -13,7 +13,7 @@ impl DashboardManagerBuilder {
         chart_requester: Box<dyn ChartRequestManagaer>
     ) -> Self {
         //TODO: Create Error handling here
-        let _ = self.chart_requesters.push(chart_requester);
+        self.chart_requesters.push(chart_requester);
         self
     }
 

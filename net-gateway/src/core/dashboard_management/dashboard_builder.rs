@@ -13,7 +13,7 @@ impl DashboardBuilder {
         chart: Box<dyn ChartResponse>
     ) -> Self {
         //TODO: Create Error handling here
-        let _ = self.charts.push(chart);
+        self.charts.push(chart);
         self
     }
 
@@ -22,7 +22,7 @@ impl DashboardBuilder {
         charts: &mut Vec<Box<dyn ChartResponse>>
     ) -> Self {
         //TODO: Create Error handling here
-        let _ = self.charts.append(charts);
+        self.charts.append(charts);
         self
     }
 
