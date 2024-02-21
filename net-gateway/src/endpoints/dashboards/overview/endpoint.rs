@@ -27,22 +27,26 @@ use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
 use crate::core::app_state::AppState;
 use crate::core::client_data::ClientData;
+use crate::core::filter::Filters;
+use crate::core::filter::FiltersWrapper;
 use crate::core::general_filters::GeneralFilters;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::endpoints::dashboards::overview::dashboard::OverviewDashboard;
-
 
 #[get("/dashboard/overview")]
 async fn get_overview(
     state: web::Data<AppState>,
     client_data: web::Query<ClientData>,
     params: web::Query<GeneralFilters>,
+    filters_wrapper: web::Query<FiltersWrapper>,
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
     if let Err(response) = Authorization::authorize(req, MockAuthenticator {}).await {
         return response;
     }
+
+    let filters: Filters = filters_wrapper.into_inner().into();
 
     let enveloped_chart_responses: Arc<Mutex<Vec<Envelope>>> = Default::default();
 
@@ -109,11 +113,13 @@ async fn get_overview(
     let state_clone = state.clone();
     let client_data_clone = client_data.clone();
     let params_clone = params.clone();
-    let network_bandwidth_task = tokio::spawn(async move {
+    let filters_clone = filters.clone();
+    let network_bandwidth_task: tokio::task::JoinHandle<()> = tokio::spawn(async move {
         //Form request to the server
         let network_bandwidth_request = NetworkBandwidthRequestDTO::new(
             params_clone.start_date,
-            params_clone.end_date
+            params_clone.end_date,
+            filters_clone.into()
         );
         let enveloped_network_bandwidth_request = Envelope::new(
             Some(client_data_clone.group_id.as_str()),

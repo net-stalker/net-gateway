@@ -10,12 +10,15 @@ use net_core_api::envelope::envelope::Envelope;
 use net_core_api::typed_api::Typed;
 
 use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
+use net_reporter_api::api::network_bandwidth::network_bandwidth_filters::NetworkBandwidthFiltersDTO;
 use net_reporter_api::api::network_bandwidth::network_bandwidth_request::NetworkBandwidthRequestDTO;
 
 use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
 use crate::core::app_state::AppState;
 use crate::core::client_data::ClientData;
+use crate::core::filter::Filters;
+use crate::core::filter::FiltersWrapper;
 use crate::core::general_filters::GeneralFilters;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::endpoints::charts::network_bandwidth::chart::NetworkBandwidth;
@@ -26,6 +29,7 @@ async fn get_network_bandwidth(
     state: web::Data<AppState>,
     client_data: web::Query<ClientData>,
     params: web::Query<GeneralFilters>,
+    filters_wrapper: web::Query<FiltersWrapper>,
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
@@ -33,11 +37,13 @@ async fn get_network_bandwidth(
         return response;
     }
 
-
+    let filters: NetworkBandwidthFiltersDTO = <FiltersWrapper as Into<Filters>>::into(filters_wrapper.into_inner()).into();
+    
     //Form request to the server
     let network_bandwidth_request = NetworkBandwidthRequestDTO::new(
         params.start_date,
-        params.end_date
+        params.end_date,
+        filters,
     );
     let enveloped_network_bandwidth_request = Envelope::new(
         Some(client_data.group_id.as_str()),
