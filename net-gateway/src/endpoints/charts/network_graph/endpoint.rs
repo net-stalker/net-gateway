@@ -10,12 +10,15 @@ use net_core_api::envelope::envelope::Envelope;
 use net_core_api::typed_api::Typed;
 
 use net_reporter_api::api::network_graph::network_graph::NetworkGraphDTO;
+use net_reporter_api::api::network_graph::network_graph_filters::NetworkGraphFiltersDTO;
 use net_reporter_api::api::network_graph::network_graph_request::NetworkGraphRequestDTO;
 
 use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
 use crate::core::app_state::AppState;
 use crate::core::client_data::ClientData;
+use crate::core::filter::Filters;
+use crate::core::filter::FiltersWrapper;
 use crate::core::general_filters::GeneralFilters;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::endpoints::charts::network_graph::chart::NetworkGraph;
@@ -26,6 +29,7 @@ async fn get_network_graph(
     state: web::Data<AppState>,
     client_data: web::Query<ClientData>,
     params: web::Query<GeneralFilters>,
+    filters_wrapper: web::Query<FiltersWrapper>,
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
@@ -33,12 +37,13 @@ async fn get_network_graph(
         return response;
     }
 
+    let filters: NetworkGraphFiltersDTO = <FiltersWrapper as Into<Filters>>::into(filters_wrapper.into_inner()).into();
 
     //Form request to the server
     let network_graph_request = NetworkGraphRequestDTO::new(
         params.start_date,
         params.end_date,
-        false
+        filters,
     );
     let enveloped_network_graph_request = Envelope::new(
         Some(client_data.group_id.as_str()),

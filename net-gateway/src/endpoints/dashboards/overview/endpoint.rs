@@ -187,12 +187,13 @@ async fn get_overview(
     let state_clone = state.clone();
     let client_data_clone = client_data.clone();
     let params_clone = params.clone();
+    let filters_clone = filters.clone();
     let network_graph_task = tokio::spawn(async move {
         //Form request to the server
         let network_graph_request = NetworkGraphRequestDTO::new(
             params_clone.start_date,
             params_clone.end_date,
-            false
+            filters_clone.into(),
         );
         let enveloped_network_graph_request = Envelope::new(
             Some(client_data_clone.group_id.as_str()),
