@@ -19,3 +19,9 @@ pub struct Filter {
 pub struct Filters {
     pub filters: Vec<Filter>,
 }
+
+impl From<FiltersWrapper> for Filters {
+    fn from(wrapper: FiltersWrapper) -> Self {
+        Self { filters: wrapper.filter.split(";").map(|applied_filter| serde_json::from_str(applied_filter).unwrap()).collect() }
+    }
+}

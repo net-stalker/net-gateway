@@ -54,11 +54,13 @@ async fn get_overview(
     let state_clone = state.clone();
     let client_data_clone = client_data.clone();
     let params_clone = params.clone();
+    let filters_clone = filters.clone();
     let bandwidth_per_endpoint_task = tokio::spawn(async move {    
         //Form request to the server
         let bandwidth_per_endpoint_request = NetworkBandwidthPerEndpointRequestDTO::new(
             params_clone.start_date,
-            params_clone.end_date
+            params_clone.end_date,
+            filters_clone.into(),
         );
         let enveloped_bandwidth_per_endpoint_request = Envelope::new(
             Some(client_data_clone.group_id.as_str()),
