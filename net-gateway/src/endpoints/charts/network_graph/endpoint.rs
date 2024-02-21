@@ -11,6 +11,7 @@ use crate::authorization::mock_authenticator::MockAuthenticator;
 
 use crate::core::app_state::AppState;
 use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
+use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
 
@@ -34,9 +35,11 @@ async fn get_network_graph(
         Arc::new(params)
     ).await;
     if let Err(e) = chart_request_result {
+    if let Err(e) = chart_request_result {
         //TODO: Write appropriate error returning
         return HttpResponse::InternalServerError().body(e);
     }
+    let chart = chart_request_result.unwrap();
     let chart = chart_request_result.unwrap();
     
     HttpResponse::Ok().json(chart.get_json_value())
