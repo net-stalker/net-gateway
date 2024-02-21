@@ -36,7 +36,7 @@ async fn get_overview(
         .add_chart_requester(NetworkBandwidthPerEndpointChartManager::default().boxed())
         .add_chart_requester(NetworkGraphChartManager::default().boxed())
         .build()
-        .requested_dashboard(
+        .request_dashboard(
             Arc::new(state),
             Arc::new(client_data),
             Arc::new(params)

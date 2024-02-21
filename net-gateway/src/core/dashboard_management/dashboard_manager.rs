@@ -30,7 +30,7 @@ impl DashboardManager {
         DashboardManagerBuilder::default()
     }
 
-    pub async fn requested_dashboard(
+    pub async fn request_dashboard(
         self,
         state: Arc<web::Data<AppState>>,
         client_data: Arc<web::Query<ClientData>>,
