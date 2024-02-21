@@ -6,12 +6,15 @@ use net_core_api::api::API;
 use net_core_api::decoder_api::Decoder;
 use net_core_api::envelope::envelope::Envelope;
 use net_core_api::typed_api::Typed;
+
 use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
 use net_reporter_api::api::network_bandwidth::network_bandwidth_request::NetworkBandwidthRequestDTO;
 
-use crate::core::chart_management::chart_request_manager::{ChartRequestManagaer, ChartResponse};
+use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
+use crate::core::chart_management::chart_response::ChartResponse;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
+
 use crate::endpoints::charts::network_bandwidth::response::network_bandwidth::NetworkBandwidthResponse;
 
 #[derive(Default)]

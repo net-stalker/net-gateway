@@ -14,19 +14,17 @@ use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 
-pub trait ChartResponse {
-    fn get_json(&self) -> serde_json::Value;
-}
+use super::chart_response::ChartResponse;
 
 #[async_trait::async_trait]
-pub trait ChartRequestManagaer: Sync {
+pub trait ChartRequestManagaer: Sync + Send {
     //Requesting chart
     async fn request_chart(
         &self,
         state: Arc<web::Data<AppState>>,
         client_data: Arc<web::Query<ClientData>>,
         params: Arc<web::Query<GeneralFilters>>,
-    ) -> Result<serde_json::Value, String> {
+    ) -> Result<Box<dyn ChartResponse>, String> {
         //Form request to the server
         let bytes_to_send = self.form_request(params, client_data);
 
@@ -39,14 +37,10 @@ pub trait ChartRequestManagaer: Sync {
         ).await;
         let server_connection = server_connection_result?;
 
-        let chart_request_result = self.request_chart_from_server(
+        self.request_chart_from_server(
             &bytes_to_send,
             server_connection
-        ).await;
-
-        let chart_request = chart_request_result?;
-
-        Ok(chart_request.get_json())
+        ).await
     }
 
     //Requesting chart from server

@@ -8,12 +8,13 @@ use actix_web::HttpRequest;
 
 use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
+
 use crate::core::app_state::AppState;
 use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
-use crate::endpoints::charts::network_bandwidth_per_endpoint::request::manager::NetworkBandwidthPerEndpointChartManager;
 
+use crate::endpoints::charts::network_bandwidth_per_endpoint::request::manager::NetworkBandwidthPerEndpointChartManager;
 
 //TODO: Create cool error handling
 //TODO: Move all the repeatable code of creating and connecting to the server to the macro(s)
@@ -40,5 +41,5 @@ async fn get_bandwidth_per_endpoint(
     }
     let chart = chart_request_result.unwrap();
     
-    HttpResponse::Ok().json(chart)
+    HttpResponse::Ok().json(chart.get_json_value())
 }

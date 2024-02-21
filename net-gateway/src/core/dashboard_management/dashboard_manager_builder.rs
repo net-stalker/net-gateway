@@ -1,13 +1,10 @@
-use std::collections::HashMap;
-
-// use crate::core::chart_management::chart_request_manager::ChartResponse;
 use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 
 use super::dashboard_manager::DashboardManager;
 
 #[derive(Default)]
 pub struct DashboardManagerBuilder {
-    chart_requesters: HashMap<&'static str, Box<dyn ChartRequestManagaer>>,
+    chart_requesters: Vec<Box<dyn ChartRequestManagaer>>,
 }
 
 impl DashboardManagerBuilder {
@@ -16,7 +13,7 @@ impl DashboardManagerBuilder {
         chart_requester: Box<dyn ChartRequestManagaer>
     ) -> Self {
         //TODO: Create Error handling here
-        let _ = self.chart_requesters.insert(chart_requester.get_request_type(), chart_requester);
+        let _ = self.chart_requesters.push(chart_requester);
         self
     }
 

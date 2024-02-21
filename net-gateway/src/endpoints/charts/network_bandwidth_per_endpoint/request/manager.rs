@@ -1,10 +1,21 @@
 use std::sync::Arc;
 
 use actix_web::web;
-use net_core_api::{api::API, decoder_api::Decoder, envelope::envelope::Envelope, typed_api::Typed};
-use net_reporter_api::api::network_bandwidth_per_endpoint::{network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointDTO, network_bandwidth_per_endpoint_request::NetworkBandwidthPerEndpointRequestDTO};
 
-use crate::{core::{chart_management::chart_request_manager::{ChartRequestManagaer, ChartResponse}, client_data::ClientData, general_filters::GeneralFilters}, endpoints::charts::network_bandwidth_per_endpoint::response::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointResponse};
+use net_core_api::api::API;
+use net_core_api::decoder_api::Decoder;
+use net_core_api::envelope::envelope::Envelope;
+use net_core_api::typed_api::Typed;
+
+use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointDTO;
+use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per_endpoint_request::NetworkBandwidthPerEndpointRequestDTO;
+
+use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
+use crate::core::chart_management::chart_response::ChartResponse;
+use crate::core::client_data::ClientData;
+use crate::core::general_filters::GeneralFilters;
+
+use crate::endpoints::charts::network_bandwidth_per_endpoint::response::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointResponse;
 
 #[derive(Default)]
 pub struct NetworkBandwidthPerEndpointChartManager {}
