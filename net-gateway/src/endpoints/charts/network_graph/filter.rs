@@ -1,6 +1,5 @@
 use std::num::ParseIntError;
 
-
 use crate::core::filter::Filters;
 use net_reporter_api::api::network_graph::network_graph_filters::NetworkGraphFiltersDTO;
 use regex::Regex;
@@ -53,10 +52,15 @@ impl From<Filters> for NetworkGraphFiltersDTO {
                     endpoints.push(filter.filter_value);
                 },
                 "bytes" => {
-                    let (sign, number) = parse_bytes_filter(&filter.filter_value).unwrap();
-                    match sign.as_str() {
-                        "<" => bytes_upper_bound = Some(number),
-                        ">" => bytes_lower_bound = Some(number),
+                    let parse_res = parse_bytes_filter(&filter.filter_value);
+                    match parse_res {
+                        Ok((sign, number)) => {
+                            match sign.as_str() {
+                                "<" => bytes_upper_bound = Some(number),
+                                ">" => bytes_lower_bound = Some(number),
+                                _ => { /* do nothing club */ }
+                            }
+                        }
                         _ => { /* do nothing club */ }
                     }
                 }
