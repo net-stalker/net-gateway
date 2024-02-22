@@ -1,21 +1,23 @@
-use net_timescale_api::api::network_graph::graph_edge;
-use serde::{Serialize, Deserialize};
+use net_reporter_api::api::network_graph::graph_edge;
+
+use serde::Deserialize;
+use serde::Serialize;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Link {
+pub struct GraphEdgeResponse {
     pub source: String,
     pub target: String,
 }
 
-impl Link {
+impl GraphEdgeResponse {
     pub fn new(source: String, target: String) -> Self {
-        Link { source, target }
+        GraphEdgeResponse { source, target }
     }
 }
 
-impl From<graph_edge::GraphEdgeDTO> for Link {
+impl From<graph_edge::GraphEdgeDTO> for GraphEdgeResponse {
     fn from(value: graph_edge::GraphEdgeDTO) -> Self {
-        Link {
+        GraphEdgeResponse {
             source: value.get_src_id().to_string(),
             target: value.get_dst_id().to_string(),
         }

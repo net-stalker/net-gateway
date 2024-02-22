@@ -3,7 +3,8 @@ use actix_web::App;
 use actix_web::HttpServer;
 use actix_web::http::header;
 use actix_web::web;
-use net_gateway::app_state::AppState;
+
+use net_gateway::core::app_state::AppState;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> { 
@@ -21,7 +22,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(app_state.clone()))
             .service(net_gateway::endpoints::dashboards::overview::endpoint::get_overview)
             .service(net_gateway::endpoints::charts::network_graph::endpoint::get_network_graph)
-            .service(net_gateway::endpoints::charts::bandwidth_per_endpoint::endpoint::get_bandwidth_per_endpoint)
+            .service(net_gateway::endpoints::charts::network_bandwidth_per_endpoint::endpoint::get_bandwidth_per_endpoint)
             .service(net_gateway::endpoints::charts::network_bandwidth::endpoint::get_network_bandwidth)
         )
         .bind("127.0.0.1:8080")?

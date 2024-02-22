@@ -14,10 +14,12 @@ use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
 
-use crate::endpoints::charts::network_graph::request::manager::NetworkGraphChartManager;
+use crate::endpoints::charts::network_bandwidth_per_endpoint::request::manager::NetworkBandwidthPerEndpointChartManager;
 
-#[get("/chart/network_graph")]
-async fn get_network_graph(
+//TODO: Create cool error handling
+//TODO: Move all the repeatable code of creating and connecting to the server to the macro(s)
+#[get("/chart/network_bandwidth_per_endpoint")]
+async fn get_bandwidth_per_endpoint(
     state: web::Data<AppState>,
     client_data: web::Query<ClientData>,
     params: web::Query<GeneralFilters>,
@@ -28,7 +30,7 @@ async fn get_network_graph(
         return response;
     }
 
-    let chart_request_result = NetworkGraphChartManager::default().request_chart(
+    let chart_request_result = NetworkBandwidthPerEndpointChartManager::default().request_chart(
         Arc::new(state),
         Arc::new(client_data),
         Arc::new(params)
