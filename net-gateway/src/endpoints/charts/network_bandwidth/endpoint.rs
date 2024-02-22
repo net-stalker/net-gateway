@@ -29,6 +29,7 @@ async fn get_network_bandwidth(
     if let Err(response) = Authorization::authorize(req, MockAuthenticator {}).await {
         return response;
     }
+    log::debug!("got request for network bandwidth chart, {:?}", filters_wrapper); 
     
     let chart_request_result = NetworkBandwidthChartManager::default().request_chart(
         state.into_inner(),
