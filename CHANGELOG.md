@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-0b6a40f] - 2024-02-21
 
 NS-100/chart-managers (#14)
@@ -15,7 +16,6 @@ NS-100/chart-managers (#14)
 * NS-100/chart-managers: Add ChartRequestManager to query requests easily
 
 * NS-100/chart-managers: Add chart_management folder
-<!-- [END AUTO UPDATE] -->
 ## [-7014dda] - 2024-02-15
 
 NS-72/endpoint-managers (#13)

@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use actix_web::web;
 
 use net_core_api::decoder_api::Decoder;
@@ -12,18 +14,17 @@ use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 
-pub trait ChartResponse {}
+use super::chart_response::ChartResponse;
 
 #[async_trait::async_trait]
-pub trait ChartRequestManagaer<R> 
-where R : ChartResponse {
+pub trait ChartRequestManagaer: Sync + Send {
     //Requesting chart
     async fn request_chart(
         &self,
-        state: web::Data<AppState>,
-        client_data: web::Query<ClientData>,
-        params: web::Query<GeneralFilters>,
-    ) -> Result<R, String> {
+        state: Arc<web::Data<AppState>>,
+        client_data: Arc<web::Query<ClientData>>,
+        params: Arc<web::Query<GeneralFilters>>,
+    ) -> Result<Box<dyn ChartResponse>, String> {
         //Form request to the server
         let bytes_to_send = self.form_request(params, client_data);
 
@@ -47,7 +48,7 @@ where R : ChartResponse {
         &self,
         request: &[u8],
         mut server_connection: QuicConnection,
-    ) -> Result<R, String> {
+    ) -> Result<Box<dyn ChartResponse>, String> {
         //Sending out data (request) to the server
         server_connection.send_all_reliable(request).await?;
 
@@ -63,21 +64,23 @@ where R : ChartResponse {
     fn decode_received_envelope(
         &self,
         received_envelope: Envelope
-    ) -> Result<R, String>;
+    ) -> Result<Box<dyn ChartResponse>, String>;
+
+    fn get_requesting_type(&self) -> &'static str;
 
     //Request creating
     fn get_request_type(&self) -> &'static str;
 
     fn form_dto_request(
         &self,
-        params: web::Query<GeneralFilters>,
-        client_data: &web::Query<ClientData>
+        params: Arc<web::Query<GeneralFilters>>,
+        client_data: Arc<web::Query<ClientData>>
     ) -> Box<dyn API>;
 
     fn form_enveloped_request(
         &self,
-        params: web::Query<GeneralFilters>,
-        client_data: web::Query<ClientData>
+        params: Arc<web::Query<GeneralFilters>>,
+        client_data: Arc<web::Query<ClientData>>
     ) -> Envelope {
         Envelope::new(
             Some(&client_data.group_id),
@@ -85,15 +88,15 @@ where R : ChartResponse {
             self.get_request_type(),
             &self.form_dto_request(
                 params,
-                &client_data
+                client_data.clone()
             ).encode()
         )
     }
 
     fn form_request(
         &self,
-        params: web::Query<GeneralFilters>,
-        client_data: web::Query<ClientData>
+        params: Arc<web::Query<GeneralFilters>>,
+        client_data: Arc<web::Query<ClientData>>
     ) -> Vec<u8> {
         self.form_enveloped_request(
             params,

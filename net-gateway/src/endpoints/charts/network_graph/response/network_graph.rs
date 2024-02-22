@@ -1,12 +1,16 @@
-use net_reporter_api::api::network_graph::network_graph::NetworkGraphDTO;
-
 use serde::Serialize;
 use serde::Deserialize;
 
-use crate::core::chart_management::chart_request_manager::ChartResponse;
+use net_core_api::typed_api::Typed;
+
+use net_reporter_api::api::network_graph::network_graph::NetworkGraphDTO;
+
+use crate::core::chart_management::chart_response::ChartResponse;
 
 use super::graph_edge::GraphEdgeResponse;
 use super::graph_node::GraphNodeResponse;
+
+const JSON_TYPE: &str = "networkGraph";
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct NetworkGraphResponse {
@@ -14,7 +18,19 @@ pub struct NetworkGraphResponse {
     pub links: Vec<GraphEdgeResponse>,
 }
 
-impl ChartResponse for NetworkGraphResponse {}
+impl ChartResponse for NetworkGraphResponse {
+    fn get_dto_type(&self) -> &'static str {
+        NetworkGraphDTO::get_data_type()
+    }
+
+    fn get_json_value(&self) -> serde_json::Value {
+        serde_json::to_value(self).unwrap()
+    }
+
+    fn get_json_type(&self) -> &'static str {
+        JSON_TYPE
+    }
+}
 
 impl NetworkGraphResponse {
     pub fn new(nodes: Vec<GraphNodeResponse>, links: Vec<GraphEdgeResponse>) -> Self {

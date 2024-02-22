@@ -1,19 +1,34 @@
-use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
-
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::core::chart_management::chart_request_manager::ChartResponse;
+use net_core_api::typed_api::Typed;
+
+use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
+
+use crate::core::chart_management::chart_response::ChartResponse;
 
 use super::network_bandwidth_bucket::NetworkBandwidthBucketResponse;
 
+const JSON_TYPE: &str = "networkBandwidth";
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct NetworkBandwidthResponse {
     #[serde(rename = "networkBandwidthBuckets")]
     pub buckets: Vec<NetworkBandwidthBucketResponse>,
 }
-impl ChartResponse for NetworkBandwidthResponse {}
+impl ChartResponse for NetworkBandwidthResponse {
+    fn get_dto_type(&self) -> &'static str {
+        NetworkBandwidthDTO::get_data_type()
+    }
+
+    fn get_json_value(&self) -> serde_json::Value {
+        serde_json::to_value(self).unwrap()
+    }
+
+    fn get_json_type(&self) -> &'static str {
+        JSON_TYPE
+    }
+}
 
 impl NetworkBandwidthResponse {
     pub fn new(buckets: Vec<NetworkBandwidthBucketResponse>) -> Self {
