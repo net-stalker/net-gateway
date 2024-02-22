@@ -76,14 +76,16 @@ impl DashboardManager {
                 ).await;
 
                 //TODO: Add Error propper handling
-                if request_result.is_err() {
-                    panic!()
+                if let Err(e) = request_result {
+                    return Err(e);
                 }
                 let requested_chart = request_result.unwrap();
                 
                 response_clone.lock().await.push(
                     requested_chart
                 );
+                
+                return Ok(());
             });
 
             tasks.push(task);
