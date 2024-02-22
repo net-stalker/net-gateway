@@ -13,6 +13,7 @@ use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per
 use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 use crate::core::chart_management::chart_response::ChartResponse;
 use crate::core::client_data::ClientData;
+use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 
 use crate::endpoints::charts::network_bandwidth_per_endpoint::response::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointResponse;
@@ -40,11 +41,13 @@ impl ChartRequestManagaer for NetworkBandwidthPerEndpointChartManager {
         &self,
         params: Arc<web::Query<GeneralFilters>>,
         #[allow(unused_variables)]
-        client_data: Arc<web::Query<ClientData>>
+        client_data: Arc<web::Query<ClientData>>,
+        filters: Arc<Filters>,
     ) -> Box<dyn API> {
         Box::new(NetworkBandwidthPerEndpointRequestDTO::new(
             params.start_date,
-            params.end_date
+            params.end_date,
+            filters.as_ref().clone().into(),
         ))
     }
 

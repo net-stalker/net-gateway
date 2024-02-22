@@ -11,6 +11,7 @@ use net_transport::quinn::connection::QuicConnection;
 
 use crate::core::app_state::AppState;
 use crate::core::client_data::ClientData;
+use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 
@@ -24,9 +25,10 @@ pub trait ChartRequestManagaer: Sync + Send {
         state: Arc<web::Data<AppState>>,
         client_data: Arc<web::Query<ClientData>>,
         params: Arc<web::Query<GeneralFilters>>,
+        filters: Arc<Filters>,
     ) -> Result<Box<dyn ChartResponse>, String> {
         //Form request to the server
-        let bytes_to_send = self.form_request(params, client_data);
+        let bytes_to_send = self.form_request(params, client_data, filters);
 
         //Creating Quinn Client Endpoint
         //Connecting with Quinn Client Endpoint to the server
@@ -74,13 +76,15 @@ pub trait ChartRequestManagaer: Sync + Send {
     fn form_dto_request(
         &self,
         params: Arc<web::Query<GeneralFilters>>,
-        client_data: Arc<web::Query<ClientData>>
+        client_data: Arc<web::Query<ClientData>>,
+        filters: Arc<Filters>,
     ) -> Box<dyn API>;
 
     fn form_enveloped_request(
         &self,
         params: Arc<web::Query<GeneralFilters>>,
-        client_data: Arc<web::Query<ClientData>>
+        client_data: Arc<web::Query<ClientData>>,
+        filters: Arc<Filters>,
     ) -> Envelope {
         Envelope::new(
             Some(&client_data.group_id),
@@ -88,7 +92,8 @@ pub trait ChartRequestManagaer: Sync + Send {
             self.get_request_type(),
             &self.form_dto_request(
                 params,
-                client_data.clone()
+                client_data.clone(),
+                filters,
             ).encode()
         )
     }
@@ -96,11 +101,13 @@ pub trait ChartRequestManagaer: Sync + Send {
     fn form_request(
         &self,
         params: Arc<web::Query<GeneralFilters>>,
-        client_data: Arc<web::Query<ClientData>>
+        client_data: Arc<web::Query<ClientData>>,
+        filters: Arc<Filters>,
     ) -> Vec<u8> {
         self.form_enveloped_request(
             params,
-            client_data
+            client_data,
+            filters,
         ).encode()
     }
 }

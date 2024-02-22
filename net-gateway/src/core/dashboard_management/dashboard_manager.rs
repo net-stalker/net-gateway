@@ -8,6 +8,7 @@ use crate::core::app_state::AppState;
 use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 use crate::core::chart_management::chart_response::ChartResponse;
 use crate::core::client_data::ClientData;
+use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 
 use super::dashboard::Dashboard;
@@ -34,12 +35,14 @@ impl DashboardManager {
         self,
         state: Arc<web::Data<AppState>>,
         client_data: Arc<web::Query<ClientData>>,
-        params: Arc<web::Query<GeneralFilters>>
+        params: Arc<web::Query<GeneralFilters>>,
+        filters: Arc<Filters>,
     ) -> Result<Dashboard, String> {
         let charts_request_result = self.request_charts(
             state,
             client_data,
-            params
+            params,
+            filters,
         ).await;
 
         let mut requested_charts = charts_request_result?;
@@ -55,7 +58,8 @@ impl DashboardManager {
         self,
         state: Arc<web::Data<AppState>>,
         client_data: Arc<web::Query<ClientData>>,
-        params: Arc<web::Query<GeneralFilters>>
+        params: Arc<web::Query<GeneralFilters>>,
+        filters: Arc<Filters>,
     ) -> Result<Vec<Box<dyn ChartResponse>>, String> {
         let response: Arc<Mutex<Vec<Box<dyn ChartResponse>>>> = Arc::new(Mutex::new(Vec::new()));
 
@@ -67,12 +71,14 @@ impl DashboardManager {
             let state_clone = state.clone();
             let client_data_clone = client_data.clone();
             let params_clone = params.clone();
+            let filters_clone = filters.clone();
             
             let task = tokio::spawn(async move {
                 let request_result = chart_requester.request_chart(
                     state_clone,
                     client_data_clone,
                     params_clone,
+                    filters_clone,
                 ).await;
 
                 //TODO: Add Error propper handling
