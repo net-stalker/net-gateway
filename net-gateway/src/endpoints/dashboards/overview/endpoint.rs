@@ -42,9 +42,9 @@ async fn get_overview(
         .add_chart_requester(NetworkGraphChartManager::default().boxed())
         .build()
         .request_dashboard(
-            Arc::new(state),
-            Arc::new(client_data),
-            Arc::new(params),
+            state.into_inner(),
+            Arc::new(client_data.into_inner()),
+            Arc::new(params.into_inner()),
             Arc::new(filters),
         ).await;
 

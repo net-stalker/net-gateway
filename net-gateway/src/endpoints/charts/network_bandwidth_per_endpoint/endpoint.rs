@@ -33,9 +33,9 @@ async fn get_bandwidth_per_endpoint(
     }
 
     let chart_request_result = NetworkBandwidthPerEndpointChartManager::default().request_chart(
-        Arc::new(state),
-        Arc::new(client_data),
-        Arc::new(params),
+        state.into_inner(),
+        Arc::new(client_data.into_inner()),
+        Arc::new(params.into_inner()),
         Arc::new(filters_wrapper.into_inner().into()),
     ).await;
     if let Err(e) = chart_request_result {

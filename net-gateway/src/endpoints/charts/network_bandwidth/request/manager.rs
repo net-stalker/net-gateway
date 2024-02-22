@@ -1,7 +1,5 @@
 use std::sync::Arc;
 
-use actix_web::web;
-
 use net_core_api::api::API;
 use net_core_api::decoder_api::Decoder;
 use net_core_api::envelope::envelope::Envelope;
@@ -39,9 +37,9 @@ impl ChartRequestManagaer for NetworkBandwidthChartManager {
 
     fn form_dto_request(
         &self,
-        params: Arc<web::Query<GeneralFilters>>,
+        params: Arc<GeneralFilters>,
         #[allow(unused_variables)]
-        client_data: Arc<web::Query<ClientData>>,
+        client_data: Arc<ClientData>,
         filters: Arc<Filters>,
     ) -> Box<dyn API> {
         Box::new(NetworkBandwidthRequestDTO::new(

@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-use actix_web::web;
 use futures::future::try_join_all;
 use tokio::sync::Mutex;
 
@@ -33,9 +32,9 @@ impl DashboardManager {
 
     pub async fn request_dashboard(
         self,
-        state: Arc<web::Data<AppState>>,
-        client_data: Arc<web::Query<ClientData>>,
-        params: Arc<web::Query<GeneralFilters>>,
+        state: Arc<AppState>,
+        client_data: Arc<ClientData>,
+        params: Arc<GeneralFilters>,
         filters: Arc<Filters>,
     ) -> Result<Dashboard, String> {
         let charts_request_result = self.request_charts(
@@ -56,9 +55,9 @@ impl DashboardManager {
 
     async fn request_charts(
         self,
-        state: Arc<web::Data<AppState>>,
-        client_data: Arc<web::Query<ClientData>>,
-        params: Arc<web::Query<GeneralFilters>>,
+        state: Arc<AppState>,
+        client_data: Arc<ClientData>,
+        params: Arc<GeneralFilters>,
         filters: Arc<Filters>,
     ) -> Result<Vec<Box<dyn ChartResponse>>, String> {
         let response: Arc<Mutex<Vec<Box<dyn ChartResponse>>>> = Arc::new(Mutex::new(Vec::new()));

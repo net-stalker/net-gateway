@@ -1,7 +1,5 @@
 use std::sync::Arc;
 
-use actix_web::web;
-
 use net_core_api::decoder_api::Decoder;
 
 use net_core_api::api::API;
@@ -22,9 +20,9 @@ pub trait ChartRequestManagaer: Sync + Send {
     //Requesting chart
     async fn request_chart(
         &self,
-        state: Arc<web::Data<AppState>>,
-        client_data: Arc<web::Query<ClientData>>,
-        params: Arc<web::Query<GeneralFilters>>,
+        state: Arc<AppState>,
+        client_data: Arc<ClientData>,
+        params: Arc<GeneralFilters>,
         filters: Arc<Filters>,
     ) -> Result<Box<dyn ChartResponse>, String> {
         //Form request to the server
@@ -75,15 +73,15 @@ pub trait ChartRequestManagaer: Sync + Send {
 
     fn form_dto_request(
         &self,
-        params: Arc<web::Query<GeneralFilters>>,
-        client_data: Arc<web::Query<ClientData>>,
+        params: Arc<GeneralFilters>,
+        client_data: Arc<ClientData>,
         filters: Arc<Filters>,
     ) -> Box<dyn API>;
 
     fn form_enveloped_request(
         &self,
-        params: Arc<web::Query<GeneralFilters>>,
-        client_data: Arc<web::Query<ClientData>>,
+        params: Arc<GeneralFilters>,
+        client_data: Arc<ClientData>,
         filters: Arc<Filters>,
     ) -> Envelope {
         Envelope::new(
@@ -100,8 +98,8 @@ pub trait ChartRequestManagaer: Sync + Send {
 
     fn form_request(
         &self,
-        params: Arc<web::Query<GeneralFilters>>,
-        client_data: Arc<web::Query<ClientData>>,
+        params: Arc<GeneralFilters>,
+        client_data: Arc<ClientData>,
         filters: Arc<Filters>,
     ) -> Vec<u8> {
         self.form_enveloped_request(

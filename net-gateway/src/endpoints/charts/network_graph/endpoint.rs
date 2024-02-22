@@ -29,11 +29,10 @@ async fn get_network_graph(
     if let Err(response) = Authorization::authorize(req, MockAuthenticator {}).await {
         return response;
     }
-
     let chart_request_result = NetworkGraphChartManager::default().request_chart(
-        Arc::new(state),
-        Arc::new(client_data),
-        Arc::new(params),
+        state.into_inner(),
+        Arc::new(client_data.into_inner()),
+        Arc::new(params.into_inner()),
         Arc::new(filters_wrapper.into_inner().into()),
     ).await;
     if let Err(e) = chart_request_result {
