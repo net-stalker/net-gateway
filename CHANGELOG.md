@@ -8,6 +8,45 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-0d9d0f6] - 2024-02-22
+
+NS-71/dashboard-manager (#15)
+
+* Add quinn_endpoint_manager
+
+* Add request_former trait
+
+* Reorganize network_bandwidth_per_endpoint
+
+* Rename chart -> response
+
+* Add ChartRequestManager to query requests easily
+
+* Add ChartRequestManager for the network_bandwidth endpoint
+
+* Add ChartRequestManager for the network_graph endpoint
+
+* Change whole trait logic, so request methods will no longer be static and we can create trait objects from ChartRequestManager
+
+* Change query parameters to be Arc<>
+
+* Rewrite ChartManager and DashboardManager. Get rid of multiple json converting
+
+* Rename requested_dashboard -> request_dashboard method
+
+* Change net-api version
+
+---------
+
+Co-authored-by: net-stalker-bot <githubbot@netstalker.io>
+<!-- [END AUTO UPDATE] -->
+## [-0b6a40f] - 2024-02-21
+
+NS-100/chart-managers (#14)
+
+* NS-100/chart-managers: Add ChartRequestManager to query requests easily
+
+* NS-100/chart-managers: Add chart_management folder
 ## [-7014dda] - 2024-02-15
 
 NS-72/endpoint-managers (#13)
@@ -15,7 +54,6 @@ NS-72/endpoint-managers (#13)
 * NS-71/endpoint-managers: Add QuinnClientEndpointManager
 
 * NS-72/endpoint-managers: Rename bandwidth_per_endpoint -> network_bandwidth_per_endpoint
-<!-- [END AUTO UPDATE] -->
 ## [-1b23c46] - 2024-02-07
 
 NS-99/core-module (#12)
