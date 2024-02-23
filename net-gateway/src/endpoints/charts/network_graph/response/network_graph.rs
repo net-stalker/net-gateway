@@ -5,7 +5,7 @@ use net_core_api::typed_api::Typed;
 
 use net_reporter_api::api::network_graph::network_graph::NetworkGraphDTO;
 
-use crate::core::chart_management::chart_response::ChartResponse;
+use crate::core::service_request_management::service_response::ServiceResponse;
 
 use super::graph_edge::GraphEdgeResponse;
 use super::graph_node::GraphNodeResponse;
@@ -18,7 +18,7 @@ pub struct NetworkGraphResponse {
     pub links: Vec<GraphEdgeResponse>,
 }
 
-impl ChartResponse for NetworkGraphResponse {
+impl ServiceResponse for NetworkGraphResponse {
     fn get_dto_type(&self) -> &'static str {
         NetworkGraphDTO::get_data_type()
     }

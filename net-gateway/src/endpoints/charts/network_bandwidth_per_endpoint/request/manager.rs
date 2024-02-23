@@ -8,8 +8,8 @@ use net_core_api::typed_api::Typed;
 use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointDTO;
 use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per_endpoint_request::NetworkBandwidthPerEndpointRequestDTO;
 
-use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
-use crate::core::chart_management::chart_response::ChartResponse;
+use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
+use crate::core::service_request_management::service_response::ServiceResponse;
 use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
@@ -26,7 +26,7 @@ impl NetworkBandwidthPerEndpointChartManager {
 }
 
 #[async_trait::async_trait]
-impl ChartRequestManagaer for NetworkBandwidthPerEndpointChartManager {
+impl ServiceRequestManager for NetworkBandwidthPerEndpointChartManager {
     fn get_requesting_type(&self) -> &'static str {
         NetworkBandwidthPerEndpointDTO::get_data_type()
     }
@@ -52,7 +52,7 @@ impl ChartRequestManagaer for NetworkBandwidthPerEndpointChartManager {
     fn decode_received_envelope(
         &self,
         received_envelope: Envelope
-    ) -> Result<Box<dyn ChartResponse>, String> {
+    ) -> Result<Box<dyn ServiceResponse>, String> {
         Ok(Box::new(NetworkBandwidthPerEndpointResponse::from(
             NetworkBandwidthPerEndpointDTO::decode(received_envelope.get_data())
         )))

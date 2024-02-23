@@ -5,7 +5,7 @@ use net_core_api::typed_api::Typed;
 
 use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
 
-use crate::core::chart_management::chart_response::ChartResponse;
+use crate::core::service_request_management::service_response::ServiceResponse;
 
 use super::network_bandwidth_bucket::NetworkBandwidthBucketResponse;
 
@@ -16,7 +16,7 @@ pub struct NetworkBandwidthResponse {
     #[serde(rename = "networkBandwidthBuckets")]
     pub buckets: Vec<NetworkBandwidthBucketResponse>,
 }
-impl ChartResponse for NetworkBandwidthResponse {
+impl ServiceResponse for NetworkBandwidthResponse {
     fn get_dto_type(&self) -> &'static str {
         NetworkBandwidthDTO::get_data_type()
     }

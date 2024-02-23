@@ -10,7 +10,6 @@ use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
 
 use crate::core::app_state::AppState;
-use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 use crate::core::client_data::ClientData;
 use crate::core::filter::FiltersWrapper;
 use crate::core::general_filters::GeneralFilters;
