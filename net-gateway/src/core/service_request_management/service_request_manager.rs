@@ -23,7 +23,7 @@ pub trait ServiceRequestManager: Sync + Send {
         state: Arc<AppState>,
         client_data: Arc<ClientData>,
         params: Arc<GeneralFilters>,
-        filters: Arc<Filters>,
+        filters: Option<Arc<Filters>>,
     ) -> Result<Box<dyn ServiceResponse>, String> {
         //Form request to the server
         let bytes_to_send = self.form_request(params, client_data, filters);
@@ -75,14 +75,14 @@ pub trait ServiceRequestManager: Sync + Send {
         &self,
         params: Arc<GeneralFilters>,
         client_data: Arc<ClientData>,
-        filters: Arc<Filters>,
+        filters: Option<Arc<Filters>>,
     ) -> Box<dyn API>;
 
     fn form_enveloped_request(
         &self,
         params: Arc<GeneralFilters>,
         client_data: Arc<ClientData>,
-        filters: Arc<Filters>,
+        filters: Option<Arc<Filters>>,
     ) -> Envelope {
         Envelope::new(
             Some(&client_data.group_id),
@@ -100,7 +100,7 @@ pub trait ServiceRequestManager: Sync + Send {
         &self,
         params: Arc<GeneralFilters>,
         client_data: Arc<ClientData>,
-        filters: Arc<Filters>,
+        filters: Option<Arc<Filters>>,
     ) -> Vec<u8> {
         self.form_enveloped_request(
             params,

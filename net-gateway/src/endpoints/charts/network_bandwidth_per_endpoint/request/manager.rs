@@ -40,12 +40,12 @@ impl ServiceRequestManager for NetworkBandwidthPerEndpointChartManager {
         params: Arc<GeneralFilters>,
         #[allow(unused_variables)]
         client_data: Arc<ClientData>,
-        filters: Arc<Filters>,
+        filters: Option<Arc<Filters>>,
     ) -> Box<dyn API> {
         Box::new(NetworkBandwidthPerEndpointRequestDTO::new(
             params.start_date,
             params.end_date,
-            filters.as_ref().clone().into(),
+            filters.as_ref().unwrap().as_ref().clone().into(),
         ))
     }
 

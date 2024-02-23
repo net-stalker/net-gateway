@@ -4,8 +4,8 @@ use futures::future::try_join_all;
 use tokio::sync::Mutex;
 
 use crate::core::app_state::AppState;
-use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
-use crate::core::chart_management::chart_response::ChartResponse;
+use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
+use crate::core::service_request_management::service_response::ServiceResponse;
 use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
@@ -14,12 +14,12 @@ use super::dashboard::Dashboard;
 use super::dashboard_manager_builder::DashboardManagerBuilder;
 
 pub struct DashboardManager {
-    chart_requesters: Vec<Box<dyn ChartRequestManagaer>>,
+    chart_requesters: Vec<Box<dyn ServiceRequestManager>>,
 }
 
 impl DashboardManager {
     pub fn new(
-        chart_requesters: Vec<Box<dyn ChartRequestManagaer>>
+        chart_requesters: Vec<Box<dyn ServiceRequestManager>>
     ) -> Self {
         Self { 
             chart_requesters
@@ -35,7 +35,7 @@ impl DashboardManager {
         state: Arc<AppState>,
         client_data: Arc<ClientData>,
         params: Arc<GeneralFilters>,
-        filters: Arc<Filters>,
+        filters: Option<Arc<Filters>>,
     ) -> Result<Dashboard, String> {
         let charts_request_result = self.request_charts(
             state,
@@ -58,9 +58,9 @@ impl DashboardManager {
         state: Arc<AppState>,
         client_data: Arc<ClientData>,
         params: Arc<GeneralFilters>,
-        filters: Arc<Filters>,
-    ) -> Result<Vec<Box<dyn ChartResponse>>, String> {
-        let response: Arc<Mutex<Vec<Box<dyn ChartResponse>>>> = Arc::new(Mutex::new(Vec::new()));
+        filters: Option<Arc<Filters>>,
+    ) -> Result<Vec<Box<dyn ServiceResponse>>, String> {
+        let response: Arc<Mutex<Vec<Box<dyn ServiceResponse>>>> = Arc::new(Mutex::new(Vec::new()));
 
         let mut tasks = Vec::new();
 
@@ -73,7 +73,7 @@ impl DashboardManager {
             let filters_clone = filters.clone();
             
             let task = tokio::spawn(async move {
-                let request_result = chart_requester.request_chart(
+                let request_result = chart_requester.request_data(
                     state_clone,
                     client_data_clone,
                     params_clone,

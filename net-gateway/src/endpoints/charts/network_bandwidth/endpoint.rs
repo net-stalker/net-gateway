@@ -14,6 +14,7 @@ use crate::core::client_data::ClientData;
 use crate::core::filter::FiltersWrapper;
 use crate::core::general_filters::GeneralFilters;
 
+use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
 use crate::endpoints::charts::network_bandwidth::request::manager::NetworkBandwidthChartManager;
 
 #[get("/chart/network_bandwidth")]
@@ -30,11 +31,11 @@ async fn get_network_bandwidth(
     }
     log::debug!("got request for network bandwidth chart, {:?}", filters_wrapper); 
     
-    let chart_request_result = NetworkBandwidthChartManager::default().request_chart(
+    let chart_request_result = NetworkBandwidthChartManager::default().request_data(
         state.into_inner(),
         Arc::new(client_data.into_inner()),
         Arc::new(params.into_inner()),
-        Arc::new(filters_wrapper.into_inner().into()),
+        Some(Arc::new(filters_wrapper.into_inner().into())),
     ).await;
     if let Err(e) = chart_request_result {
         //TODO: Write appropriate error returning

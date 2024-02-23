@@ -11,6 +11,8 @@ use crate::authorization::Authorization;
 use crate::core::app_state::AppState;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
+use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
+use crate::endpoints::filters::network_overview_filters::request::manager::NetworkOverviewFilterManager;
 
 #[get("/filter/network_overview")]
 async fn get_network_overview_filters(
@@ -25,10 +27,11 @@ async fn get_network_overview_filters(
         return response;
     }
     // TODO: implement FilterManager
-    let chart_request_result = NetworkOverviewFiltersFilterManager::default().request_chart(
-        Arc::new(state),
-        Arc::new(client_data),
-        Arc::new(params)
+    let chart_request_result = NetworkOverviewFilterManager::default().request_data(
+        state.into_inner(),
+        Arc::new(client_data.into_inner()),
+        Arc::new(params.into_inner()),
+        None,
     ).await;
     if let Err(e) = chart_request_result {
         //TODO: Write appropriate error returning

@@ -45,7 +45,7 @@ async fn get_overview(
             state.into_inner(),
             Arc::new(client_data.into_inner()),
             Arc::new(params.into_inner()),
-            Arc::new(filters),
+            Some(Arc::new(filters)),
         ).await;
 
     if let Err(e) = dashboard_request_result {
