@@ -3,32 +3,44 @@ use net_reporter_api::api::network_overview_dashboard_filters::network_overview_
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::filters::{Filters, MapFiltersToDTO};
+const JSON_TYPE: &str = "filters";
 
-use super::filter_entry::NetworkOverviewFilter;
+use crate::core::service_request_management::service_response::ServiceResponse;
 
-impl MapFiltersToDTO for NetworkOverviewDashboardFiltersDTO {
-    fn map_filters(filters: Filters) -> Self {
-        todo!("implement map_filters for NetworkOverviewDashboardFiltersDTO");
+use super::filter_entry::NetworkOverviewFilterResponse;
+
+#[derive(Serialize, Deserialize, Validate, Default, Debug, Clone)]
+pub struct NetworkOverviewFiltersResponse {
+    pub entries: Vec<NetworkOverviewFilterResponse>,
+}
+
+impl ServiceResponse for NetworkOverviewFiltersResponse {
+    fn get_dto_type(&self) -> &'static str {
+        NetworkOverviewDashboardFiltersDTO::get_data_type()
+    }
+
+    fn get_json_value(&self) -> serde_json::Value {
+        serde_json::to_value(self).unwrap()
+    }
+
+    fn get_json_type(&self) -> &'static str {
+        JSON_TYPE
     }
 }
 
-#[derive(Serialize, Deserialize, Validate, Default, Debug, Clone)]
-pub struct NetworkOverviewFilters {
-    pub entries: Vec<NetworkOverviewFilter>,
-}
-
-impl From<NetworkOverviewDashboardFiltersDTO> for NetworkOverviewFilters {
+impl From<NetworkOverviewDashboardFiltersDTO> for NetworkOverviewFiltersResponse {
     fn from(dto: NetworkOverviewDashboardFiltersDTO) -> Self {
-        NetworkOverviewFilters {
+        NetworkOverviewFiltersResponse {
             entries: dto
                 .get_entries()
                 .iter()
-                .map(|entry| NetworkOverviewFilter::from(entry.clone()))
+                .map(|entry| NetworkOverviewFilterResponse::from(entry.clone()))
                 .collect(),
         }
     }
 }
+
+
 
 
 #[cfg(test)]
