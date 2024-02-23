@@ -1,7 +1,5 @@
 use std::sync::Arc;
 
-use actix_web::web;
-
 use net_core_api::api::API;
 use net_core_api::decoder_api::Decoder;
 use net_core_api::envelope::envelope::Envelope;
@@ -13,6 +11,7 @@ use net_reporter_api::api::network_bandwidth::network_bandwidth_request::Network
 use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
 use crate::core::chart_management::chart_response::ChartResponse;
 use crate::core::client_data::ClientData;
+use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 
 use crate::endpoints::charts::network_bandwidth::response::network_bandwidth::NetworkBandwidthResponse;
@@ -38,13 +37,15 @@ impl ChartRequestManagaer for NetworkBandwidthChartManager {
 
     fn form_dto_request(
         &self,
-        params: Arc<web::Query<GeneralFilters>>,
+        params: Arc<GeneralFilters>,
         #[allow(unused_variables)]
-        client_data: Arc<web::Query<ClientData>>
+        client_data: Arc<ClientData>,
+        filters: Arc<Filters>,
     ) -> Box<dyn API> {
         Box::new(NetworkBandwidthRequestDTO::new(
             params.start_date,
-            params.end_date
+            params.end_date,
+            filters.as_ref().clone().into(),
         ))
     }
     

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-0d9d0f6] - 2024-02-22
 
 NS-71/dashboard-manager (#15)
@@ -39,7 +40,6 @@ NS-71/dashboard-manager (#15)
 ---------
 
 Co-authored-by: net-stalker-bot <githubbot@netstalker.io>
-<!-- [END AUTO UPDATE] -->
 ## [-0b6a40f] - 2024-02-21
 
 NS-100/chart-managers (#14)
