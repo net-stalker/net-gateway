@@ -81,6 +81,7 @@ impl DashboardManager {
                 ).await;
 
                 //TODO: Add Error propper handling
+                #[allow(clippy::question_mark)]
                 if let Err(e) = request_result {
                     return Err(e);
                 }
@@ -90,7 +91,7 @@ impl DashboardManager {
                     requested_chart
                 );
                 
-                return Ok(());
+                Ok(())
             });
 
             tasks.push(task);
