@@ -14,15 +14,15 @@ use super::dashboard::Dashboard;
 use super::dashboard_manager_builder::DashboardManagerBuilder;
 
 pub struct DashboardManager {
-    chart_requesters: Vec<Box<dyn ServiceRequestManager>>,
+    data_requesters: Vec<Box<dyn ServiceRequestManager>>,
 }
 
 impl DashboardManager {
     pub fn new(
-        chart_requesters: Vec<Box<dyn ServiceRequestManager>>
+        data_requesters: Vec<Box<dyn ServiceRequestManager>>
     ) -> Self {
         Self { 
-            chart_requesters
+            data_requesters
         }
     }
 
@@ -37,7 +37,7 @@ impl DashboardManager {
         params: Arc<GeneralFilters>,
         filters: Option<Arc<Filters>>,
     ) -> Result<Dashboard, String> {
-        let charts_request_result = self.request_charts(
+        let charts_request_result = self.request_data(
             state,
             client_data,
             params,
@@ -53,7 +53,7 @@ impl DashboardManager {
         )
     } 
 
-    async fn request_charts(
+    async fn request_data(
         self,
         state: Arc<AppState>,
         client_data: Arc<ClientData>,
@@ -64,7 +64,7 @@ impl DashboardManager {
 
         let mut tasks = Vec::new();
 
-        for chart_requester in self.chart_requesters {
+        for chart_requester in self.data_requesters {
             let response_clone = response.clone();
             
             let state_clone = state.clone();
