@@ -22,7 +22,7 @@ use crate::endpoints::charts::network_graph::request::manager::NetworkGraphChart
 use crate::endpoints::filters::network_overview_filters::request::manager::NetworkOverviewFilterManager;
 
 
-#[get("/dashboard/overview")]
+#[get("/dashboard/network_overview")]
 async fn get_overview(
     state: web::Data<AppState>,
     client_data: web::Query<ClientData>,
