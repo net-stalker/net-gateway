@@ -11,6 +11,8 @@ use crate::authorization::mock_authenticator::MockAuthenticator;
 
 use crate::core::app_state::AppState;
 use crate::core::client_data::ClientData;
+use crate::core::filter::Filters;
+use crate::core::filter::FiltersWrapper;
 use crate::core::dashboard_management::dashboard_manager::DashboardManager;
 use crate::core::general_filters::GeneralFilters;
 
@@ -25,12 +27,15 @@ async fn get_overview(
     state: web::Data<AppState>,
     client_data: web::Query<ClientData>,
     params: web::Query<GeneralFilters>,
+    filters_wrapper: web::Query<FiltersWrapper>,
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
     if let Err(response) = Authorization::authorize(req, MockAuthenticator {}).await {
         return response;
     }
+
+    let filters: Filters = filters_wrapper.into_inner().into();
 
     let dashboard_request_result = DashboardManager::builder()
         .add_chart_requester(NetworkBandwidthChartManager::default().boxed())
@@ -39,9 +44,10 @@ async fn get_overview(
         .add_chart_requester(NetworkGraphChartManager::default().boxed())
         .build()
         .request_dashboard(
-            Arc::new(state),
-            Arc::new(client_data),
-            Arc::new(params)
+            state.into_inner(),
+            Arc::new(client_data.into_inner()),
+            Arc::new(params.into_inner()),
+            Arc::new(filters),
         ).await;
 
     if let Err(e) = dashboard_request_result {
