@@ -40,25 +40,3 @@ impl From<NetworkOverviewDashboardFiltersDTO> for NetworkOverviewFiltersResponse
         }
     }
 }
-
-
-
-
-#[cfg(test)]
-mod tests {
-    // use super::*;
-    
-    #[test]
-    fn test_map_filters() {
-
-        // let filters = Filters::new("test".to_string());
-        
-        // let result = filters.map_filters();
-        
-        // Add assertions to verify the correctness of the mapping
-        
-        // Example assertion:
-        // assert_eq!(result.some_field, expected_value);
-        assert!(false, "Test not implemented");
-    }
-}
