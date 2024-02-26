@@ -30,9 +30,9 @@ impl ServiceResponse for NetworkOverviewFiltersResponse {
 }
 
 impl From<NetworkOverviewDashboardFiltersDTO> for NetworkOverviewFiltersResponse {
-    fn from(dto: NetworkOverviewDashboardFiltersDTO) -> Self {
+    fn from(value: NetworkOverviewDashboardFiltersDTO) -> Self {
         NetworkOverviewFiltersResponse {
-            entries: dto
+            entries: value
                 .get_entries()
                 .iter()
                 .map(|entry| NetworkOverviewFilterResponse::from(entry.clone()))
