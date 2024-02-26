@@ -1,16 +1,16 @@
-use crate::core::chart_management::chart_response::ChartResponse;
+use crate::core::service_request_management::service_response::ServiceResponse;
 
 use super::dashboard::Dashboard;
 
 #[derive(Default)]
 pub struct DashboardBuilder {
-    charts: Vec<Box<dyn ChartResponse>>,
+    charts: Vec<Box<dyn ServiceResponse>>,
 }
 
 impl DashboardBuilder {
     pub fn add_chart (
         mut self,
-        chart: Box<dyn ChartResponse>
+        chart: Box<dyn ServiceResponse>
     ) -> Self {
         //TODO: Create Error handling here
         self.charts.push(chart);
@@ -19,7 +19,7 @@ impl DashboardBuilder {
 
     pub fn add_charts (
         mut self,
-        charts: &mut Vec<Box<dyn ChartResponse>>
+        charts: &mut Vec<Box<dyn ServiceResponse>>
     ) -> Self {
         //TODO: Create Error handling here
         self.charts.append(charts);

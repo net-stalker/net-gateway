@@ -1,18 +1,18 @@
 use serde::Serialize;
 use serde::ser::SerializeMap;
 
-use crate::core::chart_management::chart_response::ChartResponse;
+use crate::core::service_request_management::service_response::ServiceResponse;
 
 use super::dashboard_builder::DashboardBuilder;
 
 #[derive(Debug)]
 pub struct Dashboard {
-    charts: Vec<Box<dyn ChartResponse>>,
+    charts: Vec<Box<dyn ServiceResponse>>,
 }
 
 impl Dashboard {
     pub fn new(
-        charts: Vec<Box<dyn ChartResponse>>
+        charts: Vec<Box<dyn ServiceResponse>>
     ) -> Self {
         Self { 
             charts

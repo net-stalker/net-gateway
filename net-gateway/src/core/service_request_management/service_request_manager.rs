@@ -13,18 +13,18 @@ use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 
-use super::chart_response::ChartResponse;
+use super::service_response::ServiceResponse;
 
 #[async_trait::async_trait]
-pub trait ChartRequestManagaer: Sync + Send {
+pub trait ServiceRequestManager: Sync + Send {
     //Requesting chart
-    async fn request_chart(
+    async fn request_data(
         &self,
         state: Arc<AppState>,
         client_data: Arc<ClientData>,
         params: Arc<GeneralFilters>,
-        filters: Arc<Filters>,
-    ) -> Result<Box<dyn ChartResponse>, String> {
+        filters: Option<Arc<Filters>>,
+    ) -> Result<Box<dyn ServiceResponse>, String> {
         //Form request to the server
         let bytes_to_send = self.form_request(params, client_data, filters);
 
@@ -37,18 +37,18 @@ pub trait ChartRequestManagaer: Sync + Send {
         ).await;
         let server_connection = server_connection_result?;
 
-        self.request_chart_from_server(
+        self.request_data_from_server(
             &bytes_to_send,
             server_connection
         ).await
     }
 
     //Requesting chart from server
-    async fn request_chart_from_server(
+    async fn request_data_from_server(
         &self,
         request: &[u8],
         mut server_connection: QuicConnection,
-    ) -> Result<Box<dyn ChartResponse>, String> {
+    ) -> Result<Box<dyn ServiceResponse>, String> {
         //Sending out data (request) to the server
         server_connection.send_all_reliable(request).await?;
 
@@ -64,7 +64,7 @@ pub trait ChartRequestManagaer: Sync + Send {
     fn decode_received_envelope(
         &self,
         received_envelope: Envelope
-    ) -> Result<Box<dyn ChartResponse>, String>;
+    ) -> Result<Box<dyn ServiceResponse>, String>;
 
     fn get_requesting_type(&self) -> &'static str;
 
@@ -75,14 +75,14 @@ pub trait ChartRequestManagaer: Sync + Send {
         &self,
         params: Arc<GeneralFilters>,
         client_data: Arc<ClientData>,
-        filters: Arc<Filters>,
+        filters: Option<Arc<Filters>>,
     ) -> Box<dyn API>;
 
     fn form_enveloped_request(
         &self,
         params: Arc<GeneralFilters>,
         client_data: Arc<ClientData>,
-        filters: Arc<Filters>,
+        filters: Option<Arc<Filters>>,
     ) -> Envelope {
         Envelope::new(
             Some(&client_data.group_id),
@@ -100,7 +100,7 @@ pub trait ChartRequestManagaer: Sync + Send {
         &self,
         params: Arc<GeneralFilters>,
         client_data: Arc<ClientData>,
-        filters: Arc<Filters>,
+        filters: Option<Arc<Filters>>,
     ) -> Vec<u8> {
         self.form_enveloped_request(
             params,

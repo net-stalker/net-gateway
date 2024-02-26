@@ -8,8 +8,8 @@ use net_core_api::typed_api::Typed;
 use net_reporter_api::api::network_graph::network_graph::NetworkGraphDTO;
 use net_reporter_api::api::network_graph::network_graph_request::NetworkGraphRequestDTO;
 
-use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
-use crate::core::chart_management::chart_response::ChartResponse;
+use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
+use crate::core::service_request_management::service_response::ServiceResponse;
 use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
@@ -26,7 +26,7 @@ impl NetworkGraphChartManager {
 }
 
 #[async_trait::async_trait]
-impl ChartRequestManagaer for NetworkGraphChartManager {
+impl ServiceRequestManager for NetworkGraphChartManager {
     fn get_requesting_type(&self) -> &'static str {
         NetworkGraphDTO::get_data_type()
     }
@@ -40,19 +40,20 @@ impl ChartRequestManagaer for NetworkGraphChartManager {
         params: Arc<GeneralFilters>,
         #[allow(unused_variables)]
         client_data: Arc<ClientData>,
-        filters: Arc<Filters>,
+        filters: Option<Arc<Filters>>,
     ) -> Box<dyn API> {
+        let filters = filters.as_ref().unwrap().as_ref().clone().into();
         Box::new(NetworkGraphRequestDTO::new(
             params.start_date,
             params.end_date,
-            filters.as_ref().clone().into(),
+            filters,
         ))
     }
 
     fn decode_received_envelope(
         &self,
         received_envelope: Envelope
-    ) -> Result<Box<dyn ChartResponse>, String> {
+    ) -> Result<Box<dyn ServiceResponse>, String> {
         Ok(Box::new(NetworkGraphResponse::from(
             NetworkGraphDTO::decode(received_envelope.get_data())
         )))
