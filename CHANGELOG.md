@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
 <!-- [END AUTO UPDATE] -->
+## [-159f2aa] - 2024-02-26
+
+Ns 95/provide endpoint for network overview filters: added and tested endpoint for network overview filters (#18)
+
+* renamed chart manager to service request manager due to adding request for filters which is not a chart
+
+* added overview filters manager into dashboard manager in overview endpoint
+
+* renamed chart/overview endpoint to chart/network_overview
 ## [-3200137] - 2024-02-24
 
 Ns 113/add filters to endpoints (#16)
@@ -18,33 +27,7 @@ Ns 113/add filters to endpoints (#16)
 
 NS-71/dashboard-manager (#15)
 
-* Add quinn_endpoint_manager
-
-* Add request_former trait
-
-* Reorganize network_bandwidth_per_endpoint
-
-* Rename chart -> response
-
-* Add ChartRequestManager to query requests easily
-
-* Add ChartRequestManager for the network_bandwidth endpoint
-
-* Add ChartRequestManager for the network_graph endpoint
-
-* Change whole trait logic, so request methods will no longer be static and we can create trait objects from ChartRequestManager
-
-* Change query parameters to be Arc<>
-
-* Rewrite ChartManager and DashboardManager. Get rid of multiple json converting
-
-* Rename requested_dashboard -> request_dashboard method
-
-* Change net-api version
-
----------
-
-Co-authored-by: net-stalker-bot <githubbot@netstalker.io>
+* Implemented dashboard manager
 ## [-0b6a40f] - 2024-02-21
 
 NS-100/chart-managers (#14)

@@ -5,8 +5,8 @@ use net_core_api::decoder_api::Decoder;
 use net_core_api::envelope::envelope::Envelope;
 use net_core_api::typed_api::Typed;
 
-use net_reporter_api::api::network_bandwidth::network_bandwidth::NetworkBandwidthDTO;
-use net_reporter_api::api::network_bandwidth::network_bandwidth_request::NetworkBandwidthRequestDTO;
+use net_reporter_api::api::network_overview_dashboard_filters::network_overview_dashboard_filters_request::NetworkOverviewDashboardFiltersRequestDTO;
+use net_reporter_api::api::network_overview_dashboard_filters::network_overview_dashbord_filters::NetworkOverviewDashboardFiltersDTO;
 
 use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
 use crate::core::service_request_management::service_response::ServiceResponse;
@@ -14,25 +14,25 @@ use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 
-use crate::endpoints::charts::network_bandwidth::response::network_bandwidth::NetworkBandwidthResponse;
+use crate::endpoints::filters::network_overview_filters::response::filters::NetworkOverviewFiltersResponse;
 
 #[derive(Default)]
-pub struct NetworkBandwidthChartManager {}
+pub struct NetworkOverviewFilterManager {}
 
-impl NetworkBandwidthChartManager {
+impl NetworkOverviewFilterManager {
     pub fn boxed(self) -> Box<Self> {
         Box::new(self)
     }
 }
 
 #[async_trait::async_trait]
-impl ServiceRequestManager for NetworkBandwidthChartManager {
+impl ServiceRequestManager for NetworkOverviewFilterManager {
     fn get_requesting_type(&self) -> &'static str {
-        NetworkBandwidthDTO::get_data_type()
+        NetworkOverviewDashboardFiltersDTO::get_data_type()
     }
 
     fn get_request_type(&self) -> &'static str {
-        NetworkBandwidthRequestDTO::get_data_type()
+        NetworkOverviewDashboardFiltersRequestDTO::get_data_type()
     }
 
     fn form_dto_request(
@@ -40,13 +40,11 @@ impl ServiceRequestManager for NetworkBandwidthChartManager {
         params: Arc<GeneralFilters>,
         #[allow(unused_variables)]
         client_data: Arc<ClientData>,
-        filters: Option<Arc<Filters>>,
+        _filters: Option<Arc<Filters>>,
     ) -> Box<dyn API> {
-        let filters = filters.as_ref().unwrap().as_ref().clone().into();
-        Box::new(NetworkBandwidthRequestDTO::new(
+        Box::new(NetworkOverviewDashboardFiltersRequestDTO::new(
             params.start_date,
             params.end_date,
-            filters,
         ))
     }
     
@@ -54,8 +52,8 @@ impl ServiceRequestManager for NetworkBandwidthChartManager {
         &self,
         received_envelope: Envelope
     ) -> Result<Box<dyn ServiceResponse>, std::string::String> {
-        Ok(Box::new(NetworkBandwidthResponse::from(
-            NetworkBandwidthDTO::decode(received_envelope.get_data())
+        Ok(Box::new(NetworkOverviewFiltersResponse::from(
+            NetworkOverviewDashboardFiltersDTO::decode(received_envelope.get_data())
         )))
     }
 }
