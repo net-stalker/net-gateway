@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-315d45a] - 2024-02-26
+
+NS-82/network-bandwidth-per-protocol (#17)
+
+* Add REST endpoint for network bandwidth per protocol
+
+* fixed network bandwidth per protocol after adding service manager
 <!-- [END AUTO UPDATE] -->
 ## [-159f2aa] - 2024-02-26
 
