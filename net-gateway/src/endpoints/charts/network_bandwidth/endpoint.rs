@@ -12,6 +12,7 @@ use crate::authorization::mock_authenticator::MockAuthenticator;
 use crate::core::app_state::AppState;
 use crate::core::client_data::ClientData;
 use crate::core::filter::FiltersWrapper;
+use crate::core::filter::FiltersWrapper;
 use crate::core::general_filters::GeneralFilters;
 
 use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
@@ -23,12 +24,14 @@ async fn get_network_bandwidth(
     client_data: web::Query<ClientData>,
     params: web::Query<GeneralFilters>,
     filters_wrapper: web::Query<FiltersWrapper>,
+    filters_wrapper: web::Query<FiltersWrapper>,
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
     if let Err(response) = Authorization::authorize(req, MockAuthenticator {}).await {
         return response;
     }
+    log::debug!("got request for network bandwidth chart, {:?}", filters_wrapper); 
     
     let chart_request_result = NetworkBandwidthChartManager::default().request_data(
         state.into_inner(),

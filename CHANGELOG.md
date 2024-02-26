@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
 <!-- [END AUTO UPDATE] -->
+## [-3200137] - 2024-02-24
+
+Ns 113/add filters to endpoints (#16)
+
+* added filters for all the chart and dashboard endpoints
 ## [-0d9d0f6] - 2024-02-22
 
 NS-71/dashboard-manager (#15)

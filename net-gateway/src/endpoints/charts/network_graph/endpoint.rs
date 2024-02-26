@@ -12,6 +12,7 @@ use crate::authorization::mock_authenticator::MockAuthenticator;
 use crate::core::app_state::AppState;
 use crate::core::client_data::ClientData;
 use crate::core::filter::FiltersWrapper;
+use crate::core::filter::FiltersWrapper;
 use crate::core::general_filters::GeneralFilters;
 
 use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
@@ -22,6 +23,7 @@ async fn get_network_graph(
     state: web::Data<AppState>,
     client_data: web::Query<ClientData>,
     params: web::Query<GeneralFilters>,
+    filters_wrapper: web::Query<FiltersWrapper>,
     filters_wrapper: web::Query<FiltersWrapper>,
     req: HttpRequest,
 ) -> impl Responder {
