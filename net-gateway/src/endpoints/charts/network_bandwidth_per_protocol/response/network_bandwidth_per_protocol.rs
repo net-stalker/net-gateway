@@ -5,7 +5,7 @@ use net_core_api::typed_api::Typed;
 
 use net_reporter_api::api::network_bandwidth_per_protocol::network_bandwidth_per_protocol::NetworkBandwidthPerProtocolDTO;
 
-use crate::core::chart_management::chart_response::ChartResponse;
+use crate::core::service_request_management::service_response::ServiceResponse;
 
 use super::protocol::ProtocolResponse;
 
@@ -16,7 +16,7 @@ pub struct NetworkBandwidthPerProtocolResponse {
     protocols: Vec<ProtocolResponse>
 }
 
-impl ChartResponse for NetworkBandwidthPerProtocolResponse {
+impl ServiceResponse for NetworkBandwidthPerProtocolResponse {
     fn get_dto_type(&self) -> &'static str {
         NetworkBandwidthPerProtocolDTO::get_data_type()
     }

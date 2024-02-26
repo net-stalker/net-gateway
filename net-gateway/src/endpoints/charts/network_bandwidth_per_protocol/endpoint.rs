@@ -10,7 +10,7 @@ use crate::authorization::Authorization;
 use crate::authorization::mock_authenticator::MockAuthenticator;
 
 use crate::core::app_state::AppState;
-use crate::core::chart_management::chart_request_manager::ChartRequestManagaer;
+use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
 use crate::core::client_data::ClientData;
 use crate::core::filter::FiltersWrapper;
 use crate::core::general_filters::GeneralFilters;
@@ -32,11 +32,11 @@ async fn get_network_bandwidth_per_protocol(
         return response;
     }
 
-    let chart_request_result = NetworkBandwidthPerProtocolChartManager::default().request_chart(
+    let chart_request_result = NetworkBandwidthPerProtocolChartManager::default().request_data(
         state.into_inner(),
         Arc::new(client_data.into_inner()),
         Arc::new(params.into_inner()),
-        Arc::new(filters_wrapper.into_inner().into()),
+        Some(Arc::new(filters_wrapper.into_inner().into())),
     ).await;
     if let Err(e) = chart_request_result {
         //TODO: Write appropriate error returning
