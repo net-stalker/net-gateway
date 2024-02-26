@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-159f2aa] - 2024-02-26
+
+Ns 95/provide endpoint for network overview filters: added and tested endpoint for network overview filters (#18)
+
+* renamed chart manager to service request manager due to adding request for filters which is not a chart
+
+* added overview filters manager into dashboard manager in overview endpoint
+
+* renamed chart/overview endpoint to chart/network_overview
 <!-- [END AUTO UPDATE] -->
 ## [-3200137] - 2024-02-24
 
