@@ -12,7 +12,6 @@ use crate::core::service_request_management::service_request_manager::ServiceReq
 use crate::core::service_request_management::service_response::ServiceResponse;
 use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
-use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 
 use crate::endpoints::charts::network_bandwidth_per_endpoint::response::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointResponse;
@@ -38,7 +37,6 @@ impl ServiceRequestManager for NetworkBandwidthPerEndpointChartManager {
 
     fn form_dto_request(
         &self,
-        params: Arc<GeneralFilters>,
         params: Arc<GeneralFilters>,
         #[allow(unused_variables)]
         client_data: Arc<ClientData>,

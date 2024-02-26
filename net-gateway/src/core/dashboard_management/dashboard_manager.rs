@@ -8,7 +8,6 @@ use crate::core::service_request_management::service_request_manager::ServiceReq
 use crate::core::service_request_management::service_response::ServiceResponse;
 use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
-use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 
 use super::dashboard::Dashboard;
@@ -43,8 +42,6 @@ impl DashboardManager {
             client_data,
             params,
             filters,
-            params,
-            filters,
         ).await;
 
         let mut requested_charts = charts_request_result?;
@@ -74,14 +71,12 @@ impl DashboardManager {
             let client_data_clone = client_data.clone();
             let params_clone = params.clone();
             let filters_clone = filters.clone();
-            let filters_clone = filters.clone();
             
             let task = tokio::spawn(async move {
                 let request_result = chart_requester.request_data(
                     state_clone,
                     client_data_clone,
                     params_clone,
-                    filters_clone,
                     filters_clone,
                 ).await;
 
