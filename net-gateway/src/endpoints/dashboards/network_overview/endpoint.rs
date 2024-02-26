@@ -18,12 +18,13 @@ use crate::core::general_filters::GeneralFilters;
 
 use crate::endpoints::charts::network_bandwidth::request::manager::NetworkBandwidthChartManager;
 use crate::endpoints::charts::network_bandwidth_per_endpoint::request::manager::NetworkBandwidthPerEndpointChartManager;
+use crate::endpoints::charts::network_bandwidth_per_protocol::request::manager::NetworkBandwidthPerProtocolChartManager;
 use crate::endpoints::charts::network_graph::request::manager::NetworkGraphChartManager;
 use crate::endpoints::filters::network_overview_filters::request::manager::NetworkOverviewFilterManager;
 
 
 #[get("/dashboard/network_overview")]
-async fn get_overview(
+async fn get_network_overview(
     state: web::Data<AppState>,
     client_data: web::Query<ClientData>,
     params: web::Query<GeneralFilters>,
@@ -40,6 +41,7 @@ async fn get_overview(
     let dashboard_request_result = DashboardManager::builder()
         .add_data_requester(NetworkBandwidthChartManager::default().boxed())
         .add_data_requester(NetworkBandwidthPerEndpointChartManager::default().boxed())
+        .add_data_requester(NetworkBandwidthPerProtocolChartManager::default().boxed())
         .add_data_requester(NetworkGraphChartManager::default().boxed())
         .add_data_requester(NetworkOverviewFilterManager::default().boxed())
         .build()

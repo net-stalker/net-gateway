@@ -20,9 +20,10 @@ async fn main() -> std::io::Result<()> {
                     .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
             )
             .app_data(web::Data::new(app_state.clone()))
-            .service(net_gateway::endpoints::dashboards::network_overview::endpoint::get_overview)
+            .service(net_gateway::endpoints::dashboards::network_overview::endpoint::get_network_overview)
             .service(net_gateway::endpoints::charts::network_graph::endpoint::get_network_graph)
             .service(net_gateway::endpoints::charts::network_bandwidth_per_endpoint::endpoint::get_bandwidth_per_endpoint)
+            .service(net_gateway::endpoints::charts::network_bandwidth_per_protocol::endpoint::get_network_bandwidth_per_protocol)
             .service(net_gateway::endpoints::charts::network_bandwidth::endpoint::get_network_bandwidth)
         )
         .bind("127.0.0.1:8080")?

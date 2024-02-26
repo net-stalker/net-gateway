@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-159f2aa] - 2024-02-26
 
 Ns 95/provide endpoint for network overview filters: added and tested endpoint for network overview filters (#18)
@@ -17,7 +18,6 @@ Ns 95/provide endpoint for network overview filters: added and tested endpoint f
 * added overview filters manager into dashboard manager in overview endpoint
 
 * renamed chart/overview endpoint to chart/network_overview
-<!-- [END AUTO UPDATE] -->
 ## [-3200137] - 2024-02-24
 
 Ns 113/add filters to endpoints (#16)
