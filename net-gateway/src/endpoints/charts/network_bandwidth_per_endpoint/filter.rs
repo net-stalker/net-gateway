@@ -1,33 +1,5 @@
-use std::num::ParseIntError;
-
 use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per_endpoint_filters::NetworkBandwidthPerEndpointFiltersDTO;
 use crate::core::filter::Filters;
-use regex::Regex;
-
-
-#[derive(Debug)]
-enum ParseBytesFilterError {
-    RegexMatchFailed,
-    ParseIntError(ParseIntError),
-}
-
-impl From<ParseIntError> for ParseBytesFilterError {
-    fn from(error: ParseIntError) -> Self {
-        ParseBytesFilterError::ParseIntError(error)
-    }
-}
-
-// TODO: think of adding traits for each fitler type which are possbiel for charts
-// this will eliminate the need of code duplication
-fn parse_bytes_filter(bytes: &str) -> Result<(String, i64), ParseBytesFilterError> {
-    let re = Regex::new(r"([<>])\s*(\d+)").unwrap();
-    let caps = re.captures(bytes).ok_or(ParseBytesFilterError::RegexMatchFailed)?;
-
-    let sign: String = caps[1].to_string();
-    let number = caps[2].parse::<i64>()?;
-
-    Ok((sign, number))
-}
 
 impl From<Filters> for NetworkBandwidthPerEndpointFiltersDTO {
 
@@ -52,18 +24,17 @@ impl From<Filters> for NetworkBandwidthPerEndpointFiltersDTO {
                     endpoints.push(filter.filter_value);
                 },
                 "bytes" => {
-                    let parse_res = parse_bytes_filter(&filter.filter_value);
-                    match parse_res {
-                        Ok((sign, number)) => {
-                            match sign.as_str() {
-                                "<" => bytes_upper_bound = Some(number),
-                                ">" => bytes_lower_bound = Some(number),
+                    match filter.mode {
+                        Some(mode) => {
+                            match mode.as_str() {
+                                "<" => bytes_upper_bound = Some(filter.filter_value.parse::<i64>().unwrap()),
+                                ">" => bytes_lower_bound = Some(filter.filter_value.parse::<i64>().unwrap()),
                                 _ => { /* do nothing club */ }
                             }
-                        }
+                        },
                         _ => { /* do nothing club */ }
                     }
-                }
+                },
                 _ => { /* do nothing club */ }
             }
         }

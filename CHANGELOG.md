@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-315d45a] - 2024-02-26
 
 NS-82/network-bandwidth-per-protocol (#17)
@@ -15,7 +16,6 @@ NS-82/network-bandwidth-per-protocol (#17)
 * Add REST endpoint for network bandwidth per protocol
 
 * fixed network bandwidth per protocol after adding service manager
-<!-- [END AUTO UPDATE] -->
 ## [-159f2aa] - 2024-02-26
 
 Ns 95/provide endpoint for network overview filters: added and tested endpoint for network overview filters (#18)
