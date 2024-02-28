@@ -8,7 +8,7 @@ pub struct FiltersWrapper {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Filter {
-    mode: Option<String>,
+    pub mode: Option<String>,
     #[serde(rename = "filterEntity")]
     pub filter_entity: String,
     #[serde(rename = "filterValue")]
@@ -17,6 +17,7 @@ pub struct Filter {
 
 impl Filter {
     pub fn get_mode(&self) -> Option<bool> {
+        // TODO: need to update the method due to different dashborde filters mode values
         match self.mode.as_ref() {
             Some(value) => {
                 match value.as_str() {
@@ -30,7 +31,7 @@ impl Filter {
     }
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Filters {
     pub filters: Vec<Filter>,
 }
