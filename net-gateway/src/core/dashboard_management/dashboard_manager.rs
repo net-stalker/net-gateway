@@ -67,14 +67,14 @@ impl DashboardManager {
             let response_clone = response.clone();
             
             let config_clone = config.clone();
-            let client_data_clone = jwt_token.clone();
+            let jwt_token = jwt_token.clone();
             let params_clone = params.clone();
             let filters_clone = filters.clone();
             
             let task = tokio::spawn(async move {
                 let request_result = chart_requester.request_data(
                     config_clone,
-                    client_data_clone,
+                    jwt_token,
                     params_clone,
                     filters_clone,
                 ).await;
