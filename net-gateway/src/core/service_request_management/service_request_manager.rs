@@ -7,7 +7,7 @@ use net_core_api::encoder_api::Encoder;
 use net_core_api::envelope::envelope::Envelope;
 use net_transport::quinn::connection::QuicConnection;
 
-use crate::core::app_state::AppState;
+use crate::config::Config;
 use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
@@ -20,7 +20,7 @@ pub trait ServiceRequestManager: Sync + Send {
     //Requesting chart
     async fn request_data(
         &self,
-        state: Arc<AppState>,
+        config: Arc<Config>,
         client_data: Arc<ClientData>,
         params: Arc<GeneralFilters>,
         filters: Option<Arc<Filters>>,
@@ -31,9 +31,9 @@ pub trait ServiceRequestManager: Sync + Send {
         //Creating Quinn Client Endpoint
         //Connecting with Quinn Client Endpoint to the server
         let server_connection_result = QuinnClientEndpointManager::start_server_connection(
-            state.get_quinn_client_addres(),
-            state.get_quinn_server_addres(),
-            state.get_quinn_server_application()
+            &config.quin_client_addres.addr,
+            &config.quin_server_addres.addr,
+            &config.quin_server_application.app,
         ).await;
         let server_connection = server_connection_result?;
 

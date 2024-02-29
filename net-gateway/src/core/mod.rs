@@ -1,4 +1,3 @@
-pub mod app_state;
 pub mod client_data;
 pub mod service_request_management;
 pub mod dashboard_management;

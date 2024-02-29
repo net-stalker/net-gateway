@@ -1,28 +1,23 @@
 use actix_web::{HttpResponse, HttpRequest, http::header};
-pub mod authenticator;
 pub mod mock_authenticator;
 
-pub struct Authorization {}
-
-impl Authorization {
-	/// Authorizes the request by checking the presence and validity of the authorization token.
-	/// Returns `Ok(())` if the token is valid, otherwise returns an `Err` with an `HttpResponse` indicating the reason for authorization failure.
-	pub async fn authorize(req: HttpRequest, auth: impl authenticator::Authenticator) -> Result<(), HttpResponse> {
-		let header = if let Some(header) = req.headers().get(header::AUTHORIZATION) {
-			header
-		} else {
-			return Err(HttpResponse::Unauthorized().body("Unauthorized: No Authorization header"));
-		};
-		let auth_str = header.to_str().unwrap_or_default();
-		let token = if let Some(token) = auth_str.strip_prefix("Bearer ") {
-			token
-		} else {
-			return Err(HttpResponse::Unauthorized().body("Unauthorized: Bearer token expected"));
-		};
-		match auth.authenticate(token).await {
-			Ok(_) => Ok(()),
-			Err(message) => Err(HttpResponse::Unauthorized().body(format!("Unauthorized: {}", message))),
-		}
+/// Authorizes the request by checking the presence and validity of the authorization token.
+/// Returns `Ok(())` if the token is valid, otherwise returns an `Err` with an `HttpResponse` indicating the reason for authorization failure.
+pub async fn authorize(req: HttpRequest, verifier: impl net_token_verifier::verifier::Verifier) -> Result<(), HttpResponse> {
+	let header = if let Some(header) = req.headers().get(header::AUTHORIZATION) {
+		header
+	} else {
+		return Err(HttpResponse::Unauthorized().body("Unauthorized: No Authorization header"));
+	};
+	let auth_str = header.to_str().unwrap_or_default();
+	let token = if let Some(token) = auth_str.strip_prefix("Bearer ") {
+		token
+	} else {
+		return Err(HttpResponse::Unauthorized().body("Unauthorized: Bearer token expected"));
+	};
+	match verifier.verify_token(token).await {
+		Ok(_) => Ok(()),
+		Err(message) => Err(HttpResponse::Unauthorized().body(format!("Unauthorized: {}", message))),
 	}
 }
 
@@ -40,7 +35,7 @@ mod tests {
 			.append_header((header::AUTHORIZATION, "Bearer valid_token"))
 			.to_http_request();
 
-		let result = Authorization::authorize(req, MockAuthenticator {}).await;
+		let result = authorize(req, MockAuthenticator {}).await;
 
 		assert!(result.is_ok());
 	}
@@ -52,7 +47,7 @@ mod tests {
 			.append_header((header::USER_AGENT, "user agent"))
 			.to_http_request();
 
-		let result = Authorization::authorize(req, MockAuthenticator {}).await;
+		let result = authorize(req, MockAuthenticator {}).await;
 
 		assert!(result.is_ok());
 	}
@@ -61,7 +56,7 @@ mod tests {
 	async fn test_authorize_missing_header() {
 		let req = test::TestRequest::default().to_http_request();
 
-		let result = Authorization::authorize(req, MockAuthenticator {}).await;
+		let result = authorize(req, MockAuthenticator {}).await;
 
 		assert!(result.is_err());
 		let response = result.unwrap_err();
@@ -82,7 +77,7 @@ mod tests {
 			.append_header((header::AUTHORIZATION, "Bearer invalid_token"))
 			.to_http_request();
 
-		let result = Authorization::authorize(req, MockAuthenticator {}).await;
+		let result = authorize(req, MockAuthenticator {}).await;
 
 		assert!(result.is_err());
 		let response = result.unwrap_err();
@@ -103,7 +98,7 @@ mod tests {
 			.append_header((header::AUTHORIZATION, "invalid_token"))
 			.to_http_request();
 
-        let result = Authorization::authorize(req, MockAuthenticator {}).await;
+        let result = authorize(req, MockAuthenticator {}).await;
 		
         assert!(result.is_err());
 		let response = result.unwrap_err();

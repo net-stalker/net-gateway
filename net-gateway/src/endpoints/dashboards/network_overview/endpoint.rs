@@ -5,11 +5,11 @@ use actix_web::web;
 use actix_web::Responder;
 use actix_web::HttpResponse;
 use actix_web::HttpRequest;
+use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
-use crate::authorization::Authorization;
-use crate::authorization::mock_authenticator::MockAuthenticator;
+use crate::authorization;
 
-use crate::core::app_state::AppState;
+use crate::config::Config;
 use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
 use crate::core::filter::FiltersWrapper;
@@ -25,14 +25,16 @@ use crate::endpoints::filters::network_overview_filters::request::manager::Netwo
 
 #[get("/dashboard/network_overview")]
 async fn get_network_overview(
-    state: web::Data<AppState>,
+    state: web::Data<Config>,
     client_data: web::Query<ClientData>,
     params: web::Query<GeneralFilters>,
     filters_wrapper: web::Query<FiltersWrapper>,
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
-    if let Err(response) = Authorization::authorize(req, MockAuthenticator {}).await {
+    if let Err(response) = authorization::authorize(
+        req,
+        FusionAuthVerifier::new(&state.fusion_auth_server_addres.addr, Some(state.fusion_auth_api_key.key.clone()))).await {
         return response;
     }
 
