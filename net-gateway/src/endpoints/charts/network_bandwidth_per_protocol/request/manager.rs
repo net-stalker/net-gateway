@@ -9,7 +9,6 @@ use net_reporter_api::api::network_bandwidth_per_protocol::network_bandwidth_per
 
 use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
 use crate::core::service_request_management::service_response::ServiceResponse;
-use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 
@@ -37,8 +36,6 @@ impl ServiceRequestManager for NetworkBandwidthPerProtocolChartManager {
     fn form_dto_request(
         &self,
         params: Arc<GeneralFilters>,
-        #[allow(unused_variables)]
-        client_data: Arc<ClientData>,
         filters: Option<Arc<Filters>>,
     ) -> Box<dyn API> {
         let filters = filters.as_ref().unwrap().as_ref().clone().into();

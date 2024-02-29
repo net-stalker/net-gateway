@@ -3,7 +3,7 @@ pub mod mock_authenticator;
 
 /// Authorizes the request by checking the presence and validity of the authorization token.
 /// Returns `Ok(())` if the token is valid, otherwise returns an `Err` with an `HttpResponse` indicating the reason for authorization failure.
-pub async fn authorize(req: HttpRequest, verifier: impl net_token_verifier::verifier::Verifier) -> Result<(), HttpResponse> {
+pub async fn authorize(req: HttpRequest, verifier: impl net_token_verifier::verifier::Verifier) -> Result<String, HttpResponse> {
 	let header = if let Some(header) = req.headers().get(header::AUTHORIZATION) {
 		header
 	} else {
@@ -16,7 +16,7 @@ pub async fn authorize(req: HttpRequest, verifier: impl net_token_verifier::veri
 		return Err(HttpResponse::Unauthorized().body("Unauthorized: Bearer token expected"));
 	};
 	match verifier.verify_token(token).await {
-		Ok(_) => Ok(()),
+		Ok(_) => Ok(token.to_string()),
 		Err(message) => Err(HttpResponse::Unauthorized().body(format!("Unauthorized: {}", message))),
 	}
 }

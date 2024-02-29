@@ -8,7 +8,6 @@ use net_core_api::envelope::envelope::Envelope;
 use net_transport::quinn::connection::QuicConnection;
 
 use crate::config::Config;
-use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
@@ -21,12 +20,12 @@ pub trait ServiceRequestManager: Sync + Send {
     async fn request_data(
         &self,
         config: Arc<Config>,
-        client_data: Arc<ClientData>,
+        jwt_token: Arc<String>,
         params: Arc<GeneralFilters>,
         filters: Option<Arc<Filters>>,
     ) -> Result<Box<dyn ServiceResponse>, String> {
         //Form request to the server
-        let bytes_to_send = self.form_request(params, client_data, filters);
+        let bytes_to_send = self.form_request(params, jwt_token, filters);
 
         //Creating Quinn Client Endpoint
         //Connecting with Quinn Client Endpoint to the server
@@ -74,23 +73,21 @@ pub trait ServiceRequestManager: Sync + Send {
     fn form_dto_request(
         &self,
         params: Arc<GeneralFilters>,
-        client_data: Arc<ClientData>,
         filters: Option<Arc<Filters>>,
     ) -> Box<dyn API>;
 
     fn form_enveloped_request(
         &self,
         params: Arc<GeneralFilters>,
-        client_data: Arc<ClientData>,
+        jwt_token: Arc<String>,
         filters: Option<Arc<Filters>>,
     ) -> Envelope {
         Envelope::new(
-            Some(&client_data.group_id),
+            Some(&jwt_token),
             None,
             self.get_request_type(),
             &self.form_dto_request(
                 params,
-                client_data.clone(),
                 filters,
             ).encode()
         )
@@ -99,12 +96,12 @@ pub trait ServiceRequestManager: Sync + Send {
     fn form_request(
         &self,
         params: Arc<GeneralFilters>,
-        client_data: Arc<ClientData>,
+        jwt_token: Arc<String>,
         filters: Option<Arc<Filters>>,
     ) -> Vec<u8> {
         self.form_enveloped_request(
             params,
-            client_data,
+            jwt_token,
             filters,
         ).encode()
     }

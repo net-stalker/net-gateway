@@ -10,7 +10,6 @@ use net_reporter_api::api::network_overview_dashboard_filters::network_overview_
 
 use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
 use crate::core::service_request_management::service_response::ServiceResponse;
-use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 
@@ -38,8 +37,6 @@ impl ServiceRequestManager for NetworkOverviewFilterManager {
     fn form_dto_request(
         &self,
         params: Arc<GeneralFilters>,
-        #[allow(unused_variables)]
-        client_data: Arc<ClientData>,
         _filters: Option<Arc<Filters>>,
     ) -> Box<dyn API> {
         Box::new(NetworkOverviewDashboardFiltersRequestDTO::new(
