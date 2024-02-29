@@ -5,10 +5,11 @@ use actix_web::web;
 use actix_web::HttpRequest;
 use actix_web::HttpResponse;
 use actix_web::Responder;
+use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
-use crate::authorization::mock_authenticator::MockAuthenticator;
-use crate::authorization::Authorization;
-use crate::core::app_state::AppState;
+use crate::authorization;
+
+use crate::config::Config;
 use crate::core::client_data::ClientData;
 use crate::core::general_filters::GeneralFilters;
 use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
@@ -16,19 +17,20 @@ use crate::endpoints::filters::network_overview_filters::request::manager::Netwo
 
 #[get("/filter/network_overview")]
 async fn get_network_overview_filters(
-    state: web::Data<AppState>,
+    config: web::Data<Config>,
     client_data: web::Query<ClientData>,
     params: web::Query<GeneralFilters>,
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
-    if let Err(response) = Authorization::authorize(req, MockAuthenticator {}).await {
-        // TODO: make sense to move authorization to net-core as well
+    if let Err(response) = authorization::authorize(
+        req,
+        FusionAuthVerifier::new(&config.fusion_auth_server_addres.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
         return response;
     }
     // TODO: implement FilterManager
     let chart_request_result = NetworkOverviewFilterManager::default().request_data(
-        state.into_inner(),
+        config.into_inner(),
         Arc::new(client_data.into_inner()),
         Arc::new(params.into_inner()),
         None,

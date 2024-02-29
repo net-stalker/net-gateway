@@ -5,11 +5,10 @@ use actix_web::web;
 use actix_web::Responder;
 use actix_web::HttpResponse;
 use actix_web::HttpRequest;
+use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
-use crate::authorization::Authorization;
-use crate::authorization::mock_authenticator::MockAuthenticator;
-
-use crate::core::app_state::AppState;
+use crate::authorization;
+use crate::config::Config;
 use crate::core::client_data::ClientData;
 use crate::core::filter::FiltersWrapper;
 use crate::core::general_filters::GeneralFilters;
@@ -21,19 +20,21 @@ use crate::endpoints::charts::network_bandwidth_per_endpoint::request::manager::
 //TODO: Move all the repeatable code of creating and connecting to the server to the macro(s)
 #[get("/chart/network_bandwidth_per_endpoint")]
 async fn get_bandwidth_per_endpoint(
-    state: web::Data<AppState>,
+    config: web::Data<Config>,
     client_data: web::Query<ClientData>,
     params: web::Query<GeneralFilters>,
     filters_wrapper: web::Query<FiltersWrapper>,
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
-    if let Err(response) = Authorization::authorize(req, MockAuthenticator {}).await {
+    if let Err(response) = authorization::authorize(
+        req,
+        FusionAuthVerifier::new(&config.fusion_auth_server_addres.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
         return response;
     }
 
     let chart_request_result = NetworkBandwidthPerEndpointChartManager::default().request_data(
-        state.into_inner(),
+        config.into_inner(),
         Arc::new(client_data.into_inner()),
         Arc::new(params.into_inner()),
         Some(Arc::new(filters_wrapper.into_inner().into())),

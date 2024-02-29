@@ -5,9 +5,9 @@ pub struct QuinnClientEndpointManager {}
 
 impl QuinnClientEndpointManager {
     pub async fn start_server_connection(
-        quinn_client_addres: &'static str,
-        quinn_server_addres: &'static str,
-        quinn_server_application: &'static str,
+        quinn_client_addres: &str,
+        quinn_server_addres: &str,
+        quinn_server_application: &str,
     ) -> Result<QuicConnection, String> {
         //Creating Quinn Client Endpoint
         let client_endpoint_build_result = ClientQuicEndpointBuilder::default()
