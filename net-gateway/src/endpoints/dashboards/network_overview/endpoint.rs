@@ -25,7 +25,7 @@ use crate::endpoints::filters::network_overview_filters::request::manager::Netwo
 
 #[get("/dashboard/network_overview")]
 async fn get_network_overview(
-    state: web::Data<Config>,
+    config: web::Data<Config>,
     client_data: web::Query<ClientData>,
     params: web::Query<GeneralFilters>,
     filters_wrapper: web::Query<FiltersWrapper>,
@@ -34,7 +34,7 @@ async fn get_network_overview(
     //Auth stuff
     if let Err(response) = authorization::authorize(
         req,
-        FusionAuthVerifier::new(&state.fusion_auth_server_addres.addr, Some(state.fusion_auth_api_key.key.clone()))).await {
+        FusionAuthVerifier::new(&config.fusion_auth_server_addres.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
         return response;
     }
 
@@ -48,7 +48,7 @@ async fn get_network_overview(
         .add_data_requester(NetworkOverviewFilterManager::default().boxed())
         .build()
         .request_dashboard(
-            state.into_inner(),
+            config.into_inner(),
             Arc::new(client_data.into_inner()),
             Arc::new(params.into_inner()),
             Some(Arc::new(filters)),
