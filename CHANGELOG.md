@@ -8,12 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-c3d21b9] - 2024-02-29
+
+Ns 116/add token verification: added actual token verification and added config file to `net-gateway` (#20)
+
+* added fusion auth token verification and added config file for net-gateway
+<!-- [END AUTO UPDATE] -->
 ## [-553ac9d] - 2024-02-28
 
 NS-114/testing-and-fixing-errors: made some changes due to changes in frontend part (#19)
 
 * made some changes due to changes in frontend part
-<!-- [END AUTO UPDATE] -->
 ## [-315d45a] - 2024-02-26
 
 NS-82/network-bandwidth-per-protocol (#17)
