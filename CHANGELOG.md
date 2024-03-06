@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-e84b3f9] - 2024-03-06
+
+Ns 160/endpoint for total http requests (#22)
+
+* implemented endpoint for total http requests chart
 <!-- [END AUTO UPDATE] -->
 ## [-738eb4c] - 2024-03-06
 
