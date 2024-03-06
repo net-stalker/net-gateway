@@ -10,7 +10,6 @@ use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 use crate::authorization;
 
 use crate::config::Config;
-use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
 use crate::core::filter::FiltersWrapper;
 use crate::core::dashboard_management::dashboard_manager::DashboardManager;
@@ -25,18 +24,16 @@ use crate::endpoints::filters::network_overview_filters::request::manager::Netwo
 
 #[get("/dashboard/network_overview")]
 async fn get_network_overview(
-    state: web::Data<Config>,
-    client_data: web::Query<ClientData>,
+    config: web::Data<Config>,
     params: web::Query<GeneralFilters>,
     filters_wrapper: web::Query<FiltersWrapper>,
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
-    if let Err(response) = authorization::authorize(
-        req,
-        FusionAuthVerifier::new(&state.fusion_auth_server_addres.addr, Some(state.fusion_auth_api_key.key.clone()))).await {
-        return response;
-    }
+    let token = match authorization::authorize(req,FusionAuthVerifier::new(&config.fusion_auth_server_addres.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
+        Ok(token) => token,
+        Err(response) => return response,
+    };
 
     let filters: Filters = filters_wrapper.into_inner().into();
 
@@ -48,8 +45,8 @@ async fn get_network_overview(
         .add_data_requester(NetworkOverviewFilterManager::default().boxed())
         .build()
         .request_dashboard(
-            state.into_inner(),
-            Arc::new(client_data.into_inner()),
+            config.into_inner(),
+            Arc::new(token),
             Arc::new(params.into_inner()),
             Some(Arc::new(filters)),
         ).await;

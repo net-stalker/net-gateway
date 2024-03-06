@@ -6,7 +6,6 @@ use tokio::sync::Mutex;
 use crate::config::Config;
 use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
 use crate::core::service_request_management::service_response::ServiceResponse;
-use crate::core::client_data::ClientData;
 use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 
@@ -33,13 +32,13 @@ impl DashboardManager {
     pub async fn request_dashboard(
         self,
         config: Arc<Config>,
-        client_data: Arc<ClientData>,
+        jwt_token: Arc<String>,
         params: Arc<GeneralFilters>,
         filters: Option<Arc<Filters>>,
     ) -> Result<Dashboard, String> {
         let charts_request_result = self.request_data(
             config,
-            client_data,
+            jwt_token,
             params,
             filters,
         ).await;
@@ -56,7 +55,7 @@ impl DashboardManager {
     async fn request_data(
         self,
         config: Arc<Config>,
-        client_data: Arc<ClientData>,
+        jwt_token: Arc<String>,
         params: Arc<GeneralFilters>,
         filters: Option<Arc<Filters>>,
     ) -> Result<Vec<Box<dyn ServiceResponse>>, String> {
@@ -68,14 +67,14 @@ impl DashboardManager {
             let response_clone = response.clone();
             
             let config_clone = config.clone();
-            let client_data_clone = client_data.clone();
+            let jwt_token = jwt_token.clone();
             let params_clone = params.clone();
             let filters_clone = filters.clone();
             
             let task = tokio::spawn(async move {
                 let request_result = chart_requester.request_data(
                     config_clone,
-                    client_data_clone,
+                    jwt_token,
                     params_clone,
                     filters_clone,
                 ).await;
