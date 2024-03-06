@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-738eb4c] - 2024-03-06
+
+Ns 116/add token verification (#21)
+
+* added fusion auth token verification and added config file for net-gatway
+
+* updated apis, removed group id and use jwt token instead, deleted client data
+
+* renamed client_data to jwt_token in dashboard_manager
 <!-- [END AUTO UPDATE] -->
 ## [-c3d21b9] - 2024-02-29
 
