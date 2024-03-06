@@ -39,7 +39,7 @@ async fn get_network_bandwidth_per_protocol(
     ).await;
     if let Err(e) = chart_request_result {
         //TODO: Write appropriate error returning
-        return HttpResponse::InternalServerError().body(e);
+        return HttpResponse::InternalServerError().body(format!("{e}"));
     }
     let chart = chart_request_result.unwrap();
     

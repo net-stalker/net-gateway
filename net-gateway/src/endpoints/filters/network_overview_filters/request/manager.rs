@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::sync::Arc;
 
 use net_core_api::api::API;
@@ -48,7 +49,7 @@ impl ServiceRequestManager for NetworkOverviewFilterManager {
     fn decode_received_envelope(
         &self,
         received_envelope: Envelope
-    ) -> Result<Box<dyn ServiceResponse>, std::string::String> {
+    ) -> Result<Box<dyn ServiceResponse>, Box<dyn Error + Send + Sync>> {
         Ok(Box::new(NetworkOverviewFiltersResponse::from(
             NetworkOverviewDashboardFiltersDTO::decode(received_envelope.get_data())
         )))
