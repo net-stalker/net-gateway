@@ -13,7 +13,7 @@ const JSON_TYPE: &str = "totalHttpRequests";
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct HttpResponsesResponse {
-    #[serde(rename = "http_responses")]
+    #[serde(rename = "httpResponses")]
     pub http_responses: Vec<HttpResponseResponse>,
 }
 impl ServiceResponse for HttpResponsesResponse {
