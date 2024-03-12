@@ -5,7 +5,7 @@ use serde::Serialize;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct HttpClientResponse {
-    #[serde(rename = "bucketTimestamp")]
+    #[serde(rename = "endpoint")]
     endpoint: String,
     #[serde(rename = "userAgent")]
     user_agent: Option<String>,
