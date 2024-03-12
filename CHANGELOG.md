@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-cd9146a] - 2024-03-12
 
 NS-169/endpoint-http-responses-dist: implemented endpoint for http responses dist chart (#25)
 
 * implemented endpoint for http responses dist chart
-<!-- [END AUTO UPDATE] -->
 ## [-aba9c87] - 2024-03-12
 
 NS-173/endpoint-for-http-clients-table: added endpoint for http clients (#26)
