@@ -13,12 +13,12 @@ use crate::core::filter::FiltersWrapper;
 use crate::core::general_filters::GeneralFilters;
 
 use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
-use crate::endpoints::charts::http_responses_dist::request::manager::HttpResponsesDistChartManager;
+use crate::endpoints::charts::http_clients::request::manager::HttpClientsChartManager;
 
 //TODO: Create cool error handling
 //TODO: Move all the repeatable code of creating and connecting to the server to the macro(s)
-#[get("/chart/http_responses_dist")]
-async fn get_http_responses_dist(
+#[get("/chart/http_clients")]
+async fn get_http_clients(
     config: web::Data<Config>,
     params: web::Query<GeneralFilters>,
     filters_wrapper: web::Query<FiltersWrapper>,
@@ -30,7 +30,7 @@ async fn get_http_responses_dist(
         Err(response) => return response,
     };
 
-    let chart_request_result = HttpResponsesDistChartManager::default().request_data(
+    let chart_request_result = HttpClientsChartManager::default().request_data(
         config.into_inner(),
         Arc::new(token),
         Arc::new(params.into_inner()),

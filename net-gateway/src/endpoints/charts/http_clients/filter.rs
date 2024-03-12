@@ -1,8 +1,12 @@
-use net_reporter_api::api::http_responses_dist::http_responses_filters::HttpResponsesDistFiltersDTO;
+use net_reporter_api::api::http_clients::http_clients_filters::HttpClientsFiltersDTO;
 use crate::core::filter::Filters;
 
-impl From<Filters> for HttpResponsesDistFiltersDTO {
+impl From<Filters> for HttpClientsFiltersDTO {
+
     fn from(value: Filters) -> Self {
+        let mut http_methods: Vec<String> = Vec::new();
+        let mut http_methods_mode: Option<bool> = None;
+
         let mut endpoints: Vec<String> = Vec::new();
         let mut endpoints_mode: Option<bool> = None;
 
@@ -11,6 +15,10 @@ impl From<Filters> for HttpResponsesDistFiltersDTO {
 
         for filter in value.filters {
             match filter.filter_entity.as_str() {
+                "http_method" => {
+                    http_methods_mode = filter.get_mode();
+                    http_methods.push(filter.filter_value);
+                },
                 "endpoint" => {
                     endpoints_mode = filter.get_mode();
                     endpoints.push(filter.filter_value);
@@ -32,6 +40,8 @@ impl From<Filters> for HttpResponsesDistFiltersDTO {
         }
 
         Self::new(
+            &http_methods,
+            http_methods_mode,
             &endpoints,
             endpoints_mode,
             bytes_lower_bound,
