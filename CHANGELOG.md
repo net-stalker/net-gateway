@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-aba9c87] - 2024-03-12
+
+NS-173/endpoint-for-http-clients-table: added endpoint for http clients (#26)
+
+* added endpoint for http clients
 <!-- [END AUTO UPDATE] -->
 ## [-e84b3f9] - 2024-03-06
 
