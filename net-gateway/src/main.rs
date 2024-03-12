@@ -29,7 +29,7 @@ async fn main() -> std::io::Result<()> {
             .service(net_gateway::endpoints::charts::http_responses_distribution::endpoint::get_http_responses_distribution)
             .service(net_gateway::endpoints::charts::http_clients::endpoint::get_http_clients)
             .service(net_gateway::endpoints::charts::http_responses::endpoint::get_http_responses)
-            .service(net_gateway::endpoints::charts::http_request_methods_dist::endpoint::get_http_request_methods_dist)
+            .service(net_gateway::endpoints::charts::http_request_methods_distribution::endpoint::get_http_request_methods_distribution)
         )
         .bind(config.bind_addres.addr.as_str())?
         .run()  

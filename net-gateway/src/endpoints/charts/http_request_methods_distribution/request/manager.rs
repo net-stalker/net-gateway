@@ -5,15 +5,15 @@ use net_core_api::decoder_api::Decoder;
 use net_core_api::envelope::envelope::Envelope;
 use net_core_api::typed_api::Typed;
 
-use net_reporter_api::api::http_request_methods_dist::http_request_methods_dist::HttpRequestMethodsDistDTO;
-use net_reporter_api::api::http_request_methods_dist::http_request_methods_dist_request::HttpRequestMethodsRequestDTO;
+use net_reporter_api::api::http_request_methods_distribution::http_request_methods_distribution::HttpRequestMethodsDistributionDTO;
+use net_reporter_api::api::http_request_methods_distribution::http_request_methods_distribution_request::HttpRequestMethodsDistributionRequestDTO;
 
 use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
 use crate::core::service_request_management::service_response::ServiceResponse;
 use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 
-use crate::endpoints::charts::http_request_methods_dist::response::http_request_methods_dist::HttpRequestMethodsDistResponse;
+use crate::endpoints::charts::http_request_methods_distribution::response::http_request_methods_distribution::HttpRequestMethodsDistributionResponse;
 
 #[derive(Default)]
 pub struct HttpRequestMethodsDistChartManager {}
@@ -27,11 +27,11 @@ impl HttpRequestMethodsDistChartManager {
 #[async_trait::async_trait]
 impl ServiceRequestManager for HttpRequestMethodsDistChartManager {
     fn get_requesting_type(&self) -> &'static str {
-        HttpRequestMethodsDistDTO::get_data_type()
+        HttpRequestMethodsDistributionDTO::get_data_type()
     }
 
     fn get_request_type(&self) -> &'static str {
-        HttpRequestMethodsRequestDTO::get_data_type()
+        HttpRequestMethodsDistributionRequestDTO::get_data_type()
     }
 
     fn form_dto_request(
@@ -40,7 +40,7 @@ impl ServiceRequestManager for HttpRequestMethodsDistChartManager {
         filters: Option<Arc<Filters>>,
     ) -> Box<dyn API> {
         let filters = filters.as_ref().unwrap().as_ref().clone().into();
-        Box::new(HttpRequestMethodsRequestDTO::new(
+        Box::new(HttpRequestMethodsDistributionRequestDTO::new(
             params.start_date,
             params.end_date,
             filters,
@@ -51,8 +51,8 @@ impl ServiceRequestManager for HttpRequestMethodsDistChartManager {
         &self,
         received_envelope: Envelope
     ) -> Result<Box<dyn ServiceResponse>, std::string::String> {
-        Ok(Box::new(HttpRequestMethodsDistResponse::from(
-            HttpRequestMethodsDistDTO::decode(received_envelope.get_data())
+        Ok(Box::new(HttpRequestMethodsDistributionResponse::from(
+            HttpRequestMethodsDistributionDTO::decode(received_envelope.get_data())
         )))
     }
 }

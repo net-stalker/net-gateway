@@ -1,7 +1,7 @@
-use net_reporter_api::api::http_request_methods_dist::http_request_methods_filters::HttpRequestMethodsFiltersDTO;
+use net_reporter_api::api::http_request_methods_distribution::http_request_methods_distribution_filters::HttpRequestMethodsDisributionFiltersDTO;
 use crate::core::filter::Filters;
 
-impl From<Filters> for HttpRequestMethodsFiltersDTO {
+impl From<Filters> for HttpRequestMethodsDisributionFiltersDTO {
     fn from(value: Filters) -> Self {
         let mut endpoints: Vec<String> = Vec::new();
         let mut endpoints_mode: Option<bool> = None;

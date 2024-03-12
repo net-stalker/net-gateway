@@ -13,12 +13,12 @@ use crate::core::filter::FiltersWrapper;
 use crate::core::general_filters::GeneralFilters;
 
 use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
-use crate::endpoints::charts::http_request_methods_dist::request::manager::HttpRequestMethodsDistChartManager;
+use crate::endpoints::charts::http_request_methods_distribution::request::manager::HttpRequestMethodsDistChartManager;
 
 //TODO: Create cool error handling
 //TODO: Move all the repeatable code of creating and connecting to the server to the macro(s)
-#[get("/chart/http_request_methods_dist")]
-async fn get_http_request_methods_dist(
+#[get("/chart/http_request_methods_distribution")]
+async fn get_http_request_methods_distribution(
     config: web::Data<Config>,
     params: web::Query<GeneralFilters>,
     filters_wrapper: web::Query<FiltersWrapper>,
