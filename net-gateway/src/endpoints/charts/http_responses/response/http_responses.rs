@@ -9,11 +9,11 @@ use crate::core::service_request_management::service_response::ServiceResponse;
 
 use super::http_response::HttpResponseResponse;
 
-const JSON_TYPE: &str = "totalHttpRequests";
+const JSON_TYPE: &str = "httpResponses";
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct HttpResponsesResponse {
-    #[serde(rename = "httpResponses")]
+    #[serde(rename = "httpResponsesData")]
     pub http_responses: Vec<HttpResponseResponse>,
 }
 impl ServiceResponse for HttpResponsesResponse {

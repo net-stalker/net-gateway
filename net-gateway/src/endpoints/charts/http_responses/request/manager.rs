@@ -6,7 +6,7 @@ use net_core_api::envelope::envelope::Envelope;
 use net_core_api::typed_api::Typed;
 
 use net_reporter_api::api::http_responses::http_responses::HttpResponsesDTO;
-use net_reporter_api::api::http_responses::http_responses_request::HttpClientsRequestDTO;
+use net_reporter_api::api::http_responses::http_responses_request::HttpResponsesRequestDTO;
 
 use crate::core::service_request_management::service_request_manager::ServiceRequestManager;
 use crate::core::service_request_management::service_response::ServiceResponse;
@@ -31,7 +31,7 @@ impl ServiceRequestManager for HttpResponsesChartManager {
     }
 
     fn get_request_type(&self) -> &'static str {
-        HttpClientsRequestDTO::get_data_type()
+        HttpResponsesRequestDTO::get_data_type()
     }
 
     fn form_dto_request(
@@ -40,7 +40,7 @@ impl ServiceRequestManager for HttpResponsesChartManager {
         filters: Option<Arc<Filters>>,
     ) -> Box<dyn API> {
         let filters = filters.as_ref().unwrap().as_ref().clone().into();
-        Box::new(HttpClientsRequestDTO::new(
+        Box::new(HttpResponsesRequestDTO::new(
             params.start_date,
             params.end_date,
             filters,
