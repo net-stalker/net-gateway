@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-372c457] - 2024-03-12
+
+Ns 169/endpoint http responses dist (#27)
+
+* NS-169/endpoint-http-responses-dist: changed the name of endpoint from dist to disribution
 <!-- [END AUTO UPDATE] -->
 ## [-cd9146a] - 2024-03-12
 
