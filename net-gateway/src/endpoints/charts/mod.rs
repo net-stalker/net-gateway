@@ -1,4 +1,5 @@
 pub mod http_clients;
+pub mod http_request_methods_distribution;
 pub mod http_responses;
 pub mod http_responses_distribution;
 pub mod network_bandwidth_per_endpoint;
