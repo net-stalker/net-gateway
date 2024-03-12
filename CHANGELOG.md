@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-a4cd9c6] - 2024-03-12
 
 NS-177/endpoint-for-responses-table: implemented endpoint for http respones (#24)
 
 * implemented endpoint for http responses
-<!-- [END AUTO UPDATE] -->
 ## [-372c457] - 2024-03-12
 
 Ns 169/endpoint http responses dist (#27)
