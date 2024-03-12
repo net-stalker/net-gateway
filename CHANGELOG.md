@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
 <!-- [END AUTO UPDATE] -->
+## [-372c457] - 2024-03-12
+
+Ns 169/endpoint http responses dist (#27)
+
+* NS-169/endpoint-http-responses-dist: changed the name of endpoint from dist to disribution
+## [-cd9146a] - 2024-03-12
+
+NS-169/endpoint-http-responses-dist: implemented endpoint for http responses dist chart (#25)
+
+* implemented endpoint for http responses dist chart
+## [-aba9c87] - 2024-03-12
+
+NS-173/endpoint-for-http-clients-table: added endpoint for http clients (#26)
+
+* added endpoint for http clients
 ## [-e84b3f9] - 2024-03-06
 
 Ns 160/endpoint for total http requests (#22)

@@ -26,6 +26,8 @@ async fn main() -> std::io::Result<()> {
             .service(net_gateway::endpoints::charts::network_bandwidth_per_protocol::endpoint::get_network_bandwidth_per_protocol)
             .service(net_gateway::endpoints::charts::network_bandwidth::endpoint::get_network_bandwidth)
             .service(net_gateway::endpoints::charts::total_http_requests::endpoint::get_total_http_requests)
+            .service(net_gateway::endpoints::charts::http_responses_distribution::endpoint::get_http_responses_distribution)
+            .service(net_gateway::endpoints::charts::http_clients::endpoint::get_http_clients)
             .service(net_gateway::endpoints::charts::http_responses::endpoint::get_http_responses)
         )
         .bind(config.bind_addres.addr.as_str())?
