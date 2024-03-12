@@ -17,8 +17,8 @@ use crate::endpoints::charts::http_responses_distribution::request::manager::Htt
 
 //TODO: Create cool error handling
 //TODO: Move all the repeatable code of creating and connecting to the server to the macro(s)
-#[get("/chart/http_responses_dist")]
-async fn get_http_responses_dist(
+#[get("/chart/http_responses_distribution")]
+async fn get_http_responses_distribution(
     config: web::Data<Config>,
     params: web::Query<GeneralFilters>,
     filters_wrapper: web::Query<FiltersWrapper>,
