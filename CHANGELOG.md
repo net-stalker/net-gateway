@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-9a4b04c] - 2024-03-12
 
 http-clients-hot-fix: renamed serde json field in http client response (#28)
 
 * renamed serde json field in http client response
-<!-- [END AUTO UPDATE] -->
 ## [-11c8c83] - 2024-03-12
 
 NS-204/endpoint-for-http-request-methods-dist: implemented endpoint for htto request methods dist (#23)
