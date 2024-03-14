@@ -16,7 +16,7 @@ async fn main() -> std::io::Result<()> {
                 Cors::default()
                     // for profuction use this will be changed
                     .allowed_origin(config_clone.allowed_origin.addr.as_str())
-                    .allowed_methods(vec!["GET"])
+                    .allowed_methods(vec!["GET", "POST"])
                     .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
             )
             .app_data(web::Data::new(config_clone.clone()))
@@ -30,6 +30,7 @@ async fn main() -> std::io::Result<()> {
             .service(net_gateway::endpoints::charts::http_clients::endpoint::get_http_clients)
             .service(net_gateway::endpoints::charts::http_responses::endpoint::get_http_responses)
             .service(net_gateway::endpoints::charts::http_request_methods_distribution::endpoint::get_http_request_methods_distribution)
+            .service(net_gateway::endpoints::pcap_files::pcap_files)
         )
         .bind(config.bind_addres.addr.as_str())?
         .run()  
