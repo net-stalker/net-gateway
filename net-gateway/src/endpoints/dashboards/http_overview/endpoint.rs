@@ -20,6 +20,7 @@ use crate::endpoints::charts::http_request_methods_distribution::request::manage
 use crate::endpoints::charts::http_responses::request::manager::HttpResponsesChartManager;
 use crate::endpoints::charts::http_responses_distribution::request::manager::HttpResponsesDistributionChartManager;
 use crate::endpoints::charts::total_http_requests::request::manager::TotalHttpRequestsChartManager;
+use crate::endpoints::filters::http_overview_filters::request::manager::HttpOverviewFilterManager;
 
 
 #[get("/dashboard/http_overview")]
@@ -43,6 +44,7 @@ async fn get_http_overview(
         .add_data_requester(HttpResponsesChartManager::default().boxed())
         .add_data_requester(HttpResponsesDistributionChartManager::default().boxed())
         .add_data_requester(TotalHttpRequestsChartManager::default().boxed())
+        .add_data_requester(HttpOverviewFilterManager::default().boxed())
         .build()
         .request_dashboard(
             config.into_inner(),
