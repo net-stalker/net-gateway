@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-a546b52] - 2024-03-15
 
 NS-129/endpoint-for-http-dashboard: implemented endpoint for http dashboard (#29)
 
 * implemented endpoint for http dashbaord
-<!-- [END AUTO UPDATE] -->
 ## [-ab49191] - 2024-03-15
 
 NS-182/endpoint-for-http-overview-filters: implemented endpoint http overview filters (#30)

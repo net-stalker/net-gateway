@@ -10,6 +10,9 @@ addr = "0.0.0.0:0"
 [quin_server_addres]
 addr = "127.0.0.1:5454"
 
+[quin_inserter_addres]
+addr = "127.0.0.1:5455"
+
 [quin_server_application]    
 app = "localhost"
 

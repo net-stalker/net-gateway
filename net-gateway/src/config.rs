@@ -25,6 +25,11 @@ pub struct QuinServerAddres {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+pub struct QuinInserterAddres {
+    pub(crate) addr: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub struct QuinServerApplication {
     pub(crate) app: String,
 }
@@ -44,6 +49,7 @@ pub struct Config {
     pub bind_addres: BindAddres,
     pub allowed_origin: AllowedOrigin,
     pub(crate) quin_client_addres: QuinClientAddres,
+    pub(crate) quin_inserter_addres: QuinClientAddres,
     pub(crate) quin_server_addres: QuinServerAddres,
     pub(crate) quin_server_application: QuinServerApplication,
     pub(crate) fusion_auth_server_addres: FusionAuthServerAddres,
