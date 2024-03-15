@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-ab49191] - 2024-03-15
+
+NS-182/endpoint-for-http-overview-filters: implemented endpoint http overview filters (#30)
+
+* implemented endpoint http overview filters
 <!-- [END AUTO UPDATE] -->
 ## [-9a4b04c] - 2024-03-12
 
