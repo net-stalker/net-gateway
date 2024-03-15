@@ -30,6 +30,8 @@ async fn main() -> std::io::Result<()> {
             .service(net_gateway::endpoints::charts::http_clients::endpoint::get_http_clients)
             .service(net_gateway::endpoints::charts::http_responses::endpoint::get_http_responses)
             .service(net_gateway::endpoints::charts::http_request_methods_distribution::endpoint::get_http_request_methods_distribution)
+            .service(net_gateway::endpoints::filters::http_overview_filters::endpoint::get_http_overview_filters)
+            .service(net_gateway::endpoints::dashboards::http_overview::endpoint::get_http_overview)
             .service(net_gateway::endpoints::pcap_files::pcap_files)
         )
         .bind(config.bind_addres.addr.as_str())?
