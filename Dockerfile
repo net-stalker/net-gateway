@@ -1,29 +1,29 @@
-# Start from Ubuntu 22.04 base image
-FROM ubuntu:22.04
+FROM messense/rust-musl-cross:x86_64-musl as builder
 
 # Install required packages
 RUN apt-get update && apt-get install -y \
     build-essential \
-    curl \
     libssl-dev \
     pkg-config \
+    musl-tools \
+    libzmq3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Rust toolchain
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
-
-# Set environment variables
-ENV PATH="/root/.cargo/bin:${PATH}"
-ENV RUSTUP_HOME="/root/.rustup"
+RUN rustup target add x86_64-unknown-linux-musl
+RUN export PKG_CONFIG_SYSROOT_DIR=/usr/include
+RUN export OPENSSL_DIR=/usr/include/x86_64-linux-gnu/openssl
+RUN ln -s /bin/g++ /bin/musl-g++
 
 # Create a new directory for the application
-WORKDIR /net-gateway
+WORKDIR /net-timescale
 
 # Copy the Rust source code
 COPY . .
 
 # Build the application
-RUN cargo build --release
+RUN cargo build --package net-gateway --release --target=x86_64-unknown-linux-musl
 
-# Set the binary as the entrypoint
-ENTRYPOINT ["/app/target/release/net-gateway"]
+# Final stage
+FROM scratch
+COPY --from=builder /net-timescale/target/x86_64-unknown-linux-musl/release/net-gateway /
+ENTRYPOINT ["/net-gateway"]
