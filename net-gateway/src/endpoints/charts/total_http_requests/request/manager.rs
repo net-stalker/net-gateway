@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
-use net_core_api::api::API;
-use net_core_api::decoder_api::Decoder;
-use net_core_api::envelope::envelope::Envelope;
-use net_core_api::typed_api::Typed;
+use net_core_api::api::envelope::envelope::Envelope;
+use net_core_api::core::api::API;
+use net_core_api::core::decoder_api::Decoder;
+use net_core_api::core::typed_api::Typed;
 
 use net_reporter_api::api::total_http_requests::total_http_requests::TotalHttpRequestsDTO;
 use net_reporter_api::api::total_http_requests::request_total_http_requests::RequestTotalHttpRequestsDTO;

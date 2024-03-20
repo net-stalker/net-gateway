@@ -7,9 +7,9 @@ use actix_multipart::Multipart;
 use futures::StreamExt;
 use futures::TryStreamExt;
 use net_agent_api::api::data_packet::DataPacketDTO;
-use net_core_api::envelope::envelope::Envelope;
-use net_core_api::typed_api::Typed;
-use net_core_api::encoder_api::Encoder;
+use net_core_api::api::envelope::envelope::Envelope;
+use net_core_api::core::typed_api::Typed;
+use net_core_api::core::encoder_api::Encoder;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;

@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde::Serialize;
 
-use net_core_api::typed_api::Typed;
+use net_core_api::core::typed_api::Typed;
 
 use net_reporter_api::api::network_bandwidth_per_endpoint::network_bandwidth_per_endpoint::NetworkBandwidthPerEndpointDTO;
 
