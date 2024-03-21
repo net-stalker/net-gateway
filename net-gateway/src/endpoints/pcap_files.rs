@@ -39,13 +39,13 @@ async fn pcap_files(
         ).await;
         let mut server_connection = match server_connection_result {
             Ok(server_connection) => server_connection,
-            Err(e) => return HttpResponse::InternalServerError().body(e),
+            Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
         };
         let packet_data = DataPacketDTO::new(&file_bytes); 
         let request = Envelope::new(Some(&token), Some("agent_id"), DataPacketDTO::get_data_type(), &packet_data.encode());
         match server_connection.send_all_reliable(&request.encode()).await {
             Ok(_) => (),
-            Err(e) => return HttpResponse::InternalServerError().body(e),
+            Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
         };
     }
 

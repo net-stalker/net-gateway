@@ -38,7 +38,7 @@ async fn get_total_http_requests(
     ).await;
     if let Err(e) = chart_request_result {
         //TODO: Write appropriate error returning
-        return HttpResponse::InternalServerError().body(e);
+        return HttpResponse::InternalServerError().body(e.to_string());
     }
     let chart = chart_request_result.unwrap();
     
