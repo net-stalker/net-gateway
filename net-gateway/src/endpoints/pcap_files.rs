@@ -7,9 +7,9 @@ use actix_multipart::Multipart;
 use futures::StreamExt;
 use futures::TryStreamExt;
 use net_agent_api::api::data_packet::DataPacketDTO;
-use net_core_api::envelope::envelope::Envelope;
-use net_core_api::typed_api::Typed;
-use net_core_api::encoder_api::Encoder;
+use net_core_api::api::envelope::envelope::Envelope;
+use net_core_api::core::typed_api::Typed;
+use net_core_api::core::encoder_api::Encoder;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
@@ -39,13 +39,13 @@ async fn pcap_files(
         ).await;
         let mut server_connection = match server_connection_result {
             Ok(server_connection) => server_connection,
-            Err(e) => return HttpResponse::InternalServerError().body(e),
+            Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
         };
         let packet_data = DataPacketDTO::new(&file_bytes); 
         let request = Envelope::new(Some(&token), Some("agent_id"), DataPacketDTO::get_data_type(), &packet_data.encode());
         match server_connection.send_all_reliable(&request.encode()).await {
             Ok(_) => (),
-            Err(e) => return HttpResponse::InternalServerError().body(e),
+            Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
         };
     }
 

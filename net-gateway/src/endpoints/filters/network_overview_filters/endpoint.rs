@@ -34,7 +34,7 @@ async fn get_network_overview_filters(
     ).await;
     if let Err(e) = chart_request_result {
         //TODO: Write appropriate error returning
-        return HttpResponse::InternalServerError().body(e);
+        return HttpResponse::InternalServerError().body(e.to_string());
     }
     let chart = chart_request_result.unwrap();
     

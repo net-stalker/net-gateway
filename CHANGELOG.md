@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-a618f14] - 2024-03-15
 
 Ns 186/provide post endpoint for pcap uploading (#31)
 
 * NS-186/provide-post-endpoint-for-pcap-uploading: implemented post endpoint for uploading pcap files
-<!-- [END AUTO UPDATE] -->
 ## [-a546b52] - 2024-03-15
 
 NS-129/endpoint-for-http-dashboard: implemented endpoint for http dashboard (#29)

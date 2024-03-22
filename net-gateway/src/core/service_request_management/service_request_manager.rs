@@ -1,10 +1,10 @@
+use std::error::Error;
 use std::sync::Arc;
 
-use net_core_api::decoder_api::Decoder;
-
-use net_core_api::api::API;
-use net_core_api::encoder_api::Encoder;
-use net_core_api::envelope::envelope::Envelope;
+use net_core_api::core::api::API;
+use net_core_api::core::encoder_api::Encoder;
+use net_core_api::core::decoder_api::Decoder;
+use net_core_api::api::envelope::envelope::Envelope;
 use net_transport::quinn::connection::QuicConnection;
 
 use crate::config::Config;
@@ -23,7 +23,7 @@ pub trait ServiceRequestManager: Sync + Send {
         jwt_token: Arc<String>,
         params: Arc<GeneralFilters>,
         filters: Option<Arc<Filters>>,
-    ) -> Result<Box<dyn ServiceResponse>, String> {
+    ) -> Result<Box<dyn ServiceResponse>, Box<dyn Error + Send + Sync>> {
         //Form request to the server
         let bytes_to_send = self.form_request(params, jwt_token, filters);
 
@@ -47,7 +47,7 @@ pub trait ServiceRequestManager: Sync + Send {
         &self,
         request: &[u8],
         mut server_connection: QuicConnection,
-    ) -> Result<Box<dyn ServiceResponse>, String> {
+    ) -> Result<Box<dyn ServiceResponse>, Box<dyn Error + Send + Sync>> {
         //Sending out data (request) to the server
         server_connection.send_all_reliable(request).await?;
 
@@ -63,7 +63,7 @@ pub trait ServiceRequestManager: Sync + Send {
     fn decode_received_envelope(
         &self,
         received_envelope: Envelope
-    ) -> Result<Box<dyn ServiceResponse>, String>;
+    ) -> Result<Box<dyn ServiceResponse>, Box<dyn Error + Send + Sync>>;
 
     fn get_requesting_type(&self) -> &'static str;
 
