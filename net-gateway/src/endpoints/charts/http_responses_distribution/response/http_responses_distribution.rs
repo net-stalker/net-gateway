@@ -2,7 +2,7 @@ use net_reporter_api::api::http_responses_distribution::http_responses_distribut
 use serde::Deserialize;
 use serde::Serialize;
 
-use net_core_api::typed_api::Typed;
+use net_core_api::core::typed_api::Typed;
 
 use crate::core::service_request_management::service_response::ServiceResponse;
 

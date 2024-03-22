@@ -2,7 +2,7 @@ use net_reporter_api::api::http_request_methods_distribution::http_request_metho
 use serde::Deserialize;
 use serde::Serialize;
 
-use net_core_api::typed_api::Typed;
+use net_core_api::core::typed_api::Typed;
 
 use net_reporter_api::api::total_http_requests::total_http_requests::TotalHttpRequestsDTO;
 

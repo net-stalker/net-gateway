@@ -1,7 +1,7 @@
 use serde::Serialize;
 use serde::Deserialize;
 
-use net_core_api::typed_api::Typed;
+use net_core_api::core::typed_api::Typed;
 
 use net_reporter_api::api::network_graph::network_graph::NetworkGraphDTO;
 

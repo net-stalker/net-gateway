@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use net_transport::quinn::client::builder::ClientQuicEndpointBuilder;
 use net_transport::quinn::connection::QuicConnection;
 
@@ -8,7 +10,7 @@ impl QuinnClientEndpointManager {
         quinn_client_addres: &str,
         quinn_server_addres: &str,
         quinn_server_application: &str,
-    ) -> Result<QuicConnection, String> {
+    ) -> Result<QuicConnection, Box<dyn Error + Send + Sync>> {
         //Creating Quinn Client Endpoint
         let client_endpoint_build_result = ClientQuicEndpointBuilder::default()
             .with_addr(quinn_client_addres.parse().unwrap())

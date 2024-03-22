@@ -34,7 +34,7 @@ async fn get_http_overview_filters(
     ).await;
     if let Err(e) = filters_request_result {
         //TODO: Write appropriate error returning
-        return HttpResponse::InternalServerError().body(e);
+        return HttpResponse::InternalServerError().body(e.to_string());
     }
     let chart = filters_request_result.unwrap();
     

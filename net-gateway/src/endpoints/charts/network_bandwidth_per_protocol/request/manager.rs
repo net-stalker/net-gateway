@@ -1,8 +1,10 @@
+use std::error::Error;
 use std::sync::Arc;
-use net_core_api::api::API;
-use net_core_api::decoder_api::Decoder;
-use net_core_api::envelope::envelope::Envelope;
-use net_core_api::typed_api::Typed;
+
+use net_core_api::api::envelope::envelope::Envelope;
+use net_core_api::core::api::API;
+use net_core_api::core::decoder_api::Decoder;
+use net_core_api::core::typed_api::Typed;
 
 use net_reporter_api::api::network_bandwidth_per_protocol::network_bandwidth_per_protocol::NetworkBandwidthPerProtocolDTO;
 use net_reporter_api::api::network_bandwidth_per_protocol::network_bandwidth_per_protocol_request::NetworkBandwidthPerProtocolRequestDTO;
@@ -49,7 +51,7 @@ impl ServiceRequestManager for NetworkBandwidthPerProtocolChartManager {
     fn decode_received_envelope(
         &self,
         received_envelope: Envelope
-    ) -> Result<Box<dyn ServiceResponse>, String> {
+    ) -> Result<Box<dyn ServiceResponse>, Box<dyn Error + Send + Sync>> {
         Ok(Box::new(NetworkBandwidthPerProtocolResponse::from(
             NetworkBandwidthPerProtocolDTO::decode(received_envelope.get_data())
         )))

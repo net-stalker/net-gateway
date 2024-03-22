@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde::Serialize;
 
-use net_core_api::typed_api::Typed;
+use net_core_api::core::typed_api::Typed;
 
 use net_reporter_api::api::total_http_requests::total_http_requests::TotalHttpRequestsDTO;
 
