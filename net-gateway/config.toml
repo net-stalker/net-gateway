@@ -1,0 +1,33 @@
+[bind_address]
+addr = ""
+
+[allowed_origin]
+# it will be changed as soon as possible, domain is already here
+# my.netstalker.io
+addr = ""
+
+[quin_client_address]
+addr = "0.0.0.0:0"
+
+[quin_reporter]
+# net-reporter is expected
+host_name = ""
+# 5454 is expected
+port = ""
+addr = ""
+
+[quin_inserter]
+# net-inserter is expected
+host_name = ""
+# 5455 is expected
+port = ""
+addr = ""
+
+[quin_server_application]    
+app = ""
+
+[fusion_auth_server_address]
+addr = ""
+
+[fusion_auth_api_key]
+key = ""

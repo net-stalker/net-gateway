@@ -7,6 +7,8 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     musl-tools \
     libzmq3-dev \
+    nano \
+    htop \
     && rm -rf /var/lib/apt/lists/*
 
 RUN rustup target add x86_64-unknown-linux-musl
@@ -15,7 +17,7 @@ RUN export OPENSSL_DIR=/usr/include/x86_64-linux-gnu/openssl
 RUN ln -s /bin/g++ /bin/musl-g++
 
 # Create a new directory for the application
-WORKDIR /net-timescale
+WORKDIR /net-gateway
 
 # Copy the Rust source code
 COPY . .
@@ -24,6 +26,8 @@ COPY . .
 RUN cargo build --package net-gateway --release --target=x86_64-unknown-linux-musl
 
 # Final stage
-FROM scratch
-COPY --from=builder /net-timescale/target/x86_64-unknown-linux-musl/release/net-gateway /
+FROM debian:latest
+COPY --from=builder /net-gateway/target/x86_64-unknown-linux-musl/release/net-gateway /
+COPY --from=builder /net-gateway/net-gateway/config.toml /
+ENV CONFIG_PATH=/
 ENTRYPOINT ["/net-gateway"]

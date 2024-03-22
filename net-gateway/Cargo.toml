@@ -23,7 +23,7 @@ net-core-api = "0.2.0"
 net-reporter-api = "0.4.5"
 net-transport = { version = "=0.1.0", features = ["quinn"]}
 net-token-verifier = "0.1.0"
-net-config = "0.1.0"
+net-config = "0.1.1"
 toml = "0.8.10"
 net-file = "0.1.0"
 config = "0.14.0"

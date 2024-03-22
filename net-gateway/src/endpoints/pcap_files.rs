@@ -21,7 +21,7 @@ async fn pcap_files(
     req: HttpRequest,
     mut payload: Multipart
 ) -> impl Responder {
-    let token = match authorization::authorize(req, FusionAuthVerifier::new(&config.fusion_auth_server_addres.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
+    let token = match authorization::authorize(req, FusionAuthVerifier::new(&config.fusion_auth_server_address.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
         Ok(token) => token,
         Err(response) => return response,
     }; 
@@ -33,8 +33,8 @@ async fn pcap_files(
             file_bytes.extend_from_slice(&chunk);
         }
         let server_connection_result = QuinnClientEndpointManager::start_server_connection(
-            &config.quin_client_addres.addr,
-            &config.quin_inserter_addres.addr,
+            &config.quin_client_address.addr,
+            &config.quin_inserter.addr,
             &config.quin_server_application.app,
         ).await;
         let mut server_connection = match server_connection_result {
