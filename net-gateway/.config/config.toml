@@ -14,7 +14,7 @@ addr = "127.0.0.1:5454"
 
 
 [quin_inserter]
-hoat_name = ""
+host_name = ""
 port = ""
 addr = "127.0.0.1:5455"
 
