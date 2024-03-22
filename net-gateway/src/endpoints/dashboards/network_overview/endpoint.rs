@@ -30,13 +30,9 @@ async fn get_network_overview(
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
-    let token = if cfg!(debug_assertions) {
-        match authorization::authorize(req,FusionAuthVerifier::new(&config.fusion_auth_server_address.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
-            Ok(token) => token,
-            Err(response) => return response,
-        }
-    } else {
-        "token".to_string()
+    let token = match authorization::authorize(req,FusionAuthVerifier::new(&config.fusion_auth_server_address.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
+        Ok(token) => token,
+        Err(response) => return response,
     };
     let filters: Filters = filters_wrapper.into_inner().into();
 
