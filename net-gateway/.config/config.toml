@@ -1,22 +1,27 @@
-[bind_addres]
+[bind_address]
 addr = "127.0.0.1:8080"
 
 [allowed_origin]
 addr = "http://localhost:3000"
 
-[quin_client_addres]
+[quin_client_address]
 addr = "0.0.0.0:0"
 
-[quin_server_addres]
+[quin_reporter]
+host_name = ""
+port = ""
 addr = "127.0.0.1:5454"
 
-[quin_inserter_addres]
+
+[quin_inserter]
+host_name = ""
+port = ""
 addr = "127.0.0.1:5455"
 
 [quin_server_application]    
 app = "localhost"
 
-[fusion_auth_server_addres]
+[fusion_auth_server_address]
 addr = "http://localhost:9011"
 
 [fusion_auth_api_key]

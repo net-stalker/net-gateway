@@ -24,8 +24,10 @@ net-agent-api = "0.1.4"
 net-reporter-api = "0.5.1"
 net-transport = { version = "=0.1.1", features = ["quinn"]}
 net-token-verifier = "0.1.0"
-net-config = { version = "0.1.0", registry = "net-registry" }
+net-config = "0.1.1"
 toml = "0.8.10"
 net-file = "0.1.0"
 config = "0.14.0"
 actix-multipart = "0.6.1"
+directories = "5.0.1"
+openssl = { version = "0.10.64", features = ["vendored"] }

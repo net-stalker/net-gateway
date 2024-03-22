@@ -30,8 +30,8 @@ pub trait ServiceRequestManager: Sync + Send {
         //Creating Quinn Client Endpoint
         //Connecting with Quinn Client Endpoint to the server
         let server_connection_result = QuinnClientEndpointManager::start_server_connection(
-            &config.quin_client_addres.addr,
-            &config.quin_server_addres.addr,
+            &config.quin_client_address.addr,
+            &config.quin_reporter.addr,
             &config.quin_server_application.app,
         ).await;
         let server_connection = server_connection_result?;

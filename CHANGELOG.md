@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-187d453] - 2024-03-22
 
 Ns 208/api update (#33)
@@ -15,7 +16,6 @@ Ns 208/api update (#33)
 * Update all the crates
 
 * Update all the imports
-<!-- [END AUTO UPDATE] -->
 ## [-a618f14] - 2024-03-15
 
 Ns 186/provide post endpoint for pcap uploading (#31)
