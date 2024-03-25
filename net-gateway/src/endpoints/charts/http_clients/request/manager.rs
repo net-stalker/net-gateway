@@ -47,7 +47,7 @@ impl ServiceRequestManager for HttpClientsChartManager {
         ))
     }
     
-    fn decode_received_envelope(
+    fn dispatch_received_envelope(
         &self,
         received_envelope: Envelope
     ) -> Result<Box<dyn ServiceResponse>, Box<dyn Error + Send + Sync>> {

@@ -1,10 +1,13 @@
 use std::error::Error;
 use std::sync::Arc;
 
+use net_core_api::api::envelope;
 use net_core_api::core::api::API;
 use net_core_api::core::encoder_api::Encoder;
 use net_core_api::core::decoder_api::Decoder;
 use net_core_api::api::envelope::envelope::Envelope;
+use net_core_api::api::result::result::ResultDTO;
+
 use net_transport::quinn::connection::QuicConnection;
 
 use crate::config::Config;
@@ -55,12 +58,45 @@ pub trait ServiceRequestManager: Sync + Send {
         let receiving_result = server_connection.receive_reliable().await;
         let received_bytes = receiving_result?;
 
-        let received_envelope = Envelope::decode(&received_bytes);
-
-        self.decode_received_envelope(received_envelope)
+        self.decode_received_bytes(&received_bytes)
     }
 
-    fn decode_received_envelope(
+    fn decode_received_bytes(
+        &self,
+        received_bytes: &[u8]
+    ) -> Result<Box<dyn ServiceResponse>, Box<dyn Error + Send + Sync>> {
+        let received_envelope = Envelope::decode(received_bytes);
+        let received_result = ResultDTO::decode(received_envelope.get_data());
+
+        self.dispatch_resieved_result(received_result)
+    }
+
+    fn dispatch_resieved_result(
+        &self,
+        received_result: ResultDTO
+    ) -> Result<Box<dyn ServiceResponse>, Box<dyn Error + Send + Sync>> {
+        if !received_result.is_ok() {
+            match received_result.get_description() {
+                Ok(e) => {
+                    return Err(e.to_string().into());
+                },
+                Err(_) => {
+                    return Err(String::from("Error with no description was recieved from the report server").into());
+                },
+            }
+        }
+
+        match received_result.into_inner() {
+            Some(envelope) => {
+                self.dispatch_received_envelope(envelope)
+            },
+            None => {
+                return Err(String::from("NULL-Response was recieved from the report server").into())
+            },
+        }
+    }
+
+    fn dispatch_received_envelope(
         &self,
         received_envelope: Envelope
     ) -> Result<Box<dyn ServiceResponse>, Box<dyn Error + Send + Sync>>;
