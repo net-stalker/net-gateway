@@ -1,7 +1,6 @@
 use std::error::Error;
 use std::sync::Arc;
 
-use net_core_api::api::envelope;
 use net_core_api::core::api::API;
 use net_core_api::core::encoder_api::Encoder;
 use net_core_api::core::decoder_api::Decoder;
