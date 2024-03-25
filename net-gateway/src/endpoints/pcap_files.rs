@@ -21,10 +21,15 @@ async fn pcap_files(
     req: HttpRequest,
     mut payload: Multipart
 ) -> impl Responder {
-    let token = match authorization::authorize(req, FusionAuthVerifier::new(&config.fusion_auth_server_address.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
-        Ok(token) => token,
-        Err(response) => return response,
-    }; 
+    //Auth stuff
+    let token = if config.verify_token.token {
+        match authorization::authorize(req, FusionAuthVerifier::new(&config.fusion_auth_server_address.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
+            Ok(token) => token,
+            Err(response) => return response,
+        }
+    } else {
+        config.verify_token.default_token.clone()
+    };
     while let Ok(Some(mut field)) = payload.try_next().await {
         // read the whole pcap file in bytes
         let mut file_bytes = web::BytesMut::new();
