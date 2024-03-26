@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-04208ed] - 2024-03-26
+
+Ns 227/implement resultdto as request results (#35)
+
+* NS-227/implement-resultdto-as-request-results: Add ResultDTO dispatch
 <!-- [END AUTO UPDATE] -->
 ## [-85d9c28] - 2024-03-22
 
