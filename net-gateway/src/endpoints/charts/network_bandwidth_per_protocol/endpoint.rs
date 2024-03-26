@@ -26,7 +26,7 @@ async fn get_network_bandwidth_per_protocol(
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
-    let token = if config.verify_token.token {
+    let token = if config.verify_token.verify {
         match authorization::authorize(req, FusionAuthVerifier::new(&config.fusion_auth_server_address.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
             Ok(token) => token,
             Err(response) => return response,
