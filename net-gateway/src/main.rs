@@ -4,8 +4,8 @@ use actix_web::HttpServer;
 use actix_web::http::header;
 use actix_web::web;
 use net_gateway::config::Config;
-use net_core::set_ips;
-use net_core::host::get_addr_from_host;
+use net_gateway::core::host::get_addr_from_host;
+use net_gateway::set_ips;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> { 

@@ -1,6 +1,6 @@
 [workspace]
 
-members = [ "net-core",
+members = [
   "net-gateway",
 ]
 

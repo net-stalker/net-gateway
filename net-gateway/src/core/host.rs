@@ -15,7 +15,7 @@ macro_rules! set_ips {
         $(
             let ip = $callback(&$config.$field.host_name);
 
-            if let Err(e) = std::net::Ipv4Addr::from_str(&ip) {
+            if let Err(e) = std::net::IpAddr::from_str(&ip) {
                 panic!("Error parsing {} ip: {}", stringify!($field), e);
             }
             $config.$field.addr = format!("{}:{}", ip, &$config.$field.port);

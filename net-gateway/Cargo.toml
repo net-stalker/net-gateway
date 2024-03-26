@@ -31,4 +31,3 @@ config = "0.14.0"
 actix-multipart = "0.6.1"
 directories = "5.0.1"
 openssl = { version = "0.10.64", features = ["vendored"] }
-net-core = { path = "../net-core" }
