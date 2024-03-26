@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-85d9c28] - 2024-03-22
 
 Ns 188/docker for net gateway (#32)
 
 * implemented docker files for net-gateway
-<!-- [END AUTO UPDATE] -->
 ## [-187d453] - 2024-03-22
 
 Ns 208/api update (#33)
