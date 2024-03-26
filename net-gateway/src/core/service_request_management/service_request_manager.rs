@@ -90,7 +90,7 @@ pub trait ServiceRequestManager: Sync + Send {
                 self.dispatch_received_envelope(envelope)
             },
             None => {
-                return Err(String::from("NULL-Response was recieved from the report server").into())
+                Err(String::from("NULL-Response was recieved from the report server").into())
             },
         }
     }
