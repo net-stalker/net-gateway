@@ -1,0 +1,24 @@
+# .github/workflows/stage.yml
+name: Stage Workflow
+
+on:
+  push:
+    branches:
+      - stage
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Run ssh-agent
+      run: |
+        eval `ssh-agent -s`
+        ssh-add ~/.ssh/github
+    - name: Update net-gateway
+      run: |
+        cd /mnt/netstalker-back/net-gateway
+        git pull -p
+    - name: Rerun docker-compose
+      run: |
+        cd /mnt/netstalker-back
+        docker-compose up --build -d

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-dd2587b] - 2024-04-01
 
 Add debug without token verifier (#34)
@@ -15,7 +16,6 @@ Add debug without token verifier (#34)
 * implemented macros for ip setting, added net-core crate for common modules
 
 * updated endpoints to match new config
-<!-- [END AUTO UPDATE] -->
 ## [-04208ed] - 2024-03-26
 
 Ns 227/implement resultdto as request results (#35)
