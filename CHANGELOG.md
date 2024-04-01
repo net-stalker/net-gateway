@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-9bd2363] - 2024-04-01
 
 added *.config to gitignore (#37)
 
 * added *.config to gitignore
-<!-- [END AUTO UPDATE] -->
 ## [-fe78c38] - 2024-04-01
 
 NS-240/master-push-action: implemented stage.yml (#36)
