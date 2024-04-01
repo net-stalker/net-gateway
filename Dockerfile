@@ -7,8 +7,13 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     musl-tools \
     libzmq3-dev \
+<<<<<<< Updated upstream
     nano \
     htop \
+=======
+    libpcap-dev \
+    wget \
+>>>>>>> Stashed changes
     && rm -rf /var/lib/apt/lists/*
 
 RUN rustup target add x86_64-unknown-linux-musl
