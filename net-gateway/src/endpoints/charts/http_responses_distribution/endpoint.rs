@@ -25,9 +25,13 @@ async fn get_http_responses_distribution(
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
-    let token = match authorization::authorize(req,FusionAuthVerifier::new(&config.fusion_auth_server_address.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
-        Ok(token) => token,
-        Err(response) => return response,
+    let token = if config.verify_token.verify {
+        match authorization::authorize(req, FusionAuthVerifier::new(&config.fusion_auth_server_address.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
+            Ok(token) => token,
+            Err(response) => return response,
+        }
+    } else {
+        config.verify_token.default_token.clone()
     };
 
     let chart_request_result = HttpResponsesDistributionChartManager::default().request_data(

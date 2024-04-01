@@ -1,5 +1,9 @@
+[verify_token]
+verify = false
+default_token = "default_token"
+
 [bind_address]
-addr = "127.0.0.1:8080"
+addr = "0.0.0.0:8080"
 
 [allowed_origin]
 addr = "http://localhost:3000"

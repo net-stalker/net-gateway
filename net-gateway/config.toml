@@ -1,3 +1,7 @@
+[verify_token]
+verify = true
+default_token = ""
+
 [bind_address]
 addr = ""
 
