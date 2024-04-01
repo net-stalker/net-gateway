@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-5e265a0] - 2024-04-01
+
+fix-dockerfile-pcap-error: removed cross compilation (#38)
+
+* removed cross compilation
 <!-- [END AUTO UPDATE] -->
 ## [-9bd2363] - 2024-04-01
 
