@@ -31,8 +31,8 @@ async fn get_network_overview_filters(
     };
 
     let chart_request_result = NetworkOverviewFilterManager::default().request_data(
+        Arc::new("MOCK_TENANT_ID".into()),
         config.into_inner(),
-        Arc::new(token),
         Arc::new(params.into_inner()),
         None,
     ).await;
