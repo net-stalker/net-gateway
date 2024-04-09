@@ -9,6 +9,7 @@ use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
 use crate::authorization;
 use crate::config::Config;
+use crate::core::filter::Filters;
 use crate::core::filter::FiltersWrapper;
 use crate::core::general_filters::GeneralFilters;
 
@@ -34,11 +35,13 @@ async fn get_http_request_methods_distribution(
         config.verify_token.default_token.clone()
     };
 
+    let filters: Filters = filters_wrapper.into_inner().into();
+
     let chart_request_result = HttpRequestMethodsDistChartManager::default().request_data(
+        Arc::new("MOCK_TENANT_ID".into()),
         config.into_inner(),
-        Arc::new(token),
         Arc::new(params.into_inner()),
-        Some(Arc::new(filters_wrapper.into_inner().into())),
+        Some(Arc::new(filters)),
     ).await;
     if let Err(e) = chart_request_result {
         //TODO: Write appropriate error returning

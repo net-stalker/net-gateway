@@ -21,13 +21,13 @@ pub trait ServiceRequestManager: Sync + Send {
     //Requesting chart
     async fn request_data(
         &self,
+        tenant_id: Arc<String>,
         config: Arc<Config>,
-        jwt_token: Arc<String>,
         params: Arc<GeneralFilters>,
         filters: Option<Arc<Filters>>,
     ) -> Result<Box<dyn ServiceResponse>, Box<dyn Error + Send + Sync>> {
         //Form request to the server
-        let bytes_to_send = self.form_request(params, jwt_token, filters);
+        let bytes_to_send = self.form_request(tenant_id, params, filters);
 
         //Creating Quinn Client Endpoint
         //Connecting with Quinn Client Endpoint to the server
@@ -113,13 +113,12 @@ pub trait ServiceRequestManager: Sync + Send {
 
     fn form_enveloped_request(
         &self,
+        tenant_id: Arc<String>,
         params: Arc<GeneralFilters>,
-        jwt_token: Arc<String>,
         filters: Option<Arc<Filters>>,
     ) -> Envelope {
         Envelope::new(
-            Some(&jwt_token),
-            None,
+            &tenant_id,
             self.get_request_type(),
             &self.form_dto_request(
                 params,
@@ -130,13 +129,13 @@ pub trait ServiceRequestManager: Sync + Send {
 
     fn form_request(
         &self,
+        tenant_id: Arc<String>,
         params: Arc<GeneralFilters>,
-        jwt_token: Arc<String>,
         filters: Option<Arc<Filters>>,
     ) -> Vec<u8> {
         self.form_enveloped_request(
-            params,
-            jwt_token,
+            tenant_id,
+            params,            
             filters,
         ).encode()
     }

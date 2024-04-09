@@ -51,8 +51,8 @@ async fn get_http_overview(
         .add_data_requester(HttpOverviewFilterManager::default().boxed())
         .build()
         .request_dashboard(
+            Arc::new("MOCK_TENANT_ID".into()),
             config.into_inner(),
-            Arc::new(token),
             Arc::new(params.into_inner()),
             Some(Arc::new(filters)),
         ).await;

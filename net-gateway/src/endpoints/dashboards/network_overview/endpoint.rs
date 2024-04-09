@@ -49,8 +49,8 @@ async fn get_network_overview(
         .add_data_requester(NetworkOverviewFilterManager::default().boxed())
         .build()
         .request_dashboard(
+            Arc::new("MOCK_TENANT_ID".into()),
             config.into_inner(),
-            Arc::new(token),
             Arc::new(params.into_inner()),
             Some(Arc::new(filters)),
         ).await;
