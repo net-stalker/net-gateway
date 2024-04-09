@@ -15,7 +15,7 @@ use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::{authorization, config::Config};
 
-#[post("/pcap_files")]
+#[post("/pcap-files")]
 async fn pcap_files(
     config: web::Data<Config>,
     req: HttpRequest,

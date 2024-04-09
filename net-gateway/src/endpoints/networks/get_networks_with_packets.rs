@@ -1,18 +1,17 @@
-use actix_web::delete;
+use actix_web::get;
 use actix_web::web;
-use actix_web::HttpRequest;
-use actix_web::HttpResponse;
 use actix_web::Responder;
+use actix_web::HttpResponse;
+use actix_web::HttpRequest;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use crate::endpoints::networks::core::network::Network;
-use crate::{authorization, config::Config};
 
+use crate::authorization;
+use crate::config::Config;
 
-#[delete("/network")]
-async fn network(
+#[get("/networks-with-packets")]
+async fn networks_with_packets(
     config: web::Data<Config>,
     req: HttpRequest,
-    network: web::Json<Network>,
 ) -> impl Responder {
     //Auth stuff
     let _token = if config.verify_token.verify {
@@ -23,6 +22,6 @@ async fn network(
     } else {
         config.verify_token.default_token.clone()
     };
-    log::debug!("Network to delete: {:?}", network);
-    HttpResponse::Ok().body("Network uploaded successfully")
+    log::debug!("getting networks");
+    HttpResponse::Ok().body("Networks retrieved successfully")
 }

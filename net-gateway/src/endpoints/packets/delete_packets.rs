@@ -4,15 +4,15 @@ use actix_web::HttpRequest;
 use actix_web::HttpResponse;
 use actix_web::Responder;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use crate::endpoints::networks::core::network::Network;
+use crate::endpoints::packets::core::packet::Packet;
 use crate::{authorization, config::Config};
 
 
-#[delete("/network")]
-async fn network(
+#[delete("/packets")]
+async fn packets(
     config: web::Data<Config>,
     req: HttpRequest,
-    network: web::Json<Network>,
+    packets: web::Json<Vec<Packet>>,
 ) -> impl Responder {
     //Auth stuff
     let _token = if config.verify_token.verify {
@@ -23,6 +23,7 @@ async fn network(
     } else {
         config.verify_token.default_token.clone()
     };
-    log::debug!("Network to delete: {:?}", network);
-    HttpResponse::Ok().body("Network uploaded successfully")
+    // all the packets here must have onlt id and other field are None
+    log::debug!("Packets to delete: {:?}", packets);
+    HttpResponse::Ok().body("Packets deleted successfully!")
 }
