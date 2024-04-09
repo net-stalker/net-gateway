@@ -31,14 +31,26 @@ async fn get_http_overview(
     req: HttpRequest,
 ) -> impl Responder {
     //Auth stuff
-    let token = if config.verify_token.verify {
-        match authorization::authorize(req, FusionAuthVerifier::new(&config.fusion_auth_server_address.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
-            Ok(token) => token,
-            Err(response) => return response,
-        }
-    } else {
-        config.verify_token.default_token.clone()
-    };
+    let token_verifier = FusionAuthVerifier::new(
+        &config.fusion_auth_server_address.addr,
+        Some(config.fusion_auth_api_key.key.clone())
+    );
+
+    let authorization_result = authorization::authorize(
+        req,
+        Box::new(token_verifier)
+    ).await;
+
+    if let Err(e) = authorization_result {
+        return e;
+    }
+    let token = authorization_result.unwrap();
+
+    let tenant_id = token.get_tenant_id();
+    if let Err(e) = tenant_id {
+        return HttpResponse::InternalServerError().body(e.to_string());
+    }
+    let tenant_id = tenant_id.unwrap();
 
     let filters: Filters = filters_wrapper.into_inner().into();
 
@@ -51,7 +63,7 @@ async fn get_http_overview(
         .add_data_requester(HttpOverviewFilterManager::default().boxed())
         .build()
         .request_dashboard(
-            Arc::new("MOCK_TENANT_ID".into()),
+            Arc::new(tenant_id.to_string()),
             config.into_inner(),
             Arc::new(params.into_inner()),
             Some(Arc::new(filters)),
