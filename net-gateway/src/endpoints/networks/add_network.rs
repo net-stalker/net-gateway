@@ -24,6 +24,6 @@ async fn network(
         config.verify_token.default_token.clone()
     };
     log::debug!("Network to add: {:?}", network);
-    HttpResponse::Ok().body("Network uploaded successfully");
-    todo!("Update dto strucutes for network");
+    // TODO: need to update those new endpoins to actually have access to the rest of the backend
+    HttpResponse::Ok().body("Network uploaded successfully")
 }
