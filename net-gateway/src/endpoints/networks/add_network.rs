@@ -3,9 +3,15 @@ use actix_web::web;
 use actix_web::HttpRequest;
 use actix_web::HttpResponse;
 use actix_web::Responder;
+use net_core_api::api::envelope::envelope::Envelope;
+use net_inserter_api::api::core::insert_api::InsertAPI;
+use net_inserter_api::api::network::InsertNetworkRequestDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
+use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::endpoints::networks::core::network::Network;
 use crate::{authorization, config::Config};
+use net_core_api::core::typed_api::Typed;
+use net_core_api::core::encoder_api::Encoder;
 
 
 #[post("/network")]
@@ -34,8 +40,32 @@ async fn network(
     if let Err(e) = tenant_id {
         return HttpResponse::InternalServerError().body(e.to_string());
     }
-    let _tenant_id = tenant_id.unwrap();
-    log::debug!("Network to add: {:?}", network);
-    // TODO: need to update those new endpoins to actually have access to the rest of the backend
+    let tenant_id = tenant_id.unwrap();
+    
+    let server_connection_result = QuinnClientEndpointManager::start_server_connection(
+        &config.quin_client_address.addr,
+        &config.quin_inserter.addr,
+        &config.quin_server_application.app,
+    ).await;
+    let mut server_connection = match server_connection_result {
+        Ok(server_connection) => server_connection,
+        Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
+    };
+
+    let network_insert_request = InsertNetworkRequestDTO::new(
+        network.name.as_str(),
+        network.color.as_str()
+    ).into_insert_request();
+
+    let request = Envelope::new(
+        tenant_id,
+        network_insert_request.get_type(),
+        &network_insert_request.encode());
+
+    match server_connection.send_all_reliable(&request.encode()).await {
+        Ok(_) => (),
+        Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
+    };
+
     HttpResponse::Ok().body("Network uploaded successfully")
 }
