@@ -8,12 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-86ea2da] - 2024-04-11
+
+Ns 270/parse jwt (#42)
+
+* Add jwt parsing. Now pass actual tenant_id
+<!-- [END AUTO UPDATE] -->
 ## [-ae75c4c] - 2024-04-09
 
 Ns 261/update net core library version (#40)
 
 * NS-261/update-net-core-library-version: Update libs and remove unused and obsolete code.
-<!-- [END AUTO UPDATE] -->
 ## [-d1df036] - 2024-04-02
 
 updated-stage: updated stage.yml (#39)

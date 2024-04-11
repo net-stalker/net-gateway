@@ -8,12 +8,6 @@ use net_config::NetConfig;
 use std::env;
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
-pub struct VerifyToken {
-    pub verify: bool,
-    pub default_token: String,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub struct BindAddress {
     pub addr: String,
 }
@@ -59,7 +53,6 @@ pub struct FusionAuthApiKey {
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq, NetConfig)]
 pub struct Config {
-    pub verify_token: VerifyToken,
     pub bind_address: BindAddress,
     pub allowed_origin: AllowedOrigin,
     pub(crate) quin_client_address: QuinClientAddress,

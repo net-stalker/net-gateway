@@ -4,12 +4,16 @@ use actix_web::HttpRequest;
 use actix_web::HttpResponse;
 use actix_web::Responder;
 use actix_multipart::Multipart;
+
 use futures::StreamExt;
 use futures::TryStreamExt;
+
 use net_agent_api::api::data_packet::DataPacketDTO;
+
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
+
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
@@ -22,15 +26,27 @@ async fn pcap_files(
     mut payload: Multipart
 ) -> impl Responder {
     //Auth stuff
-    let token = if config.verify_token.verify {
-        match authorization::authorize(req, FusionAuthVerifier::new(&config.fusion_auth_server_address.addr, Some(config.fusion_auth_api_key.key.clone()))).await {
-            Ok(token) => token,
-            Err(response) => return response,
-        }
-    } else {
-        config.verify_token.default_token.clone()
-    };
+    let token_verifier = FusionAuthVerifier::new(
+        &config.fusion_auth_server_address.addr,
+        Some(config.fusion_auth_api_key.key.clone())
+    );
 
+    let authorization_result = authorization::authorize(
+        req,
+        Box::new(token_verifier)
+    ).await;
+
+    if let Err(e) = authorization_result {
+        return e;
+    }
+    let token = authorization_result.unwrap();
+
+    let tenant_id = token.get_tenant_id();
+    if let Err(e) = tenant_id {
+        return HttpResponse::InternalServerError().body(e.to_string());
+    }
+    let tenant_id = tenant_id.unwrap();
+    
     while let Ok(Some(mut field)) = payload.try_next().await {
         // read the whole pcap file in bytes
         let mut file_bytes = web::BytesMut::new();
@@ -50,7 +66,7 @@ async fn pcap_files(
         let packet_data = DataPacketDTO::new(&file_bytes);
 
         let request = Envelope::new(
-            "MOCK_TENANT_ID",
+            tenant_id,
             DataPacketDTO::get_data_type(),
             &packet_data.encode());
         
