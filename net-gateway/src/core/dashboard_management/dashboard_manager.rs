@@ -31,14 +31,14 @@ impl DashboardManager {
 
     pub async fn request_dashboard(
         self,
+        tenant_id: Arc<String>,
         config: Arc<Config>,
-        jwt_token: Arc<String>,
         params: Arc<GeneralFilters>,
         filters: Option<Arc<Filters>>,
     ) -> Result<Dashboard, String> {
         let charts_request_result = self.request_data(
+            tenant_id,
             config,
-            jwt_token,
             params,
             filters,
         ).await;
@@ -54,8 +54,9 @@ impl DashboardManager {
 
     async fn request_data(
         self,
+        // TODO: Investigate, mb `Arc<str>` is better
+        tenant_id: Arc<String>,
         config: Arc<Config>,
-        jwt_token: Arc<String>,
         params: Arc<GeneralFilters>,
         filters: Option<Arc<Filters>>,
     ) -> Result<Vec<Box<dyn ServiceResponse>>, String> {
@@ -66,15 +67,15 @@ impl DashboardManager {
         for chart_requester in self.data_requesters {
             let response_clone = response.clone();
             
+            let tenant_id_clone = tenant_id.clone();
             let config_clone = config.clone();
-            let jwt_token = jwt_token.clone();
             let params_clone = params.clone();
             let filters_clone = filters.clone();
             
             let task = tokio::spawn(async move {
                 let request_result = chart_requester.request_data(
+                    tenant_id_clone,
                     config_clone,
-                    jwt_token,
                     params_clone,
                     filters_clone,
                 ).await;

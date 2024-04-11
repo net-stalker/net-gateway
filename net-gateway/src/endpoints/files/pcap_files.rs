@@ -30,6 +30,7 @@ async fn pcap_files(
     } else {
         config.verify_token.default_token.clone()
     };
+
     while let Ok(Some(mut field)) = payload.try_next().await {
         // read the whole pcap file in bytes
         let mut file_bytes = web::BytesMut::new();
@@ -46,8 +47,13 @@ async fn pcap_files(
             Ok(server_connection) => server_connection,
             Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
         };
-        let packet_data = DataPacketDTO::new(&file_bytes); 
-        let request = Envelope::new(Some(&token), Some("agent_id"), DataPacketDTO::get_data_type(), &packet_data.encode());
+        let packet_data = DataPacketDTO::new(&file_bytes);
+
+        let request = Envelope::new(
+            "MOCK_TENANT_ID",
+            DataPacketDTO::get_data_type(),
+            &packet_data.encode());
+        
         match server_connection.send_all_reliable(&request.encode()).await {
             Ok(_) => (),
             Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),

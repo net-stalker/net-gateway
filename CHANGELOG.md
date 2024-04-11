@@ -8,12 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-ae75c4c] - 2024-04-09
+
+Ns 261/update net core library version (#40)
+
+* NS-261/update-net-core-library-version: Update libs and remove unused and obsolete code.
+<!-- [END AUTO UPDATE] -->
 ## [-d1df036] - 2024-04-02
 
 updated-stage: updated stage.yml (#39)
 
 * updated stage.yml, added docker cache prune
-<!-- [END AUTO UPDATE] -->
 ## [-5e265a0] - 2024-04-01
 
 fix-dockerfile-pcap-error: removed cross compilation (#38)
