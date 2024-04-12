@@ -55,7 +55,7 @@ async fn network(
     let network_insert_request = InsertNetworkRequestDTO::new(
         network.name.as_str(),
         network.color.as_str()
-    ).into_insert_request();
+    );
 
     let request = Envelope::new(
         tenant_id,

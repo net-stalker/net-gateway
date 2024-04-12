@@ -63,7 +63,7 @@ async fn pcap_files(
             Ok(server_connection) => server_connection,
             Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
         };
-        let packet_data = InsertPcapFileDTO::new(&file_bytes).into_insert_request();
+        let packet_data = InsertPcapFileDTO::new(&file_bytes);
 
         let request = Envelope::new(
             tenant_id,
