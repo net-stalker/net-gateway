@@ -44,7 +44,13 @@ async fn main() -> std::io::Result<()> {
             .service(net_gateway::endpoints::charts::http_request_methods_distribution::endpoint::get_http_request_methods_distribution)
             .service(net_gateway::endpoints::filters::http_overview_filters::endpoint::get_http_overview_filters)
             .service(net_gateway::endpoints::dashboards::http_overview::endpoint::get_http_overview)
-            .service(net_gateway::endpoints::pcap_files::pcap_files)
+            .service(net_gateway::endpoints::files::pcap_files::pcap_files)
+            .service(net_gateway::endpoints::networks::add_network::network)
+            .service(net_gateway::endpoints::networks::delete_network::network)
+            .service(net_gateway::endpoints::networks::get_networks_with_packets::networks_with_packets)
+            .service(net_gateway::endpoints::packets::delete_packets::packets)
+            .service(net_gateway::endpoints::packets::transfer_packets::packets)
+            
         )
         .bind(config.bind_address.addr)?
         .run()  

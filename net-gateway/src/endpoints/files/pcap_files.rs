@@ -8,18 +8,17 @@ use actix_multipart::Multipart;
 use futures::StreamExt;
 use futures::TryStreamExt;
 
-use net_agent_api::api::data_packet::DataPacketDTO;
-
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
 
+use net_inserter_api::api::pcap_file::InsertPcapFileDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::{authorization, config::Config};
 
-#[post("/pcap_files")]
+#[post("/pcap-files")]
 async fn pcap_files(
     config: web::Data<Config>,
     req: HttpRequest,
@@ -63,11 +62,11 @@ async fn pcap_files(
             Ok(server_connection) => server_connection,
             Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
         };
-        let packet_data = DataPacketDTO::new(&file_bytes);
+        let packet_data = InsertPcapFileDTO::new(&file_bytes);
 
         let request = Envelope::new(
             tenant_id,
-            DataPacketDTO::get_data_type(),
+            packet_data.get_type(),
             &packet_data.encode());
         
         match server_connection.send_all_reliable(&request.encode()).await {

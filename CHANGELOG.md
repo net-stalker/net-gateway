@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-86ea2da] - 2024-04-11
 
 Ns 270/parse jwt (#42)
 
 * Add jwt parsing. Now pass actual tenant_id
-<!-- [END AUTO UPDATE] -->
 ## [-ae75c4c] - 2024-04-09
 
 Ns 261/update net core library version (#40)
