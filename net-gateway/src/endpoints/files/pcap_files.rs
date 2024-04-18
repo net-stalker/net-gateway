@@ -12,7 +12,6 @@ use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
 
-use net_inserter_api::api::core::insert_api::InsertAPI;
 use net_inserter_api::api::pcap_file::InsertPcapFileDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
