@@ -9,9 +9,11 @@ use futures::StreamExt;
 use futures::TryStreamExt;
 
 use net_core_api::api::envelope::envelope::Envelope;
+use net_core_api::core::decoder_api::Decoder;
 use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
 
+use net_inserter_api::api::network_packet::network_packet::NetworkPacketDTO;
 use net_inserter_api::api::pcap_file::InsertPcapFileDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
@@ -45,6 +47,7 @@ async fn pcap_files(
         return HttpResponse::InternalServerError().body(e.to_string());
     }
     let tenant_id = tenant_id.unwrap();
+    let mut decoded_packets: Vec<NetworkPacketDTO> = Vec::default(); 
     
     while let Ok(Some(mut field)) = payload.try_next().await {
         // read the whole pcap file in bytes
@@ -67,13 +70,27 @@ async fn pcap_files(
         let request = Envelope::new(
             tenant_id,
             packet_data.get_type(),
-            &packet_data.encode());
+            &packet_data.encode()
+        );
         
         match server_connection.send_all_reliable(&request.encode()).await {
             Ok(_) => (),
             Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
         };
+
+        match server_connection.receive_reliable().await {
+            Ok(response) => {
+                let enveloped_response = Envelope::decode(&response);
+                if enveloped_response.get_envelope_type() != NetworkPacketDTO::get_data_type() {
+                    return HttpResponse::InternalServerError().body("Received wrong data type after decoding, double check the data you want to decode");
+                }
+                decoded_packets.push(NetworkPacketDTO::decode(enveloped_response.get_data()));     
+            },
+            Err(err) => {
+                return HttpResponse::InternalServerError().body(e.to_string());
+            }
+        }
     }
 
-    HttpResponse::Ok().body("Files uploaded successfully")
+    HttpResponse::Ok().body()
 }
