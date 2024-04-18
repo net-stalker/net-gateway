@@ -18,6 +18,7 @@ use net_inserter_api::api::pcap_file::InsertPcapFileDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
+use crate::endpoints::files::core::network_packet::NetworkPacket;
 use crate::{authorization, config::Config};
 
 #[post("/pcap-files")]
@@ -47,7 +48,7 @@ async fn pcap_files(
         return HttpResponse::InternalServerError().body(e.to_string());
     }
     let tenant_id = tenant_id.unwrap();
-    let mut decoded_packets: Vec<NetworkPacketDTO> = Vec::default(); 
+    let mut packets: Vec<NetworkPacket> = Vec::default(); 
     
     while let Ok(Some(mut field)) = payload.try_next().await {
         // read the whole pcap file in bytes
@@ -84,13 +85,13 @@ async fn pcap_files(
                 if enveloped_response.get_envelope_type() != NetworkPacketDTO::get_data_type() {
                     return HttpResponse::InternalServerError().body("Received wrong data type after decoding, double check the data you want to decode");
                 }
-                decoded_packets.push(NetworkPacketDTO::decode(enveloped_response.get_data()));     
+                packets.push(NetworkPacketDTO::decode(enveloped_response.get_data()).into());     
             },
             Err(err) => {
-                return HttpResponse::InternalServerError().body(e.to_string());
+                return HttpResponse::InternalServerError().body(err.to_string());
             }
         }
     }
 
-    HttpResponse::Ok().body()
+    HttpResponse::Ok().json(packets)
 }
