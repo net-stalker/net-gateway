@@ -92,6 +92,7 @@ async fn pcap_files(
             }
         }
     }
+    log::warn!("return json with {:?}", packets);
 
     HttpResponse::Ok().json(packets)
 }

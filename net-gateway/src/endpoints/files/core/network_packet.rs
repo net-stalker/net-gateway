@@ -19,7 +19,7 @@ impl From<NetworkPacketDTO> for NetworkPacket {
     fn from(value: NetworkPacketDTO) -> Self {
         Self {
             id: value.get_id(),
-            frametime: Utc.timestamp_opt(value.get_frame_time(), 0).unwrap(),
+            frametime: DateTime::<Utc>::from_timestamp_nanos(value.get_frame_time()),
             src: value.get_src().to_string(),
             dst: value.get_dst().to_string(),
             protocols: value.get_protocols().to_vec(),
