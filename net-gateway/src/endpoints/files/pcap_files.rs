@@ -9,6 +9,7 @@ use futures::StreamExt;
 use futures::TryStreamExt;
 
 use net_core_api::api::envelope::envelope::Envelope;
+use net_core_api::api::result::result::ResultDTO;
 use net_core_api::core::decoder_api::Decoder;
 use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
@@ -79,17 +80,43 @@ async fn pcap_files(
             Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
         };
 
-        match server_connection.receive_reliable().await {
-            Ok(response) => {
-                let enveloped_response = Envelope::decode(&response);
-                if enveloped_response.get_envelope_type() != NetworkPacketDTO::get_data_type() {
-                    return HttpResponse::InternalServerError().body("Received wrong data type after decoding, double check the data you want to decode");
+        let response = match server_connection.receive_reliable().await {
+            Ok(response) => ResultDTO::decode(&response),
+            Err(err) => return HttpResponse::InternalServerError().json(serde_json::json!({
+                "error": "Invernal Server Error",
+                "message": err.to_string()
+            })),
+        };
+        match response.is_ok() {
+            true => {
+                let response = response.into_inner();
+                if response.is_none() {
+                    return HttpResponse::InternalServerError().json(serde_json::json!({
+                        "error": "Invernal Server Error",
+                        "message": "Coldn't get network packet",
+                    }));
                 }
-                packets.push(NetworkPacketDTO::decode(enveloped_response.get_data()).into());     
+                let response = response.unwrap();
+                if response.get_envelope_type() != NetworkPacketDTO::get_data_type() {
+                    return HttpResponse::InternalServerError().json(serde_json::json!({
+                        "error": "Invernal Server Error",
+                        "message": "Received wrong data type after decoding, double check the data you want to decode"
+                    }));
+                }
+                packets.push(NetworkPacketDTO::decode(response.get_data()).into());
             },
-            Err(err) => {
-                return HttpResponse::InternalServerError().body(err.to_string());
-            }
+            false => {
+                if response.get_description().is_err() {
+                    return HttpResponse::InternalServerError().json(serde_json::json!({
+                        "error": "Invernal Server Error",
+                        "message": response.get_description().err().unwrap(),
+                    })); 
+                }
+                return HttpResponse::InternalServerError().json(serde_json::json!({
+                    "error": "Internal Server Error",
+                    "message": response.get_description().unwrap(),
+                }));
+            },
         }
     }
     log::warn!("return json with {:?}", packets);
