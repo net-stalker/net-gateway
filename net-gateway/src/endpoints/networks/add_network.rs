@@ -91,10 +91,10 @@ async fn network(
                     "message": response.get_description().err().unwrap(),
                 })); 
             }
-            return HttpResponse::InternalServerError().json(serde_json::json!({
+            HttpResponse::InternalServerError().json(serde_json::json!({
                 "error": "Internal Server Error",
                 "message": response.get_description().unwrap(),
-            }));
+            }))
         },
     }
 }
