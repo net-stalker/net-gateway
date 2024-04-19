@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-7a96db3] - 2024-04-18
 
 Ns 269/update rest endpoints for packets (#41)
 
 * added endpoints for networks
-<!-- [END AUTO UPDATE] -->
 ## [-86ea2da] - 2024-04-11
 
 Ns 270/parse jwt (#42)
