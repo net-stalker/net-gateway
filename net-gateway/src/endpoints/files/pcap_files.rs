@@ -9,13 +9,17 @@ use futures::StreamExt;
 use futures::TryStreamExt;
 
 use net_core_api::api::envelope::envelope::Envelope;
+use net_core_api::api::result::result::ResultDTO;
+use net_core_api::core::decoder_api::Decoder;
 use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
 
+use net_inserter_api::api::network_packet::network_packet::NetworkPacketDTO;
 use net_inserter_api::api::pcap_file::InsertPcapFileDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
+use crate::endpoints::files::core::network_packet::NetworkPacket;
 use crate::{authorization, config::Config};
 
 #[post("/pcap-files")]
@@ -45,6 +49,7 @@ async fn pcap_files(
         return HttpResponse::InternalServerError().body(e.to_string());
     }
     let tenant_id = tenant_id.unwrap();
+    let mut packets: Vec<NetworkPacket> = Vec::default(); 
     
     while let Ok(Some(mut field)) = payload.try_next().await {
         // read the whole pcap file in bytes
@@ -67,13 +72,54 @@ async fn pcap_files(
         let request = Envelope::new(
             tenant_id,
             packet_data.get_type(),
-            &packet_data.encode());
+            &packet_data.encode()
+        );
         
         match server_connection.send_all_reliable(&request.encode()).await {
             Ok(_) => (),
             Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
         };
-    }
 
-    HttpResponse::Ok().body("Files uploaded successfully")
+        let response = match server_connection.receive_reliable().await {
+            Ok(response) => ResultDTO::decode(&response),
+            Err(err) => return HttpResponse::InternalServerError().json(serde_json::json!({
+                "error": "Invernal Server Error",
+                "message": err.to_string()
+            })),
+        };
+        match response.is_ok() {
+            true => {
+                let response = response.into_inner();
+                if response.is_none() {
+                    return HttpResponse::InternalServerError().json(serde_json::json!({
+                        "error": "Invernal Server Error",
+                        "message": "Coldn't get network packet",
+                    }));
+                }
+                let response = response.unwrap();
+                if response.get_envelope_type() != NetworkPacketDTO::get_data_type() {
+                    return HttpResponse::InternalServerError().json(serde_json::json!({
+                        "error": "Invernal Server Error",
+                        "message": "Received wrong data type after decoding, double check the data you want to decode"
+                    }));
+                }
+                packets.push(NetworkPacketDTO::decode(response.get_data()).into());
+            },
+            false => {
+                if response.get_description().is_err() {
+                    return HttpResponse::InternalServerError().json(serde_json::json!({
+                        "error": "Invernal Server Error",
+                        "message": response.get_description().err().unwrap(),
+                    })); 
+                }
+                return HttpResponse::InternalServerError().json(serde_json::json!({
+                    "error": "Internal Server Error",
+                    "message": response.get_description().unwrap(),
+                }));
+            },
+        }
+    }
+    log::warn!("return json with {:?}", packets);
+
+    HttpResponse::Ok().json(packets)
 }
