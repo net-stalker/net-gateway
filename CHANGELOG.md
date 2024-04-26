@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-644a5f5] - 2024-04-26
+
+Add returning of network packets after insert (#43)
+
+* updated pcap-file endpoint for sending data back as a response
+
+* provided error checking and the use of ResultDto, also fixed a bad name of frametime field in the packet
+
+* added an endpoint for network updating, work with patch method
 <!-- [END AUTO UPDATE] -->
 ## [-7a96db3] - 2024-04-18
 
