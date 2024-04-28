@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-434cea4] - 2024-04-28
 
 removed git dep and added dep from crates.io (#44)
 
 * FIx: removed git dep and added dep from crates.io
-<!-- [END AUTO UPDATE] -->
 ## [-644a5f5] - 2024-04-26
 
 Add returning of network packets after insert (#43)
