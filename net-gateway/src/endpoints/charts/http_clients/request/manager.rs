@@ -43,6 +43,7 @@ impl ServiceRequestManager for HttpClientsChartManager {
         Box::new(HttpClientsRequestDTO::new(
             params.start_date,
             params.end_date,
+            params.network_id,
             filters,
         ))
     }
