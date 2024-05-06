@@ -1,10 +1,11 @@
+use actix_multipart::Multipart;
 use actix_web::delete;
 use actix_web::web;
 use actix_web::HttpRequest;
 use actix_web::HttpResponse;
 use actix_web::Responder;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use crate::endpoints::packets::core::packet::Packet;
+// use crate::endpoints::packets::core::packet::Packet;
 use crate::{authorization, config::Config};
 
 
@@ -12,8 +13,10 @@ use crate::{authorization, config::Config};
 async fn packets(
     config: web::Data<Config>,
     req: HttpRequest,
-    packets: web::Json<Vec<Packet>>,
+    mut packets: Multipart
 ) -> impl Responder {
+    log::debug!("try to delete packets:");
+    
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
         &config.fusion_auth_server_address.addr,
@@ -36,6 +39,6 @@ async fn packets(
     }
     let _tenant_id = tenant_id.unwrap();
     // all the packets here must have onlt id and other field are None
-    log::debug!("Packets to delete: {:?}", packets);
+    // log::debug!("Packets to delete: {:?}", packets);
     HttpResponse::Ok().body("Packets deleted successfully!")
 }

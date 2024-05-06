@@ -28,7 +28,7 @@ async fn main() -> std::io::Result<()> {
                     // for profuction use this will be changed
                     // .allowed_origin(config_clone.allowed_origin.addr.as_str())
                     .allow_any_origin()
-                    .allowed_methods(vec!["GET", "POST"])
+                    .allowed_methods(vec!["GET", "POST", "DELETE"])
                     .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
             )
             .app_data(web::Data::new(config_clone.clone()))
