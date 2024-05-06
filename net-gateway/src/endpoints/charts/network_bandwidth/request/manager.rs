@@ -44,6 +44,7 @@ impl ServiceRequestManager for NetworkBandwidthChartManager {
         Box::new(NetworkBandwidthRequestDTO::new(
             params.start_date,
             params.end_date,
+            params.network_id,
             filters,
         ))
     }

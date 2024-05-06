@@ -43,6 +43,7 @@ impl ServiceRequestManager for HttpResponsesDistributionChartManager {
         Box::new(HttpResponsesDistributionRequestDTO::new(
             params.start_date,
             params.end_date,
+            params.network_id,
             filters,
         ))
     }

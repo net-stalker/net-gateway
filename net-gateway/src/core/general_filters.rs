@@ -7,4 +7,6 @@ pub struct GeneralFilters {
     pub start_date: i64,
     #[serde(rename = "endDate")]
     pub end_date: i64,
+    #[serde(rename = "networkId")]
+    pub network_id: i64,
 }
