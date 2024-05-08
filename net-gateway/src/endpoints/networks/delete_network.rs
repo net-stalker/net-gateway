@@ -1,10 +1,18 @@
+use actix_multipart::Multipart;
 use actix_web::delete;
 use actix_web::web;
 use actix_web::HttpRequest;
 use actix_web::HttpResponse;
 use actix_web::Responder;
+use futures::StreamExt;
+use net_core_api::api::envelope::envelope::Envelope;
+use net_core_api::api::result::result::ResultDTO;
+use net_core_api::core::decoder_api::Decoder;
+use net_core_api::core::typed_api::Typed;
+use net_core_api::core::encoder_api::Encoder;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use crate::endpoints::networks::core::network::Network;
+use net_updater_api::api::deletors::delete_network::delete_network_request::DeleteNetworkRequestDTO;
+use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::{authorization, config::Config};
 
 
@@ -12,7 +20,7 @@ use crate::{authorization, config::Config};
 async fn network(
     config: web::Data<Config>,
     req: HttpRequest,
-    network: web::Json<Network>,
+    mut payload: Multipart,
 ) -> impl Responder {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
@@ -34,7 +42,59 @@ async fn network(
     if let Err(e) = tenant_id {
         return HttpResponse::InternalServerError().body(e.to_string());
     }
-    let _tenant_id = tenant_id.unwrap();
-    log::debug!("Network to delete: {:?}", network);
-    HttpResponse::Ok().body("Network uploaded successfully")
+    let tenant_id = tenant_id.unwrap();
+    let mut network_id = String::default();
+    if let Some(item) = payload.next().await {
+        let mut field = item.unwrap();
+        if field.name() == "network" {
+            if let Some(chunk) = field.next().await {
+                network_id.push_str(&String::from_utf8(chunk.unwrap().to_vec()).unwrap());
+            }
+        }
+    }
+    if network_id.is_empty() {
+        return HttpResponse::InternalServerError().json(serde_json::json!({
+            "error": "Invernal Server Error",
+            "message": "Network id isn't specified"
+        }));  
+    }
+
+    let delete_request = DeleteNetworkRequestDTO::new(&network_id);
+    let request = Envelope::new(tenant_id, delete_request.get_type(), delete_request.encode().as_slice());
+    let server_connection_result = QuinnClientEndpointManager::start_server_connection(
+        &config.quin_client_address.addr,
+        &config.quin_inserter.addr,
+        &config.quin_server_application.app,
+    ).await;
+    let mut server_connection = match server_connection_result {
+        Ok(server_connection) => server_connection,
+        Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
+    };
+    match server_connection.send_all_reliable(&request.encode()).await {
+        Ok(_) => (),
+        Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
+    };
+    // the request has been sent, now I need to retrieve the response back
+    let response = match server_connection.receive_reliable().await {
+            Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
+            Err(err) => return HttpResponse::InternalServerError().json(serde_json::json!({
+                "error": "Invernal Server Error",
+                "message": err.to_string()
+            })),
+        };
+    match response.is_ok() {
+        true => HttpResponse::Ok().json(serde_json::json!("Network with id deleted successfully")),
+        false => {
+            if response.get_description().is_err() {
+                return HttpResponse::InternalServerError().json(serde_json::json!({
+                    "error": "Invernal Server Error",
+                    "message": format!("Something went wrong during deleting the network {}", &network_id),
+                }));
+            }
+            return HttpResponse::InternalServerError().json(serde_json::json!({
+                "error": "Internal Server Error",
+                "message": response.get_description().unwrap(),
+            }));
+        },
+    }
 }
