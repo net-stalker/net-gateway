@@ -1,14 +1,13 @@
 use actix_web::post;
 use actix_web::web;
 use actix_web::HttpRequest;
-use actix_web::HttpResponse;
-use actix_web::Responder;
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::api::result::result::ResultDTO;
 use net_core_api::core::decoder_api::Decoder;
 use net_inserter_api::api::network::InsertNetworkRequestDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
+use crate::core::user_facing_error::UserFacingError;
 use crate::endpoints::networks::core::network::Network;
 use crate::{authorization, config::Config};
 use net_core_api::core::typed_api::Typed;
@@ -20,7 +19,7 @@ async fn network(
     config: web::Data<Config>,
     req: HttpRequest,
     network: web::Json<Network>,
-) -> impl Responder {
+) -> Result<&'static str, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
         &config.fusion_auth_server_address.addr,
@@ -32,14 +31,12 @@ async fn network(
         Box::new(token_verifier)
     ).await;
 
-    if let Err(e) = authorization_result {
-        return e;
-    }
+    if let Err(_) = authorization_result { return Err(UserFacingError::Unauthorized); }
     let token = authorization_result.unwrap();
 
     let tenant_id = token.get_tenant_id();
     if let Err(e) = tenant_id {
-        return HttpResponse::InternalServerError().body(e.to_string());
+        return Err(UserFacingError::InternalErrorWithDescription(e.to_string()));
     }
     let tenant_id = tenant_id.unwrap();
     
@@ -50,7 +47,7 @@ async fn network(
     ).await;
     let mut server_connection = match server_connection_result {
         Ok(server_connection) => server_connection,
-        Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
+        Err(_) => return Err(UserFacingError::Timeout),
     };
 
     let network_insert_request = InsertNetworkRequestDTO::new(
@@ -66,35 +63,16 @@ async fn network(
 
     match server_connection.send_all_reliable(&request.encode()).await {
         Ok(_) => (),
-        Err(e) => return HttpResponse::InternalServerError().json(
-            serde_json::json!({
-                "error": "Internal Server Error",
-                "message": format!("Cound't insert the data: {}", e.to_string()),
-            })
-        ),
+        Err(_) => return Err(UserFacingError::Timeout),
     };
 
     let response = match server_connection.receive_reliable().await {
         Ok(response) => ResultDTO::decode(&response),
-        Err(err) => return HttpResponse::InternalServerError().json(serde_json::json!({
-            "error": "Invernal Server Error",
-            "message": err.to_string()
-        })),
+        Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
 
     match response.is_ok() {
-        true => HttpResponse::Ok().body("Network uploaded successfully"),
-        false => {
-            if response.get_description().is_err() {
-                return HttpResponse::InternalServerError().json(serde_json::json!({
-                    "error": "Invernal Server Error",
-                    "message": response.get_description().err().unwrap(),
-                })); 
-            }
-            HttpResponse::InternalServerError().json(serde_json::json!({
-                "error": "Internal Server Error",
-                "message": response.get_description().unwrap(),
-            }))
-        },
+        true => Ok("Network uploaded successfully"),
+        false => Err(UserFacingError::InternalError),
     }
 }
