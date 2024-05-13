@@ -91,10 +91,10 @@ async fn network(
                     "message": format!("Something went wrong during deleting the network {}", &network_id),
                 }));
             }
-            return HttpResponse::InternalServerError().json(serde_json::json!({
+            HttpResponse::InternalServerError().json(serde_json::json!({
                 "error": "Internal Server Error",
                 "message": response.get_description().unwrap(),
-            }));
+            }))
         },
     }
 }
