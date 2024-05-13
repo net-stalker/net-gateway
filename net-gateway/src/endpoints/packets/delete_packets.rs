@@ -10,10 +10,11 @@ use net_core_api::api::result::result::ResultDTO;
 use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
 use net_core_api::core::decoder_api::Decoder;
+use net_deleter_api::api::packets::DeletePacketsRequestDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use net_updater_api::api::deletors::delete_packets::delete_packets_request::DeletePacketsRequestDTO;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
-use crate::{authorization, config::Config};
+use crate::authorization;
+use crate::config::Config;
 
 
 #[delete("/packets")]
