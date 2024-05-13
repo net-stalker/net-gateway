@@ -1,22 +1,22 @@
 use actix_multipart::Multipart;
-use actix_web::post;
+use actix_web::patch;
 use actix_web::web;
 use actix_web::HttpRequest;
 use futures::StreamExt;
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::api::result::result::ResultDTO;
-use net_core_api::core::typed_api::Typed;
 use net_core_api::core::decoder_api::Decoder;
-use net_core_api::core::encoder_api::Encoder;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use net_updater_api::api::updaters::transfer_packets::transfer_packets::TransferPacketsRequestDTO;
+use net_updater_api::api::updaters::buffer_flush::buffer_flush_request::BufferFlushRequestDTO;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::core::user_facing_error::UserFacingError;
 use crate::{authorization, config::Config};
+use net_core_api::core::typed_api::Typed;
+use net_core_api::core::encoder_api::Encoder;
 
 
-#[post("/packets")]
-async fn packets(
+#[patch("/buffer")]
+async fn buffer(
     config: web::Data<Config>,
     req: HttpRequest,
     mut payload: Multipart,
@@ -50,30 +50,20 @@ async fn packets(
         Ok(server_connection) => server_connection,
         Err(_) => return Err(UserFacingError::Timeout),
     };
-    let mut packets_ids = Vec::new();
-    let mut network_id: Option<String> = None;
+
+    let mut delete = false;
     if let Some(item) = payload.next().await {
-        let mut field = item.unwrap();
-        if field.name() == "network" {
-            if let Some(chunk) = field.next().await {
-                network_id = Some(String::from_utf8(chunk.unwrap().to_vec()).unwrap());
-            }
-        } else if field.name() == "packets" {
-            let mut data = Vec::new();
-            while let Some(chunk) = field.next().await {
-                data.extend_from_slice(&chunk.unwrap());
-            }
-            let packet_ids: Vec<String> = serde_json::from_slice(&data).unwrap();
-            packets_ids.extend(packet_ids.into_iter().collect::<Vec<String>>());
+        if item.unwrap().name() == "delete" {
+            delete = true;
         }
     }
 
-    let transfer_packets_request = TransferPacketsRequestDTO::new(network_id.as_deref(), packets_ids.as_slice());
+    let buffer_flush_request = BufferFlushRequestDTO::new(delete);
 
     let request = Envelope::new(
         tenant_id,
-        transfer_packets_request.get_type(),
-        &transfer_packets_request.encode()
+        buffer_flush_request.get_type(),
+        &buffer_flush_request.encode()
     );
 
     match server_connection.send_all_reliable(&request.encode()).await {

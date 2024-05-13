@@ -1,3 +1,4 @@
+pub mod buffer;
 pub mod charts;
 pub mod dashboards;
 pub mod files;
