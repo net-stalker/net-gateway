@@ -48,10 +48,10 @@ async fn main() -> std::io::Result<()> {
             .service(net_gateway::endpoints::networks::add_network::network)
             .service(net_gateway::endpoints::networks::update_network::network)
             .service(net_gateway::endpoints::networks::delete_network::network)
-            .service(net_gateway::endpoints::networks::get_networks_with_packets::networks_with_packets)
+            .service(net_gateway::endpoints::networks::get_networks::networks)
+            .service(net_gateway::endpoints::networks::get_networks_id::networks)
             .service(net_gateway::endpoints::packets::delete_packets::packets)
             .service(net_gateway::endpoints::packets::transfer_packets::packets)
-            
         )
         .bind(config.bind_address.addr)?
         .run()  
