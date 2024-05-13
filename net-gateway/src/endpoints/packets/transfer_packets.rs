@@ -1,5 +1,5 @@
 use actix_multipart::Multipart;
-use actix_web::post;
+use actix_web::patch;
 use actix_web::web;
 use actix_web::HttpRequest;
 use futures::StreamExt;
@@ -15,7 +15,7 @@ use crate::core::user_facing_error::UserFacingError;
 use crate::{authorization, config::Config};
 
 
-#[post("/packets")]
+#[patch("/packets")]
 async fn packets(
     config: web::Data<Config>,
     req: HttpRequest,

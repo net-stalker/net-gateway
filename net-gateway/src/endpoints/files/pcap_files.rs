@@ -19,12 +19,12 @@ use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::core::user_facing_error::UserFacingError;
 use crate::{authorization, config::Config};
 
-#[post("/pcap-files")]
-async fn pcap_files(
+#[post("/pcap-file")]
+async fn pcap_file(
     config: web::Data<Config>,
     req: HttpRequest,
     mut payload: Multipart
-) -> Result<&'static str, UserFacingError> {
+) -> Result<String, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
         &config.fusion_auth_server_address.addr,
@@ -45,49 +45,54 @@ async fn pcap_files(
         return Err(UserFacingError::InternalErrorWithDescription(e.to_string()));
     }
     let tenant_id = tenant_id.unwrap();
-    while let Ok(Some(mut field)) = payload.try_next().await {
-        // read the whole pcap file in bytes
-        let mut file_bytes = web::BytesMut::new();
-        while let Some(chunk) = field.next().await {
-            let chunk = chunk.unwrap();
-            file_bytes.extend_from_slice(&chunk);
-        }
-        let server_connection_result = QuinnClientEndpointManager::start_server_connection(
-            &config.quin_client_address.addr,
-            &config.quin_inserter.addr,
-            &config.quin_server_application.app,
-        ).await;
-        let mut server_connection = match server_connection_result {
-            Ok(server_connection) => server_connection,
-            Err(_) => return Err(UserFacingError::Timeout),
-        };
-        let packet_data = InsertPcapFileDTO::new(&file_bytes);
-
-        let request = Envelope::new(
-            tenant_id,
-            packet_data.get_type(),
-            &packet_data.encode()
-        );
-        
-        match server_connection.send_all_reliable(&request.encode()).await {
-            Ok(_) => (),
-            Err(_) => return Err(UserFacingError::Timeout),
-        };
-
-        let response = match server_connection.receive_reliable().await {
-            Ok(response) => ResultDTO::decode(&response),
-            Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
-        };
-        match response.is_ok() {
-            true => (),
-            false => {
-                if response.get_description().is_err() {
-                    return Err(UserFacingError::InternalError);
-                }
-                return Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap().to_string()));
-            },
-        }
+    let mut field = if let Ok(Some(field)) = payload.try_next().await {
+        field
+    } else {
+        return Err(UserFacingError::InternalErrorWithDescription("didn't receive a file to insert".to_string()));
+    };
+    // read the whole pcap file in bytes
+    let mut file_bytes = web::BytesMut::new();
+    while let Some(chunk) = field.next().await {
+        let chunk = chunk.unwrap();
+        file_bytes.extend_from_slice(&chunk);
     }
+    let server_connection_result = QuinnClientEndpointManager::start_server_connection(
+        &config.quin_client_address.addr,
+        &config.quin_inserter.addr,
+        &config.quin_server_application.app,
+    ).await;
+    let mut server_connection = match server_connection_result {
+        Ok(server_connection) => server_connection,
+        Err(_) => return Err(UserFacingError::Timeout),
+    };
+    let packet_data = InsertPcapFileDTO::new(&file_bytes);
 
-    Ok("Packets has been uploaded")
+    let request = Envelope::new(
+        tenant_id,
+        packet_data.get_type(),
+        &packet_data.encode()
+    );
+    
+    match server_connection.send_all_reliable(&request.encode()).await {
+        Ok(_) => (),
+        Err(_) => return Err(UserFacingError::Timeout),
+    };
+
+    let response = match server_connection.receive_reliable().await {
+        Ok(response) => ResultDTO::decode(&Envelope::decode(&response).get_data()),
+        Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
+    };
+    let packet_id = match response.is_ok() {
+        true => {
+            String::from_utf8(response.into_inner().unwrap().get_data().to_vec()).unwrap()
+        },
+        false => {
+            if response.get_description().is_err() {
+                return Err(UserFacingError::InternalError);
+            }
+            return Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap().to_string()));
+        },
+    };
+
+    Ok(packet_id)
 }

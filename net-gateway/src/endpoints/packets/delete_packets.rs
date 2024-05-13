@@ -4,7 +4,7 @@ use actix_web::HttpRequest;
 use actix_web::HttpResponse;
 use actix_web::Responder;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use crate::endpoints::packets::core::packet::Packet;
+use crate::endpoints::packets::core::packet::NetworkPacket;
 use crate::{authorization, config::Config};
 
 
@@ -12,7 +12,7 @@ use crate::{authorization, config::Config};
 async fn packets(
     config: web::Data<Config>,
     req: HttpRequest,
-    packets: web::Json<Vec<Packet>>,
+    packets: web::Json<Vec<NetworkPacket>>,
 ) -> impl Responder {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
