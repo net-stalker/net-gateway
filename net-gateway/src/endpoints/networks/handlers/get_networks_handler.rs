@@ -27,9 +27,7 @@ pub async fn get_networks_handler(config: &Config, req: HttpRequest, network_id:
         Box::new(token_verifier)
     ).await;
 
-    if let Err(_) = authorization_result {
-        return Err(UserFacingError::Unauthorized);
-    }
+    if authorization_result.is_err() { return Err(UserFacingError::Unauthorized); }
     let token = authorization_result.unwrap();
 
     let tenant_id = token.get_tenant_id();

@@ -36,7 +36,7 @@ async fn pcap_file(
         Box::new(token_verifier)
     ).await;
 
-    if let Err(_) = authorization_result { return Err(UserFacingError::Unauthorized); }
+    if authorization_result.is_err() { return Err(UserFacingError::Unauthorized); }
 
     let token = authorization_result.unwrap();
 
@@ -79,7 +79,7 @@ async fn pcap_file(
     };
 
     let response = match server_connection.receive_reliable().await {
-        Ok(response) => ResultDTO::decode(&Envelope::decode(&response).get_data()),
+        Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
         Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
     let packet_id = match response.is_ok() {

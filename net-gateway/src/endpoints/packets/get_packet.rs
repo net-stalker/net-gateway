@@ -33,9 +33,7 @@ async fn packets(
         Box::new(token_verifier)
     ).await;
 
-    if let Err(_) = authorization_result {
-        return Err(UserFacingError::Unauthorized);
-    }
+    if authorization_result.is_err() { return Err(UserFacingError::Unauthorized); }
     let token = authorization_result.unwrap();
 
     let tenant_id = token.get_tenant_id();
