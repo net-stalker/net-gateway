@@ -4,3 +4,4 @@ pub mod general_filters;
 pub mod quinn_client_endpoint_manager;
 pub mod filter;
 pub mod host;
+pub mod user_facing_error;
