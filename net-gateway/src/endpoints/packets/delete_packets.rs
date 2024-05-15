@@ -80,7 +80,7 @@ async fn packets(
         Err(_) => return Err(UserFacingError::InternalError),
     };
     match response.is_ok() {
-        true => Ok("The packets deleted successfully"),
+        true => Ok("The packets have been deleted successfully"),
         false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or_default().to_string())),
     }
 }
