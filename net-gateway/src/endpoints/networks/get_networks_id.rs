@@ -6,11 +6,16 @@ use crate::config::Config;
 use crate::core::user_facing_error::UserFacingError;
 use crate::endpoints::networks::handlers::get_networks_handler::get_networks_handler;
 
-#[get("/networks/{id}")]
+#[get("/networks/{id:.*}")]
 async fn networks(
     network_id: web::Path<String>,
     config: web::Data<Config>,
     req: HttpRequest,
 ) -> Result<HttpResponse, UserFacingError> {
-    get_networks_handler(config.into_inner().as_ref(), req, Some(network_id.into_inner())).await
+    let networks_ids = match network_id.trim().is_empty() {
+        true => None,
+        false => Some(vec![network_id.into_inner()]),
+    };
+    
+    get_networks_handler(config.into_inner().as_ref(), req, networks_ids).await
 }

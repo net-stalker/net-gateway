@@ -21,9 +21,9 @@ tokio = { version = "1.28.1", features = ["full"] }
 async-tungstenite = { version = "0.25.1", features = ["tokio-runtime"] }
 net-core-api = "0.5.0"
 net-agent-api = "0.1.5"
-net-reporter-api = { git = "https://github.com/net-stalker/net-api", branch = "NS-315/implement-api-for-network-requests" }
-net-inserter-api = { git = "https://github.com/net-stalker/net-api", branch = "NS-315/implement-api-for-network-requests" }
-net-updater-api = { git = "https://github.com/net-stalker/net-api", branch = "NS-315/implement-api-for-network-requests" }
+net-reporter-api = "0.6.0"
+net-inserter-api = "0.4.0"
+net-updater-api = "0.3.0"
 net-transport = { version = "=0.1.1", features = ["quinn"]}
 net-token-verifier = "0.3.0"
 net-config = "0.1.1"

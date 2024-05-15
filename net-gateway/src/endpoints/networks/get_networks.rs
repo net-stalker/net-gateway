@@ -11,5 +11,5 @@ async fn networks(
     config: web::Data<Config>,
     req: HttpRequest,
 ) -> Result<HttpResponse, UserFacingError> {
-    get_networks_handler(config.into_inner().as_ref(), req, None).await
+    get_networks_handler(config.into_inner().as_ref(), req, Some(vec!{})).await
 }

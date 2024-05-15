@@ -6,7 +6,7 @@ use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
 use net_core_api::core::decoder_api::Decoder;
 use net_reporter_api::api::network::networks_request::NetworksRequestDTO;
-use net_reporter_api::api::network::networks_response::NetworksResponseDTO;
+use net_reporter_api::api::network::networks::NetworksDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
 use crate::authorization;
@@ -15,7 +15,7 @@ use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::core::user_facing_error::UserFacingError;
 use crate::endpoints::networks::core::network::Network;
 
-pub async fn get_networks_handler(config: &Config, req: HttpRequest, network_id: Option<String>) -> Result<HttpResponse, UserFacingError> {
+pub async fn get_networks_handler(config: &Config, req: HttpRequest, networks_ids: Option<Vec<String>>) -> Result<HttpResponse, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
         &config.fusion_auth_server_address.addr,
@@ -35,10 +35,7 @@ pub async fn get_networks_handler(config: &Config, req: HttpRequest, network_id:
         return Err(UserFacingError::InternalErrorWithDescription(err.to_string()));
     }
     let tenant_id = tenant_id.unwrap();
-    let get_networks_request = match network_id {
-        Some(network_id) => NetworksRequestDTO::new(&[network_id; 1]),
-        None => NetworksRequestDTO::default(), 
-    };
+    let get_networks_request = NetworksRequestDTO::new(networks_ids.as_deref());
     let request = Envelope::new(
         tenant_id,
         get_networks_request.get_type(),
@@ -70,8 +67,8 @@ pub async fn get_networks_handler(config: &Config, req: HttpRequest, network_id:
             let response = response.into_inner();
             if response.is_none() { return Err(UserFacingError::InternalErrorWithDescription(description)) }
             let response = response.unwrap();
-            match response.get_envelope_type() == NetworksResponseDTO::get_data_type() {
-                true => Ok(HttpResponse::Ok().json(NetworksResponseDTO::decode(response.get_data()).get_networks().iter().map(|network| network.clone().into()).collect::<Vec<Network>>())),
+            match response.get_envelope_type() == NetworksDTO::get_data_type() {
+                true => Ok(HttpResponse::Ok().json(NetworksDTO::decode(response.get_data()).get_networks().iter().map(|network| network.clone().into()).collect::<Vec<Network>>())),
                 false => Err(UserFacingError::InternalErrorWithDescription("Wrong data type has been requested".to_string()))
             }
             
