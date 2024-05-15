@@ -27,3 +27,16 @@ impl From<NetworkPacketDTO> for NetworkPacket {
         }
     }
 }
+
+impl Packet {
+    pub fn from_id(id: String) -> Self {
+        Self {
+            id,
+            frame_time: None,
+            src: None,
+            dst: None,
+            protocols: None,
+            json: None,
+        }
+    }
+}
