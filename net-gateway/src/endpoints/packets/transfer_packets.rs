@@ -87,7 +87,7 @@ async fn packets(
     };
 
     match response.is_ok() {
-        true => Ok("Buffer has been flushed successfully"),
+        true => Ok("Packets has been transfered successfully"),
         false => Err(UserFacingError::InternalError),
     }
 }
