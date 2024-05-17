@@ -5,6 +5,7 @@ use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::api::result::result::ResultDTO;
 use net_core_api::core::decoder_api::Decoder;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
+use net_updater_api::api::updaters::clear_buffer::clear_buffer_request::ClearBufferRequestDTO;
 use net_updater_api::api::updaters::flush_buffer::flush_buffer_request::FlushBufferRequestDTO;
 use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
@@ -66,9 +67,29 @@ async fn buffer(
         Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
         Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
+    if !response.is_ok() {
+        return Err(UserFacingError::InternalError)
+    }
+
+    let buffer_clear_request = ClearBufferRequestDTO::default();
+
+    let request = Envelope::new(
+        tenant_id,
+        buffer_clear_request.get_type(),
+        &buffer_clear_request.encode()
+    );
+    match server_connection.send_all_reliable(&request.encode()).await {
+        Ok(_) => (),
+        Err(_) => return Err(UserFacingError::Timeout),
+    };
+    
+    let response = match server_connection.receive_reliable().await {
+        Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
+        Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
+    };
 
     match response.is_ok() {
-        true => Ok("Buffer has been cleared successfully"),
+        true => Ok("Buffer has been flushed successfully"),
         false => Err(UserFacingError::InternalError),
     }
 }

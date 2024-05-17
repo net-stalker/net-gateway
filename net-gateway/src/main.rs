@@ -52,7 +52,7 @@ async fn main() -> std::io::Result<()> {
             .service(net_gateway::endpoints::networks::get_networks_id::networks)
             .service(net_gateway::endpoints::packets::get_packet::packets)
             .service(net_gateway::endpoints::packets::delete_packets::packets)
-            .service(net_gateway::endpoints::packets::transfer_packets::packets)
+            .service(net_gateway::endpoints::packets::update_packets_network_id::packets)
             .service(net_gateway::endpoints::buffer::flush::buffer)
         )
         .bind(config.bind_address.addr)?
