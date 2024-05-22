@@ -1,24 +1,24 @@
-use actix_web::post;
+use actix_web::patch;
 use actix_web::web;
 use actix_web::HttpRequest;
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::api::result::result::ResultDTO;
 use net_core_api::core::decoder_api::Decoder;
-use net_inserter_api::api::network::InsertNetworkRequestDTO;
+use net_deleter_api::api::buffer::ClearBufferRequestDTO;
+use net_inserter_api::api::buffer::FlushBufferRequestDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
-use crate::core::user_facing_error::UserFacingError;
-use crate::endpoints::networks::core::network::Network;
-use crate::{authorization, config::Config};
 use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
+use crate::config::Config;
+use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
+use crate::core::user_facing_error::UserFacingError;
+use crate::authorization;
 
 
-#[post("/network")]
-async fn network(
+#[patch("/buffer")]
+async fn buffer(
     config: web::Data<Config>,
     req: HttpRequest,
-    network: web::Json<Network>,
 ) -> Result<&'static str, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
@@ -30,8 +30,8 @@ async fn network(
         req,
         Box::new(token_verifier)
     ).await;
-
-    if let Err(_) = authorization_result { return Err(UserFacingError::Unauthorized); }
+    
+    if authorization_result.is_err() { return Err(UserFacingError::Unauthorized); }
     let token = authorization_result.unwrap();
 
     let tenant_id = token.get_tenant_id();
@@ -50,15 +50,12 @@ async fn network(
         Err(_) => return Err(UserFacingError::Timeout),
     };
 
-    let network_insert_request = InsertNetworkRequestDTO::new(
-        network.name.as_str(),
-        network.color.as_str()
-    );
+    let buffer_flush_request = FlushBufferRequestDTO::default();
 
     let request = Envelope::new(
         tenant_id,
-        network_insert_request.get_type(),
-        &network_insert_request.encode()
+        buffer_flush_request.get_type(),
+        &buffer_flush_request.encode()
     );
 
     match server_connection.send_all_reliable(&request.encode()).await {
@@ -67,12 +64,32 @@ async fn network(
     };
 
     let response = match server_connection.receive_reliable().await {
-        Ok(response) => ResultDTO::decode(&response),
+        Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
+        Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
+    };
+    if !response.is_ok() {
+        return Err(UserFacingError::InternalError)
+    }
+
+    let buffer_clear_request = ClearBufferRequestDTO::default();
+
+    let request = Envelope::new(
+        tenant_id,
+        buffer_clear_request.get_type(),
+        &buffer_clear_request.encode()
+    );
+    match server_connection.send_all_reliable(&request.encode()).await {
+        Ok(_) => (),
+        Err(_) => return Err(UserFacingError::Timeout),
+    };
+    
+    let response = match server_connection.receive_reliable().await {
+        Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
         Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
 
     match response.is_ok() {
-        true => Ok("Network uploaded successfully"),
+        true => Ok("Buffer has been flushed successfully"),
         false => Err(UserFacingError::InternalError),
     }
 }

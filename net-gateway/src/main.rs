@@ -28,7 +28,7 @@ async fn main() -> std::io::Result<()> {
                     // for profuction use this will be changed
                     // .allowed_origin(config_clone.allowed_origin.addr.as_str())
                     .allow_any_origin()
-                    .allowed_methods(vec!["GET", "POST"])
+                    .allowed_methods(vec!["GET", "POST", "PATCH", "PUT", "DELETE"])
                     .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
             )
             .app_data(web::Data::new(config_clone.clone()))
@@ -44,14 +44,16 @@ async fn main() -> std::io::Result<()> {
             .service(net_gateway::endpoints::charts::http_request_methods_distribution::endpoint::get_http_request_methods_distribution)
             .service(net_gateway::endpoints::filters::http_overview_filters::endpoint::get_http_overview_filters)
             .service(net_gateway::endpoints::dashboards::http_overview::endpoint::get_http_overview)
-            .service(net_gateway::endpoints::files::pcap_files::pcap_files)
-            .service(net_gateway::endpoints::networks::add_network::network)
+            .service(net_gateway::endpoints::files::insert_pcap_file::pcap_file)
+            .service(net_gateway::endpoints::networks::insert_network::network)
             .service(net_gateway::endpoints::networks::update_network::network)
             .service(net_gateway::endpoints::networks::delete_network::network)
-            .service(net_gateway::endpoints::networks::get_networks_with_packets::networks_with_packets)
+            .service(net_gateway::endpoints::networks::get_networks::networks)
+            .service(net_gateway::endpoints::networks::get_networks_id::networks)
+            .service(net_gateway::endpoints::packets::get_packet::packets)
             .service(net_gateway::endpoints::packets::delete_packets::packets)
-            .service(net_gateway::endpoints::packets::transfer_packets::packets)
-            
+            .service(net_gateway::endpoints::packets::update_packets_network_id::packets)
+            .service(net_gateway::endpoints::buffer::flush::buffer)
         )
         .bind(config.bind_address.addr)?
         .run()  
@@ -63,4 +65,4 @@ fn init_log() {
     let config_str = include_str!("log4rs.yml");
     let config = serde_yaml::from_str(config_str).unwrap();
     log4rs::init_raw_config(config).unwrap();
-}
+} 

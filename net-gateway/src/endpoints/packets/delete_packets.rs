@@ -1,19 +1,27 @@
+use actix_multipart::Multipart;
 use actix_web::delete;
 use actix_web::web;
 use actix_web::HttpRequest;
-use actix_web::HttpResponse;
-use actix_web::Responder;
+use futures::StreamExt;
+use net_core_api::api::envelope::envelope::Envelope;
+use net_core_api::api::result::result::ResultDTO;
+use net_core_api::core::typed_api::Typed;
+use net_core_api::core::encoder_api::Encoder;
+use net_core_api::core::decoder_api::Decoder;
+use net_deleter_api::api::packets::DeletePacketsRequestDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use crate::endpoints::packets::core::packet::Packet;
-use crate::{authorization, config::Config};
+use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
+use crate::authorization;
+use crate::config::Config;
+use crate::core::user_facing_error::UserFacingError;
 
 
 #[delete("/packets")]
 async fn packets(
     config: web::Data<Config>,
     req: HttpRequest,
-    packets: web::Json<Vec<Packet>>,
-) -> impl Responder {
+    mut payload: Multipart
+) -> Result<&'static str, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
         &config.fusion_auth_server_address.addr,
@@ -25,17 +33,54 @@ async fn packets(
         Box::new(token_verifier)
     ).await;
 
-    if let Err(e) = authorization_result {
-        return e;
-    }
+    if authorization_result.is_err() { return Err(UserFacingError::Unauthorized); }
+
     let token = authorization_result.unwrap();
 
     let tenant_id = token.get_tenant_id();
     if let Err(e) = tenant_id {
-        return HttpResponse::InternalServerError().body(e.to_string());
+        return Err(UserFacingError::InternalErrorWithDescription(e.to_string()));
     }
-    let _tenant_id = tenant_id.unwrap();
-    // all the packets here must have onlt id and other field are None
-    log::debug!("Packets to delete: {:?}", packets);
-    HttpResponse::Ok().body("Packets deleted successfully!")
+    let tenant_id = tenant_id.unwrap();
+    let mut packets_ids = Vec::new();
+
+    while let Some(item) = payload.next().await {
+        let mut field = item.unwrap();
+        if field.name() == "packets" {
+            let mut data = Vec::new();
+            while let Some(chunk) = field.next().await {
+                data.extend_from_slice(&chunk.unwrap());
+            }
+            let packet_ids: Vec<String> = serde_json::from_slice(&data).unwrap();
+            packets_ids.extend(packet_ids.into_iter().collect::<Vec<String>>());
+        }
+    }
+
+    let delete_packet_request = DeletePacketsRequestDTO::new(&packets_ids);
+    let request = Envelope::new(tenant_id, delete_packet_request.get_type(), &delete_packet_request.encode());
+
+    let server_connection_result = QuinnClientEndpointManager::start_server_connection(
+        &config.quin_client_address.addr,
+        &config.quin_inserter.addr,
+        &config.quin_server_application.app,
+    ).await;
+
+    let mut server_connection = match server_connection_result {
+        Ok(server_connection) => server_connection,
+        Err(_) => return Err(UserFacingError::Timeout),
+    };
+
+    match server_connection.send_all_reliable(&request.encode()).await {
+        Ok(_) => (),
+        Err(_) => return Err(UserFacingError::Timeout),
+    };
+
+    let response = match server_connection.receive_reliable().await {
+        Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
+        Err(_) => return Err(UserFacingError::InternalError),
+    };
+    match response.is_ok() {
+        true => Ok("The packets have been deleted successfully"),
+        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or_default().to_string())),
+    }
 }

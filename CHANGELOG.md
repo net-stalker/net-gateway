@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-321e09c] - 2024-05-14
 
 implemented custom error type (#46)
 
 * implemented custom error type
-<!-- [END AUTO UPDATE] -->
 ## [-5097860] - 2024-05-06
 
 updated generating requests by adding network id in there (#45)
