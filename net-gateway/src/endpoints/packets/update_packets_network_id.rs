@@ -9,7 +9,7 @@ use net_core_api::core::typed_api::Typed;
 use net_core_api::core::decoder_api::Decoder;
 use net_core_api::core::encoder_api::Encoder;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use net_updater_api::api::updaters::transfer_packets::transfer_packets::TransferPacketsRequestDTO;
+use net_updater_api::api::updaters::update_packets_network_id::update_packets_network_id_request::UpdatePacketsNetworkIdRequestDTO;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::core::user_facing_error::UserFacingError;
 use crate::{authorization, config::Config};
@@ -68,7 +68,7 @@ async fn packets(
         }
     }
 
-    let transfer_packets_request = TransferPacketsRequestDTO::new(network_id.as_deref(), packets_ids.as_slice());
+    let transfer_packets_request = UpdatePacketsNetworkIdRequestDTO::new(network_id.as_deref(), packets_ids.as_slice());
 
     let request = Envelope::new(
         tenant_id,

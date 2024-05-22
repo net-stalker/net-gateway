@@ -44,7 +44,7 @@ impl ServiceRequestManager for NetworkBandwidthPerEndpointChartManager {
         Box::new(NetworkBandwidthPerEndpointRequestDTO::new(
             params.start_date,
             params.end_date,
-            params.network_id,
+            &params.network_id,
             filters,
         ))
     }
