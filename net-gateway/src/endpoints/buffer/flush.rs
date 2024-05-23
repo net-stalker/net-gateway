@@ -1,4 +1,4 @@
-use actix_web::patch;
+use actix_web::post;
 use actix_web::web;
 use actix_web::HttpRequest;
 use net_core_api::api::envelope::envelope::Envelope;
@@ -14,9 +14,8 @@ use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::core::user_facing_error::UserFacingError;
 use crate::authorization;
 
-
-#[patch("/buffer")]
-async fn buffer(
+#[post("/buffer/flush")]
+async fn flush_buffer(
     config: web::Data<Config>,
     req: HttpRequest,
 ) -> Result<&'static str, UserFacingError> {

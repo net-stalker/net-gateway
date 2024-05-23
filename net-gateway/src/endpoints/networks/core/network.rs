@@ -18,7 +18,7 @@ impl From<NetworkDTO> for Network {
             id: Some(value.get_id().to_string()),
             name: value.get_name().to_string(),
             color: value.get_color().to_string(),
-            packets: Some(value.get_packets().iter().map(|packet| packet.into()).collect::<Vec<NetworkPacket>>())
+            packets: None,
         }
     }
 }

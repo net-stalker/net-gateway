@@ -1,30 +1,28 @@
+use actix_multipart::Multipart;
 use actix_web::post;
 use actix_web::web;
 use actix_web::HttpRequest;
-use actix_multipart::Multipart;
-
 use futures::StreamExt;
 use futures::TryStreamExt;
-
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::api::result::result::ResultDTO;
-use net_core_api::core::decoder_api::Decoder;
 use net_core_api::core::typed_api::Typed;
+use net_core_api::core::decoder_api::Decoder;
 use net_core_api::core::encoder_api::Encoder;
-
 use net_inserter_api::api::pcap_file::InsertPcapFileDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 
+use crate::authorization;
+use crate::config::Config;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::core::user_facing_error::UserFacingError;
-use crate::{authorization, config::Config};
 
-#[post("/pcap-file")]
-async fn pcap_file(
+#[post("/packets")]
+async fn insert_packet(
     config: web::Data<Config>,
     req: HttpRequest,
-    mut payload: Multipart
-) -> Result<String, UserFacingError> {
+    mut payload: Multipart,
+) -> Result<&'static str, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
         &config.fusion_auth_server_address.addr,
@@ -82,17 +80,8 @@ async fn pcap_file(
         Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
         Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
-    let packet_id = match response.is_ok() {
-        true => {
-            String::from_utf8(response.into_inner().unwrap().get_data().to_vec()).unwrap()
-        },
-        false => {
-            if response.get_description().is_err() {
-                return Err(UserFacingError::InternalError);
-            }
-            return Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap().to_string()));
-        },
-    };
-
-    Ok(packet_id)
+    match response.is_ok() {
+        true => Ok("packet has been uploaded"),
+        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap().to_string())),
+    }
 }

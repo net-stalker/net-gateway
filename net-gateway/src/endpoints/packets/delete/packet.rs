@@ -1,8 +1,6 @@
-use actix_multipart::Multipart;
 use actix_web::delete;
 use actix_web::web;
 use actix_web::HttpRequest;
-use futures::StreamExt;
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::api::result::result::ResultDTO;
 use net_core_api::core::typed_api::Typed;
@@ -16,11 +14,11 @@ use crate::config::Config;
 use crate::core::user_facing_error::UserFacingError;
 
 
-#[delete("/packets")]
-async fn packets(
+#[delete("/packets/{id}")]
+async fn delete_single_packet(
     config: web::Data<Config>,
     req: HttpRequest,
-    mut payload: Multipart
+    id: web::Query<String>,
 ) -> Result<&'static str, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
@@ -42,19 +40,7 @@ async fn packets(
         return Err(UserFacingError::InternalErrorWithDescription(e.to_string()));
     }
     let tenant_id = tenant_id.unwrap();
-    let mut packets_ids = Vec::new();
-
-    while let Some(item) = payload.next().await {
-        let mut field = item.unwrap();
-        if field.name() == "packets" {
-            let mut data = Vec::new();
-            while let Some(chunk) = field.next().await {
-                data.extend_from_slice(&chunk.unwrap());
-            }
-            let packet_ids: Vec<String> = serde_json::from_slice(&data).unwrap();
-            packets_ids.extend(packet_ids.into_iter().collect::<Vec<String>>());
-        }
-    }
+    let packets_ids = vec![id.into_inner()];
 
     let delete_packet_request = DeletePacketsRequestDTO::new(&packets_ids);
     let request = Envelope::new(tenant_id, delete_packet_request.get_type(), &delete_packet_request.encode());

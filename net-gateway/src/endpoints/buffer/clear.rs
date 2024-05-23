@@ -15,7 +15,7 @@ use crate::config::Config;
 
 
 #[delete("/buffer")]
-async fn buffer(
+async fn clear_buffer(
     config: web::Data<Config>,
     req: HttpRequest,
 ) -> Result<&'static str, UserFacingError> {
