@@ -1,26 +1,33 @@
-use actix_multipart::Multipart;
-use actix_web::delete;
+use actix_web::get;
 use actix_web::web;
+use actix_web::HttpResponse;
 use actix_web::HttpRequest;
-use futures::StreamExt;
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::api::result::result::ResultDTO;
+use net_core_api::api::primitives::string::StringDTO;
 use net_core_api::core::decoder_api::Decoder;
-use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
-use net_deleter_api::api::network::DeleteNetworkRequestDTO;
+use net_core_api::core::typed_api::Typed;
+use net_reporter_api::api::network::network_id_request::NetworkIdRequestDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
+use serde::Deserialize;
 use crate::authorization;
 use crate::config::Config;
+use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::core::user_facing_error::UserFacingError;
 
-#[delete("/network")]
-async fn network(
+#[derive(Debug, Deserialize)]
+struct RequestQuery {
+    pub name: String,
+    pub color: String,
+}
+
+#[get("/networks/search")]
+async fn search_network(
     config: web::Data<Config>,
     req: HttpRequest,
-    mut payload: Multipart,
-) -> Result<&'static str, UserFacingError> {
+    query: web::Query<RequestQuery>,
+) -> Result<HttpResponse, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
         &config.fusion_auth_server_address.addr,
@@ -33,27 +40,22 @@ async fn network(
     ).await;
 
     if authorization_result.is_err() { return Err(UserFacingError::Unauthorized); }
-
     let token = authorization_result.unwrap();
 
     let tenant_id = token.get_tenant_id();
-    if let Err(e) = tenant_id {
-        return Err(UserFacingError::InternalErrorWithDescription(e.to_string()));
+    if let Err(err) = tenant_id {
+        return Err(UserFacingError::InternalErrorWithDescription(err.to_string()));
     }
     let tenant_id = tenant_id.unwrap();
-    let mut network_id = String::default();
-    if let Some(item) = payload.next().await {
-        let mut field = item.unwrap();
-        if field.name() == "network" {
-            if let Some(chunk) = field.next().await {
-                network_id.push_str(&String::from_utf8(chunk.unwrap().to_vec()).unwrap());
-            }
-        }
-    }
-    if network_id.is_empty() { return Err(UserFacingError::InternalError) }
-
-    let delete_request = DeleteNetworkRequestDTO::new(&network_id);
-    let request = Envelope::new(tenant_id, delete_request.get_type(), delete_request.encode().as_slice());
+    let network_id_request = NetworkIdRequestDTO::new(
+        &query.name,
+        &query.color,
+    );
+    let request = Envelope::new(
+        tenant_id,
+        network_id_request.get_type(),
+        &network_id_request.encode(),
+    );
     let server_connection_result = QuinnClientEndpointManager::start_server_connection(
         &config.quin_client_address.addr,
         &config.quin_inserter.addr,
@@ -61,19 +63,24 @@ async fn network(
     ).await;
     let mut server_connection = match server_connection_result {
         Ok(server_connection) => server_connection,
-        Err(_) => return Err(UserFacingError::Timeout),
+        Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
+
     match server_connection.send_all_reliable(&request.encode()).await {
         Ok(_) => (),
-        Err(_) => return Err(UserFacingError::Timeout),
+        Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
-    // the request has been sent, now I need to retrieve the response back
+
     let response = match server_connection.receive_reliable().await {
         Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
-        Err(_) => return Err(UserFacingError::InternalError),
+        Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
+
     match response.is_ok() {
-        true => Ok("The network has been deleted successfully"),
-        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or_default().to_string())),
+        true => {
+            let response = StringDTO::decode(response.into_inner().unwrap().get_data());
+            Ok(HttpResponse::Ok().json(response.get_value()))
+        },
+        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap().to_string())),
     }
 }
