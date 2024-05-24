@@ -2,6 +2,7 @@ use actix_web::delete;
 use actix_web::web;
 use actix_web::HttpRequest;
 use net_core_api::api::envelope::envelope::Envelope;
+use net_core_api::api::primitives::integer::Integer;
 use net_core_api::api::result::result::ResultDTO;
 use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
@@ -12,6 +13,7 @@ use serde::Deserialize;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::authorization;
 use crate::config::Config;
+use crate::core::refresh_request_management::refresh_manager::RefreshManager;
 use crate::core::user_facing_error::UserFacingError;
 
 #[derive(Debug, Deserialize)]
@@ -71,8 +73,13 @@ async fn delete_multiple_packets(
         Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
         Err(_) => return Err(UserFacingError::InternalError),
     };
-    match response.is_ok() {
-        true => Ok("The packets have been deleted successfully"),
-        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or_default().to_string())),
+
+    if !response.is_ok() {
+        return Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or("no description").to_string().into()));
+    }
+    let updated_rows_count = Integer::decode(response.into_inner().unwrap().get_data());
+    match RefreshManager::new(&config, tenant_id).refresh(&updated_rows_count).await {
+        Ok(_) => Ok("The packets have been deleted successfully"),
+        Err(err) => Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     }
 }

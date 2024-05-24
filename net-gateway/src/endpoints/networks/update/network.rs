@@ -2,6 +2,7 @@ use actix_web::patch;
 use actix_web::web;
 use actix_web::HttpRequest;
 use net_core_api::api::envelope::envelope::Envelope;
+use net_core_api::api::primitives::integer::Integer;
 use net_core_api::api::result::result::ResultDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 use net_updater_api::api::updaters::update_network::update_network_request::UpdateNetworkRequestDTO;
@@ -10,6 +11,7 @@ use net_core_api::core::encoder_api::Encoder;
 use net_core_api::core::decoder_api::Decoder;
 use serde::Deserialize;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
+use crate::core::refresh_request_management::refresh_manager::RefreshManager;
 use crate::core::user_facing_error::UserFacingError;
 use crate::authorization;
 use crate::config::Config;
@@ -76,8 +78,12 @@ async fn network(
         Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
 
-    match response.is_ok() {
-        true => Ok("Network has been updated successfully"),
-        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap().to_string())),
+    if !response.is_ok() {
+        return Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or("no description").to_string().into()));
+    }
+    let updated_rows_count = Integer::decode(response.into_inner().unwrap().get_data());
+    match RefreshManager::new(&config, tenant_id).refresh(&updated_rows_count).await {
+        Ok(_) => Ok("Network has been updated successfully"),
+        Err(err) => Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     }
 }
