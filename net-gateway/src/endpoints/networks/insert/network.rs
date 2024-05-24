@@ -80,7 +80,7 @@ async fn insert_network(
     };
 
     if !response.is_ok() {
-        return Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or("no description").to_string().into()));
+        return Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or("no description").to_string()));
     }
     let updated_rows_count = Integer::decode(response.into_inner().unwrap().get_data());
     match RefreshManager::new(&config, tenant_id).refresh(&updated_rows_count).await {
