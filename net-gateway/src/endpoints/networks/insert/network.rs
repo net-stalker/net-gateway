@@ -73,7 +73,7 @@ async fn insert_network(
     };
 
     let response = match server_connection.receive_reliable().await {
-        Ok(response) => ResultDTO::decode(&Envelope::decode(&response).get_data()),
+        Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
         Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
 
