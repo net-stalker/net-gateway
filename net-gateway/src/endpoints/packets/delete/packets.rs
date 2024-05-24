@@ -25,7 +25,7 @@ struct RequestBody {
 async fn delete_multiple_packets(
     config: web::Data<Config>,
     req: HttpRequest,
-    body: web::Json<RequestBody>,
+    json: web::Json<RequestBody>,
 ) -> Result<&'static str, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
@@ -48,7 +48,7 @@ async fn delete_multiple_packets(
     }
     let tenant_id = tenant_id.unwrap();
 
-    let delete_packet_request = DeletePacketsRequestDTO::new(&body.packet_ids);
+    let delete_packet_request = DeletePacketsRequestDTO::new(&json.packet_ids);
     let request = Envelope::new(tenant_id, delete_packet_request.get_type(), &delete_packet_request.encode());
 
     let server_connection_result = QuinnClientEndpointManager::start_server_connection(

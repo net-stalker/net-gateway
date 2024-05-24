@@ -18,7 +18,7 @@ use crate::core::user_facing_error::UserFacingError;
 async fn delete_single_packet(
     config: web::Data<Config>,
     req: HttpRequest,
-    id: web::Query<String>,
+    id: web::Path<String>,
 ) -> Result<&'static str, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(

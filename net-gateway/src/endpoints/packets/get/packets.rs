@@ -20,14 +20,14 @@ use crate::endpoints::packets::get::response::packets::NetworkPackets;
 #[derive(Debug, Deserialize)]
 struct RequestQuery {
     #[serde(rename = "networkIds")]
-    network_ids: Vec<Option<String>>,
+    network_ids: String,
 }
 
 #[get("/packets")]
 async fn packets(
     config: web::Data<Config>,
     req: HttpRequest,
-    json: web::Json<RequestQuery>,
+    json: web::Query<RequestQuery>,
 ) -> Result<HttpResponse, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
@@ -48,7 +48,12 @@ async fn packets(
         return Err(UserFacingError::InternalErrorWithDescription(err.to_string()));
     }
     let tenant_id = tenant_id.unwrap();
-    let network_ids = json.network_ids.iter().map(|id| id.as_deref()).collect::<Vec<Option<&str>>>();
+    let network_ids = json.network_ids.split(',').map(|id| {
+        match id {
+            "null" => None,
+            _ => Some(id),
+        }
+    }).collect::<Vec<Option<&str>>>();
     let network_packet_request = NetworkPacketsRequestDTO::new(&network_ids); 
     let request = Envelope::new(
         tenant_id,

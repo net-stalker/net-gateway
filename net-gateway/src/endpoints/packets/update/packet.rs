@@ -26,8 +26,8 @@ struct RequestBody {
 async fn update_packets_network_id(
     config: web::Data<Config>,
     req: HttpRequest,
-    id: web::Query<String>,
-    body: web::Json<RequestBody>,
+    id: web::Path<String>,
+    json: web::Json<RequestBody>,
 ) -> Result<&'static str, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
@@ -60,7 +60,7 @@ async fn update_packets_network_id(
     };
 
     let packets_ids = vec![id.into_inner()];
-    let network_id = body.network_id.as_deref();
+    let network_id = json.network_id.as_deref();
 
     let transfer_packets_request = UpdatePacketsNetworkIdRequestDTO::new(network_id, packets_ids.as_slice());
 
