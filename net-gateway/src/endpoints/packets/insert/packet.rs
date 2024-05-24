@@ -1,24 +1,27 @@
+use actix_multipart::Multipart;
 use actix_web::post;
 use actix_web::web;
 use actix_web::HttpRequest;
+use futures::StreamExt;
+use futures::TryStreamExt;
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::api::result::result::ResultDTO;
+use net_core_api::core::typed_api::Typed;
 use net_core_api::core::decoder_api::Decoder;
-use net_inserter_api::api::network::InsertNetworkRequestDTO;
+use net_core_api::core::encoder_api::Encoder;
+use net_inserter_api::api::pcap_file::InsertPcapFileDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
+
+use crate::authorization;
+use crate::config::Config;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::core::user_facing_error::UserFacingError;
-use crate::endpoints::networks::core::network::Network;
-use crate::{authorization, config::Config};
-use net_core_api::core::typed_api::Typed;
-use net_core_api::core::encoder_api::Encoder;
 
-
-#[post("/network")]
-async fn network(
+#[post("/packets")]
+async fn insert_packet(
     config: web::Data<Config>,
     req: HttpRequest,
-    network: web::Json<Network>,
+    mut payload: Multipart,
 ) -> Result<&'static str, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
@@ -32,6 +35,7 @@ async fn network(
     ).await;
 
     if authorization_result.is_err() { return Err(UserFacingError::Unauthorized); }
+
     let token = authorization_result.unwrap();
 
     let tenant_id = token.get_tenant_id();
@@ -39,7 +43,17 @@ async fn network(
         return Err(UserFacingError::InternalErrorWithDescription(e.to_string()));
     }
     let tenant_id = tenant_id.unwrap();
-    
+    let mut field = if let Ok(Some(field)) = payload.try_next().await {
+        field
+    } else {
+        return Err(UserFacingError::InternalErrorWithDescription("didn't receive a file to insert".to_string()));
+    };
+    // read the whole pcap file in bytes
+    let mut file_bytes = web::BytesMut::new();
+    while let Some(chunk) = field.next().await {
+        let chunk = chunk.unwrap();
+        file_bytes.extend_from_slice(&chunk);
+    }
     let server_connection_result = QuinnClientEndpointManager::start_server_connection(
         &config.quin_client_address.addr,
         &config.quin_inserter.addr,
@@ -49,30 +63,25 @@ async fn network(
         Ok(server_connection) => server_connection,
         Err(_) => return Err(UserFacingError::Timeout),
     };
-
-    let network_insert_request = InsertNetworkRequestDTO::new(
-        network.name.as_str(),
-        network.color.as_str()
-    );
+    let packet_data = InsertPcapFileDTO::new(&file_bytes);
 
     let request = Envelope::new(
         tenant_id,
-        network_insert_request.get_type(),
-        &network_insert_request.encode()
+        packet_data.get_type(),
+        &packet_data.encode()
     );
-
+    
     match server_connection.send_all_reliable(&request.encode()).await {
         Ok(_) => (),
         Err(_) => return Err(UserFacingError::Timeout),
     };
 
     let response = match server_connection.receive_reliable().await {
-        Ok(response) => ResultDTO::decode(&response),
+        Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
         Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
-
     match response.is_ok() {
-        true => Ok("Network uploaded successfully"),
-        false => Err(UserFacingError::InternalError),
+        true => Ok("packet has been uploaded"),
+        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap().to_string())),
     }
 }

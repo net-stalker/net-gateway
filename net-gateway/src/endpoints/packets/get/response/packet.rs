@@ -7,6 +7,8 @@ use serde::Serialize;
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct NetworkPacket {
     pub id: String,
+    #[serde(rename = "networkId")]
+    pub network_id: Option<String>,
     #[serde(rename = "frameTime")]
     pub frame_time: DateTime<Utc>,
     pub src: String,
@@ -19,6 +21,7 @@ impl From<&NetworkPacketDTO> for NetworkPacket {
     fn from(value: &NetworkPacketDTO) -> Self {
         Self {
             id: value.get_id().to_string(),
+            network_id: value.get_network_id().map(str::to_string),
             frame_time: DateTime::<Utc>::from_timestamp_nanos(value.get_frame_time()),
             src: value.get_src().to_string(),
             dst: value.get_dst().to_string(),

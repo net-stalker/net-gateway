@@ -1,4 +1,5 @@
 pub mod core;
-pub mod delete_packets;
-pub mod get_packet;
-pub mod update_packets_network_id;
+pub mod delete;
+pub mod get;
+pub mod insert;
+pub mod update;

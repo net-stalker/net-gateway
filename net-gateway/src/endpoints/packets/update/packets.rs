@@ -1,26 +1,34 @@
-use actix_multipart::Multipart;
-use actix_web::delete;
+use actix_web::patch;
 use actix_web::web;
 use actix_web::HttpRequest;
-use futures::StreamExt;
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::api::result::result::ResultDTO;
 use net_core_api::core::typed_api::Typed;
-use net_core_api::core::encoder_api::Encoder;
 use net_core_api::core::decoder_api::Decoder;
-use net_deleter_api::api::packets::DeletePacketsRequestDTO;
+use net_core_api::core::encoder_api::Encoder;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
+use net_updater_api::api::updaters::update_packets_network_id::update_packets_network_id_request::UpdatePacketsNetworkIdRequestDTO;
+use serde::Deserialize;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
+use crate::core::user_facing_error::UserFacingError;
 use crate::authorization;
 use crate::config::Config;
-use crate::core::user_facing_error::UserFacingError;
 
 
-#[delete("/packets")]
-async fn packets(
+#[derive(Debug, Deserialize)]
+struct RequestBody {
+    #[serde(rename = "networkId")]
+    network_id: Option<String>,
+    #[serde(rename = "packetIds")]
+    packet_ids: Vec<String>,
+}
+
+
+#[patch("/packets")]
+async fn update_packets_network_id(
     config: web::Data<Config>,
     req: HttpRequest,
-    mut payload: Multipart
+    json: web::Json<RequestBody>,
 ) -> Result<&'static str, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
@@ -32,9 +40,7 @@ async fn packets(
         req,
         Box::new(token_verifier)
     ).await;
-
     if authorization_result.is_err() { return Err(UserFacingError::Unauthorized); }
-
     let token = authorization_result.unwrap();
 
     let tenant_id = token.get_tenant_id();
@@ -42,33 +48,27 @@ async fn packets(
         return Err(UserFacingError::InternalErrorWithDescription(e.to_string()));
     }
     let tenant_id = tenant_id.unwrap();
-    let mut packets_ids = Vec::new();
-
-    while let Some(item) = payload.next().await {
-        let mut field = item.unwrap();
-        if field.name() == "packets" {
-            let mut data = Vec::new();
-            while let Some(chunk) = field.next().await {
-                data.extend_from_slice(&chunk.unwrap());
-            }
-            let packet_ids: Vec<String> = serde_json::from_slice(&data).unwrap();
-            packets_ids.extend(packet_ids.into_iter().collect::<Vec<String>>());
-        }
-    }
-
-    let delete_packet_request = DeletePacketsRequestDTO::new(&packets_ids);
-    let request = Envelope::new(tenant_id, delete_packet_request.get_type(), &delete_packet_request.encode());
-
+    
     let server_connection_result = QuinnClientEndpointManager::start_server_connection(
         &config.quin_client_address.addr,
         &config.quin_inserter.addr,
         &config.quin_server_application.app,
     ).await;
-
     let mut server_connection = match server_connection_result {
         Ok(server_connection) => server_connection,
         Err(_) => return Err(UserFacingError::Timeout),
     };
+
+    let transfer_packets_request = UpdatePacketsNetworkIdRequestDTO::new(
+        json.network_id.as_deref(),
+        json.packet_ids.as_slice(),
+    );
+
+    let request = Envelope::new(
+        tenant_id,
+        transfer_packets_request.get_type(),
+        &transfer_packets_request.encode()
+    );
 
     match server_connection.send_all_reliable(&request.encode()).await {
         Ok(_) => (),
@@ -77,10 +77,11 @@ async fn packets(
 
     let response = match server_connection.receive_reliable().await {
         Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
-        Err(_) => return Err(UserFacingError::InternalError),
+        Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
+
     match response.is_ok() {
-        true => Ok("The packets have been deleted successfully"),
-        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or_default().to_string())),
+        true => Ok("Packets has been updated successfully"),
+        false => Err(UserFacingError::InternalError),
     }
 }

@@ -7,20 +7,27 @@ use net_core_api::api::result::result::ResultDTO;
 use net_core_api::core::typed_api::Typed;
 use net_core_api::core::encoder_api::Encoder;
 use net_core_api::core::decoder_api::Decoder;
-use net_reporter_api::api::network_packet::network_packet::NetworkPacketDTO;
-use net_reporter_api::api::network_packet::network_packet_request::NetworkPacketRequestDTO;
+use net_reporter_api::api::network_packet::network_packets::NetworkPacketsDTO;
+use net_reporter_api::api::network_packet::network_packets_request::NetworkPacketsRequestDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
+use serde::Deserialize;
 use crate::authorization;
 use crate::config::Config;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::core::user_facing_error::UserFacingError;
-use crate::endpoints::packets::core::packet::NetworkPacket;
+use crate::endpoints::packets::get::response::packets::NetworkPackets;
 
-#[get("/packets/{id}")]
+#[derive(Debug, Deserialize)]
+struct RequestQuery {
+    #[serde(rename = "networkIds")]
+    network_ids: String,
+}
+
+#[get("/packets")]
 async fn packets(
-    packet_id: web::Path<String>,
     config: web::Data<Config>,
     req: HttpRequest,
+    json: web::Query<RequestQuery>,
 ) -> Result<HttpResponse, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
@@ -41,7 +48,13 @@ async fn packets(
         return Err(UserFacingError::InternalErrorWithDescription(err.to_string()));
     }
     let tenant_id = tenant_id.unwrap();
-    let network_packet_request = NetworkPacketRequestDTO::new(&packet_id); 
+    let network_ids = json.network_ids.split(',').map(|id| {
+        match id {
+            "null" => None,
+            _ => Some(id),
+        }
+    }).collect::<Vec<Option<&str>>>();
+    let network_packet_request = NetworkPacketsRequestDTO::new(&network_ids); 
     let request = Envelope::new(
         tenant_id,
         network_packet_request.get_type(),
@@ -69,18 +82,13 @@ async fn packets(
 
     match response.is_ok() {
         true => {
-            let description = response.get_description().unwrap_or("didn't get any data").to_string();
-            let response = response.into_inner();
-            if response.is_none() { return Err(UserFacingError::InternalErrorWithDescription(description)) }
-            let response = response.unwrap();
-            match response.get_envelope_type() == NetworkPacketDTO::get_data_type() {
-                true => {
-                    let network_packet: NetworkPacket = NetworkPacketDTO::decode(response.get_data()).into(); 
-                    Ok(HttpResponse::Ok().json(network_packet))
-                },
-                false => Err(UserFacingError::InternalErrorWithDescription("Wrong data type has been requested".to_string()))
-            }
-            
+            let network_packet: NetworkPackets = NetworkPacketsDTO::decode(
+                response
+                    .into_inner()
+                    .unwrap()
+                    .get_data()
+                ).into(); 
+            Ok(HttpResponse::Ok().json(network_packet))
         },
         false => {
             match response.get_description() {

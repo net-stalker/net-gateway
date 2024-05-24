@@ -1,7 +1,5 @@
 pub mod core;
-pub mod handlers;
-pub mod insert_network;
-pub mod delete_network;
-pub mod get_networks_id;
-pub mod get_networks;
-pub mod update_network;
+pub mod delete;
+pub mod get;
+pub mod insert;
+pub mod update;

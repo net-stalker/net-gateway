@@ -1,26 +1,33 @@
-use actix_multipart::Multipart;
 use actix_web::patch;
 use actix_web::web;
 use actix_web::HttpRequest;
-use futures::StreamExt;
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::api::result::result::ResultDTO;
-use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use net_updater_api::api::updaters::update_network::update_network_request::UpdateNetworkRequestDTO;
 use net_core_api::core::typed_api::Typed;
-use net_core_api::core::encoder_api::Encoder;
 use net_core_api::core::decoder_api::Decoder;
+use net_core_api::core::encoder_api::Encoder;
+use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
+use net_updater_api::api::updaters::update_packets_network_id::update_packets_network_id_request::UpdatePacketsNetworkIdRequestDTO;
+use serde::Deserialize;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::core::user_facing_error::UserFacingError;
-use crate::endpoints::networks::core::network::Network;
-use crate::{authorization, config::Config};
+use crate::authorization;
+use crate::config::Config;
 
 
-#[patch("/network")]
-async fn network(
+#[derive(Debug, Deserialize)]
+struct RequestBody {
+    #[serde(rename = "networkId")]
+    network_id: Option<String>,
+}
+
+
+#[patch("/packets/{id}")]
+async fn update_packets_network_id(
     config: web::Data<Config>,
     req: HttpRequest,
-    mut payload: Multipart,
+    id: web::Path<String>,
+    json: web::Json<RequestBody>,
 ) -> Result<&'static str, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
@@ -34,7 +41,6 @@ async fn network(
     ).await;
 
     if authorization_result.is_err() { return Err(UserFacingError::Unauthorized); }
-
     let token = authorization_result.unwrap();
 
     let tenant_id = token.get_tenant_id();
@@ -53,34 +59,16 @@ async fn network(
         Err(_) => return Err(UserFacingError::Timeout),
     };
 
-    let network: Option<Network> = if let Some(item) = payload.next().await {
-        let mut network = None;
-        let mut field = item.unwrap();
-        if field.name() == "network" {
-            let mut data = Vec::new();
-            while let Some(chunk) = field.next().await {
-                data.extend_from_slice(&chunk.unwrap());
-            }
-            network = Some(serde_json::from_slice(&data).unwrap())
-        }
-        network
-    } else {
-        None
-    };
+    let packets_ids = vec![id.into_inner()];
+    let network_id = json.network_id.as_deref();
 
-    if network.is_none() { return Err(UserFacingError::InternalErrorWithDescription("Wrong network data has been sent".to_string())) }
-    let network = network.unwrap();
-    
-    let update_network_request = UpdateNetworkRequestDTO::new(
-        &match network.id {
-            Some(network_id) => network_id,
-            None => return Err(UserFacingError::InternalErrorWithDescription("Network with correct id is expected".to_string()))
-        },
-        &network.name,
-        &network.color,
+    let transfer_packets_request = UpdatePacketsNetworkIdRequestDTO::new(network_id, packets_ids.as_slice());
+
+    let request = Envelope::new(
+        tenant_id,
+        transfer_packets_request.get_type(),
+        &transfer_packets_request.encode()
     );
-
-    let request = Envelope::new(tenant_id, update_network_request.get_type(), &update_network_request.encode());
 
     match server_connection.send_all_reliable(&request.encode()).await {
         Ok(_) => (),
@@ -93,7 +81,7 @@ async fn network(
     };
 
     match response.is_ok() {
-        true => Ok("Network has been updated successfully"),
+        true => Ok("Packet has been updated successfully"),
         false => Err(UserFacingError::InternalError),
     }
 }

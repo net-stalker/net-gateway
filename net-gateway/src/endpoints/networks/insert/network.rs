@@ -1,23 +1,30 @@
-use actix_web::delete;
+use actix_web::post;
 use actix_web::web;
 use actix_web::HttpRequest;
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::api::result::result::ResultDTO;
 use net_core_api::core::decoder_api::Decoder;
-use net_deleter_api::api::buffer::ClearBufferRequestDTO;
+use net_inserter_api::api::network::InsertNetworkRequestDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
-use net_core_api::core::typed_api::Typed;
-use net_core_api::core::encoder_api::Encoder;
+use serde::Deserialize;
 use crate::core::quinn_client_endpoint_manager::QuinnClientEndpointManager;
 use crate::core::user_facing_error::UserFacingError;
 use crate::authorization;
 use crate::config::Config;
+use net_core_api::core::typed_api::Typed;
+use net_core_api::core::encoder_api::Encoder;
 
+#[derive(Debug, Deserialize)]
+struct RequestJson {
+    pub name: String,
+    pub color: String,
+}
 
-#[delete("/buffer")]
-async fn clear_buffer(
+#[post("/networks")]
+async fn insert_network(
     config: web::Data<Config>,
     req: HttpRequest,
+    json: web::Json<RequestJson>,
 ) -> Result<&'static str, UserFacingError> {
     //Auth stuff
     let token_verifier = FusionAuthVerifier::new(
@@ -49,12 +56,15 @@ async fn clear_buffer(
         Err(_) => return Err(UserFacingError::Timeout),
     };
 
-    let buffer_flush_request = ClearBufferRequestDTO::default();
+    let network_insert_request = InsertNetworkRequestDTO::new(
+        json.name.as_str(),
+        json.color.as_str(),
+    );
 
     let request = Envelope::new(
         tenant_id,
-        buffer_flush_request.get_type(),
-        &buffer_flush_request.encode()
+        network_insert_request.get_type(),
+        &network_insert_request.encode()
     );
 
     match server_connection.send_all_reliable(&request.encode()).await {
@@ -68,7 +78,7 @@ async fn clear_buffer(
     };
 
     match response.is_ok() {
-        true => Ok("Buffer has been flushed successfully"),
-        false => Err(UserFacingError::InternalError),
+        true => Ok("Network uploaded successfully"),
+        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap().to_string())),
     }
 }
