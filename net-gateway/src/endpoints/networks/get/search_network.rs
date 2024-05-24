@@ -4,10 +4,10 @@ use actix_web::HttpResponse;
 use actix_web::HttpRequest;
 use net_core_api::api::envelope::envelope::Envelope;
 use net_core_api::api::result::result::ResultDTO;
-use net_core_api::api::primitives::string::StringDTO;
 use net_core_api::core::decoder_api::Decoder;
 use net_core_api::core::encoder_api::Encoder;
 use net_core_api::core::typed_api::Typed;
+use net_reporter_api::api::network::network_id::NetworkIdDTO;
 use net_reporter_api::api::network::network_id_request::NetworkIdRequestDTO;
 use net_token_verifier::fusion_auth::fusion_auth_verifier::FusionAuthVerifier;
 use serde::Deserialize;
@@ -78,8 +78,8 @@ async fn search_network(
 
     match response.is_ok() {
         true => {
-            let response = StringDTO::decode(response.into_inner().unwrap().get_data());
-            Ok(HttpResponse::Ok().json(response.get_value()))
+            let response = NetworkIdDTO::decode(response.into_inner().unwrap().get_data());
+            Ok(HttpResponse::Ok().json(response.get_id()))
         },
         false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap().to_string())),
     }
