@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-bb3c809] - 2024-05-24
+
+Ns 335/refactor rest endpoints (#49)
+
+* refactored endpoints which somehow related to network feature
 <!-- [END AUTO UPDATE] -->
 ## [-1ca9463] - 2024-05-22
 
