@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-1ca9463] - 2024-05-22
 
 Ns 315/finish implementing endpoints (#47)
 
 * implemented endpoints for networks and network packets manipulation
-<!-- [END AUTO UPDATE] -->
 ## [-321e09c] - 2024-05-14
 
 implemented custom error type (#46)
