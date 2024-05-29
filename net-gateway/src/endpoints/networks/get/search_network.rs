@@ -58,7 +58,7 @@ async fn search_network(
     );
     let server_connection_result = QuinnClientEndpointManager::start_server_connection(
         &config.quin_client_address.addr,
-        &config.quin_inserter.addr,
+        &config.quin_reporter.addr,
         &config.quin_server_application.app,
     ).await;
     let mut server_connection = match server_connection_result {

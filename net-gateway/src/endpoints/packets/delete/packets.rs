@@ -55,7 +55,7 @@ async fn delete_multiple_packets(
 
     let server_connection_result = QuinnClientEndpointManager::start_server_connection(
         &config.quin_client_address.addr,
-        &config.quin_inserter.addr,
+        &config.quin_deleter.addr,
         &config.quin_server_application.app,
     ).await;
 
