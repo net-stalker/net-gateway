@@ -22,14 +22,12 @@ pub struct QuinClientAddress {
     pub(crate) addr: String,
 }
 
-
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub struct QuinDeleter {
     pub host_name: String,
     pub port: String,
     pub addr: String,
 }
-
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub struct QuinInserter {

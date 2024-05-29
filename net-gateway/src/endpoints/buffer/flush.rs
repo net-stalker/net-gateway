@@ -70,6 +70,16 @@ async fn flush_buffer(
         return Err(UserFacingError::InternalError)
     }
 
+    let server_connection_result = QuinnClientEndpointManager::start_server_connection(
+        &config.quin_client_address.addr,
+        &config.quin_deleter.addr,
+        &config.quin_server_application.app,
+    ).await;
+    let mut server_connection = match server_connection_result {
+        Ok(server_connection) => server_connection,
+        Err(_) => return Err(UserFacingError::Timeout),
+    };
+
     let buffer_clear_request = ClearBufferRequestDTO::default();
 
     let request = Envelope::new(
