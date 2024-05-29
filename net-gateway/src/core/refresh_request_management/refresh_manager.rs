@@ -32,27 +32,9 @@ impl<'a> RefreshManager<'a> {
             return Ok(());
         }
         log::debug!("refreshing");
-        match tokio::join!(
-            self.refresh_materialized_views(),
-            self.refresh_network_packets(),
-        ) {
-            (Ok(_), Ok(_)) => {
-                log::debug!("refreshed both");
-                Ok(())
-            },
-            (Ok(_), Err(err)) => {
-                log::debug!("coudn't refresh network packets: {}", err);
-                Err(err)
-            },
-            (Err(err), Ok(_)) => {
-                log::debug!("coudn't refresh materialized views: {}", err);
-                Err(err)
-            },
-            (Err(err1), Err(err2)) => {
-                let error_message = format!("cound't refresh both: {err1}. {err2}");
-                log::debug!("{error_message}");
-                Err(error_message.into())
-            },
+        match self.refresh_network_packets().await {
+            Ok(_) => self.refresh_materialized_views().await,
+            Err(e) => Err(e),
         }
     }
 
@@ -72,11 +54,11 @@ impl<'a> RefreshManager<'a> {
     async fn refresh_network_packets(
         &self
     ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-        let refresh_materialzied_views_request = RefreshPcapParsedDataRequestDTO::default();
+        let refresh_network_packets_request = RefreshPcapParsedDataRequestDTO::default();
         let request = Envelope::new(
             self.tenant_id,
-            refresh_materialzied_views_request.get_type(),
-            &refresh_materialzied_views_request.encode(),
+            refresh_network_packets_request.get_type(),
+            &refresh_network_packets_request.encode(),
         ).encode();
 
         self.send_request(&request).await
@@ -85,7 +67,7 @@ impl<'a> RefreshManager<'a> {
     async fn send_request(&self, request: &[u8]) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let mut server_connection = QuinnClientEndpointManager::start_server_connection(
             &self.config.quin_client_address.addr,
-            &self.config.quin_inserter.addr,
+            &self.config.quin_updater.addr,
             &self.config.quin_server_application.app,
         ).await?;
     
