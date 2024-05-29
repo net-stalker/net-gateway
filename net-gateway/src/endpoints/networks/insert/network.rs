@@ -78,6 +78,6 @@ async fn insert_network(
     };
     match response.is_ok() {
         true => Ok("Network has been inserted successfully"),
-        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or_default().to_string().into())),
+        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or_default().to_string())),
     }
 }

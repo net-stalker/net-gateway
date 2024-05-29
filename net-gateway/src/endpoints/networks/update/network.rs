@@ -78,6 +78,6 @@ async fn network(
 
     match response.is_ok() {
         true => Ok("Network has been cleared successfully"),
-        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or_default().to_string().into())),
+        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or_default().to_string())),
     }
 }
