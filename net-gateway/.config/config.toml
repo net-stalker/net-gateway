@@ -10,7 +10,7 @@ addr = "0.0.0.0:0"
 [quin_deleter]
 host_name = ""
 port = ""
-addr = "127.0.0.1:5455"
+addr = "127.0.0.1:5456"
 
 [quin_inserter]
 host_name = ""
@@ -25,7 +25,7 @@ addr = "127.0.0.1:5454"
 [quin_updater]
 host_name = ""
 port = ""
-addr = "127.0.0.1:5455"
+addr = "127.0.0.1:5457"
 
 [quin_server_application]    
 app = "localhost"
