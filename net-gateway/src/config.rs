@@ -22,6 +22,22 @@ pub struct QuinClientAddress {
     pub(crate) addr: String,
 }
 
+
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+pub struct QuinDeleter {
+    pub host_name: String,
+    pub port: String,
+    pub addr: String,
+}
+
+
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+pub struct QuinInserter {
+    pub host_name: String,
+    pub port: String,
+    pub addr: String,
+}
+
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub struct QuinReporter {
     pub host_name: String,
@@ -30,7 +46,7 @@ pub struct QuinReporter {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
-pub struct QuinInserter {
+pub struct QuinUpdater {
     pub host_name: String,
     pub port: String,
     pub addr: String,
@@ -56,8 +72,10 @@ pub struct Config {
     pub bind_address: BindAddress,
     pub allowed_origin: AllowedOrigin,
     pub(crate) quin_client_address: QuinClientAddress,
+    pub quin_deleter: QuinDeleter,
     pub quin_inserter: QuinInserter,
     pub quin_reporter: QuinReporter,
+    pub quin_updater: QuinUpdater,
     pub(crate) quin_server_application: QuinServerApplication,
     pub(crate) fusion_auth_server_address: FusionAuthServerAddress,
     pub(crate) fusion_auth_api_key: FusionAuthApiKey,

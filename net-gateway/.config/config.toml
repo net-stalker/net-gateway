@@ -7,13 +7,22 @@ addr = "http://localhost:3000"
 [quin_client_address]
 addr = "0.0.0.0:0"
 
+[quin_deleter]
+host_name = ""
+port = ""
+addr = "127.0.0.1:5455"
+
+[quin_inserter]
+host_name = ""
+port = ""
+addr = "127.0.0.1:5455"
+
 [quin_reporter]
 host_name = ""
 port = ""
 addr = "127.0.0.1:5454"
 
-
-[quin_inserter]
+[quin_updater]
 host_name = ""
 port = ""
 addr = "127.0.0.1:5455"
