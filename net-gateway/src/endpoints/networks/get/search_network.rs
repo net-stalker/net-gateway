@@ -19,7 +19,6 @@ use crate::core::user_facing_error::UserFacingError;
 #[derive(Debug, Deserialize)]
 struct RequestQuery {
     pub name: String,
-    pub color: String,
 }
 
 #[get("/networks/search")]
@@ -47,10 +46,7 @@ async fn search_network(
         return Err(UserFacingError::InternalErrorWithDescription(err.to_string()));
     }
     let tenant_id = tenant_id.unwrap();
-    let network_id_request = NetworkIdRequestDTO::new(
-        &query.name,
-        &query.color,
-    );
+    let network_id_request = NetworkIdRequestDTO::new(&query.name);
     let request = Envelope::new(
         tenant_id,
         network_id_request.get_type(),
