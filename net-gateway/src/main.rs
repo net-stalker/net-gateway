@@ -29,7 +29,7 @@ async fn main() -> std::io::Result<()> {
                     // .allowed_origin(config_clone.allowed_origin.addr.as_str())
                     .allow_any_origin()
                     .allowed_methods(vec!["GET", "POST", "PATCH", "PUT", "DELETE"])
-                    .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+                    .allow_any_header()
             )
             .app_data(web::Data::new(config_clone.clone()))
             .service(net_gateway::endpoints::dashboards::network_overview::endpoint::get_network_overview)
