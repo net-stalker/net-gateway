@@ -1,7 +1,6 @@
 use actix_cors::Cors;
 use actix_web::App;
 use actix_web::HttpServer;
-use actix_web::http::header;
 use actix_web::web;
 use net_gateway::config::Config;
 use net_gateway::core::host::get_addr_from_host;
