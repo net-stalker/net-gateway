@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
 <!-- [END AUTO UPDATE] -->
+## [-4f93b16] - 2024-06-06
+
+Ns 341/update config update net timescale api calls (#51)
+
+* updated config, added quin_deleter and quin_updater
 ## [-bb3c809] - 2024-05-24
 
 Ns 335/refactor rest endpoints (#49)
