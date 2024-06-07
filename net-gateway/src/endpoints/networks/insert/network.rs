@@ -76,9 +76,8 @@ async fn insert_network(
         Ok(response) => ResultDTO::decode(Envelope::decode(&response).get_data()),
         Err(err) => return Err(UserFacingError::InternalErrorWithDescription(err.to_string())),
     };
-
     match response.is_ok() {
-        true => Ok("Network uploaded successfully"),
-        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap().to_string())),
+        true => Ok("Network has been inserted successfully"),
+        false => Err(UserFacingError::InternalErrorWithDescription(response.get_description().unwrap_or_default().to_string())),
     }
 }

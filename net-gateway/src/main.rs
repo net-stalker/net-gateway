@@ -1,7 +1,6 @@
 use actix_cors::Cors;
 use actix_web::App;
 use actix_web::HttpServer;
-use actix_web::http::header;
 use actix_web::web;
 use net_gateway::config::Config;
 use net_gateway::core::host::get_addr_from_host;
@@ -29,7 +28,7 @@ async fn main() -> std::io::Result<()> {
                     // .allowed_origin(config_clone.allowed_origin.addr.as_str())
                     .allow_any_origin()
                     .allowed_methods(vec!["GET", "POST", "PATCH", "PUT", "DELETE"])
-                    .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+                    .allow_any_header()
             )
             .app_data(web::Data::new(config_clone.clone()))
             .service(net_gateway::endpoints::dashboards::network_overview::endpoint::get_network_overview)

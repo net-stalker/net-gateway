@@ -48,12 +48,16 @@ async fn packets(
         return Err(UserFacingError::InternalErrorWithDescription(err.to_string()));
     }
     let tenant_id = tenant_id.unwrap();
-    let network_ids = json.network_ids.split(',').map(|id| {
-        match id {
-            "null" => None,
-            _ => Some(id),
-        }
-    }).collect::<Vec<Option<&str>>>();
+    let network_ids = if json.network_ids.is_empty() {
+        vec![]
+    } else {
+        json.network_ids.split(',').map(|id| {
+            match id {
+                "null" => None,
+                _ => Some(id),
+            }
+        }).collect::<Vec<Option<&str>>>()
+    };
     let network_packet_request = NetworkPacketsRequestDTO::new(&network_ids); 
     let request = Envelope::new(
         tenant_id,
