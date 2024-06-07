@@ -21,9 +21,10 @@ tokio = { version = "1.28.1", features = ["full"] }
 async-tungstenite = { version = "0.25.1", features = ["tokio-runtime"] }
 net-core-api = "0.5.3"
 net-agent-api = "0.1.5"
-net-reporter-api = "0.7.4"
+net-reporter-api = "0.8.4"
 net-inserter-api = "0.4.1"
-net-updater-api = "0.4.1"
+# net-updater-api = "0.4.2"
+net-updater-api = { git = "https://github.com/net-stalker/net-api", branch = "develop" }
 net-deleter-api = "0.1.1"
 net-transport = { version = "=0.1.1", features = ["quinn"]}
 net-token-verifier = "0.3.0"

@@ -54,6 +54,7 @@ async fn main() -> std::io::Result<()> {
             .service(net_gateway::endpoints::packets::get::packets::packets)
             .service(net_gateway::endpoints::packets::insert::packet::insert_packet)
             .service(net_gateway::endpoints::packets::update::packet::update_packets_network_id)
+            .service(net_gateway::endpoints::packets::update::packets_buffer::update_packets_network_id)
             .service(net_gateway::endpoints::packets::update::packets::update_packets_network_id)
             .service(net_gateway::endpoints::buffer::flush::flush_buffer)
             .service(net_gateway::endpoints::buffer::clear::clear_buffer)
