@@ -24,7 +24,7 @@ struct RequestBody {
 }
 
 
-#[patch("/buffer")]
+#[patch("/buffer/packets")]
 async fn update_packets_network_id(
     config: web::Data<Config>,
     req: HttpRequest,
