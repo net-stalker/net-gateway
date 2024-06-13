@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
 ## [-492df28] - 2024-06-07
 
 Ns 340/trigger refreshes (#50)
 
 * added refresh manager, added refresh call to each endpoint
-<!-- [END AUTO UPDATE] -->
 ## [-4f93b16] - 2024-06-06
 
 Ns 341/update config update net timescale api calls (#51)
