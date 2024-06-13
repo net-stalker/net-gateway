@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-9cba37f] - 2024-06-13
+
+implemented endpoint for deleting a single buffered packet (#53)
+
+* implemented endpoint for deleting a single buffered packet
 <!-- [END AUTO UPDATE] -->
 ## [-e3c60fc] - 2024-06-13
 
