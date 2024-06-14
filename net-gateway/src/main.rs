@@ -32,7 +32,7 @@ async fn main() -> std::io::Result<()> {
                         header::ACCEPT_ENCODING,
                         header::ACCEPT_LANGUAGE,
                         header::AUTHORIZATION,
-                        header::CONTENT_TYPE, // typically needed
+                        header::CONTENT_TYPE,
                     ])
                     .max_age(3600),
             )
