@@ -1,2 +1,1 @@
-pub mod filter_entry;
-pub mod filters;
+pub mod network_overview_filters;

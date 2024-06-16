@@ -1,18 +1,20 @@
 use net_core_api::core::typed_api::Typed;
 // here we need to impl MapFilterToDTO for our DTO type which we still need to update
 use net_reporter_api::api::network_overview_dashboard_filters::network_overview_dashbord_filters::NetworkOverviewDashboardFiltersDTO;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use validator::Validate;
 
 const JSON_TYPE: &str = "filters";
 
 use crate::core::service_request_management::service_response::ServiceResponse;
-
-use super::filter_entry::NetworkOverviewFilterResponse;
+use crate::endpoints::networks::get::response::networks::Networks;
 
 #[derive(Serialize, Deserialize, Validate, Default, Debug, Clone)]
 pub struct NetworkOverviewFiltersResponse {
-    pub entries: Vec<NetworkOverviewFilterResponse>,
+    pub endpoints: Vec<String>,
+    pub protocols: Vec<String>,
+    pub networks: Networks,
 }
 
 impl ServiceResponse for NetworkOverviewFiltersResponse {
@@ -32,11 +34,9 @@ impl ServiceResponse for NetworkOverviewFiltersResponse {
 impl From<NetworkOverviewDashboardFiltersDTO> for NetworkOverviewFiltersResponse {
     fn from(value: NetworkOverviewDashboardFiltersDTO) -> Self {
         NetworkOverviewFiltersResponse {
-            entries: value
-                .get_entries()
-                .iter()
-                .map(|entry| NetworkOverviewFilterResponse::from(entry.clone()))
-                .collect(),
+            endpoints: value.get_endpoints().to_vec(),
+            protocols: value.get_protocols().to_vec(),
+            networks: Networks::from(value.get_networks()),
         }
     }
 }

@@ -4,13 +4,21 @@ use serde::Serialize;
 
 use super::network::Network;
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct Networks {
     pub networks: Vec<Network>,
 }
 
 impl From<NetworksDTO> for Networks {
     fn from(value: NetworksDTO) -> Self {
+        Self {
+            networks: value.get_networks().iter().map(|network| network.into()).collect(),
+        }
+    }
+}
+
+impl From<&NetworksDTO> for Networks {
+    fn from(value: &NetworksDTO) -> Self {
         Self {
             networks: value.get_networks().iter().map(|network| network.into()).collect(),
         }
