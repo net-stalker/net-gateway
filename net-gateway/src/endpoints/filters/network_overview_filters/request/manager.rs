@@ -14,7 +14,7 @@ use crate::core::service_request_management::service_response::ServiceResponse;
 use crate::core::filter::Filters;
 use crate::core::general_filters::GeneralFilters;
 
-use crate::endpoints::filters::network_overview_filters::response::filters::NetworkOverviewFiltersResponse;
+use crate::endpoints::filters::network_overview_filters::response::network_overview_filters::NetworkOverviewFiltersResponse;
 
 #[derive(Default)]
 pub struct NetworkOverviewFilterManager {}
@@ -43,7 +43,6 @@ impl ServiceRequestManager for NetworkOverviewFilterManager {
         Box::new(NetworkOverviewDashboardFiltersRequestDTO::new(
             params.start_date,
             params.end_date,
-            &params.network_id,
         ))
     }
     

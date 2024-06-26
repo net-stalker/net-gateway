@@ -1,12 +1,14 @@
 use net_core_api::core::typed_api::Typed;
 // here we need to impl MapFilterToDTO for our DTO type which we still need to update
 use net_reporter_api::api::http_overview_dashboard_filters::http_overview_dashboard_filters::HttpOverviewDashboardFiltersDTO;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use validator::Validate;
 
 const JSON_TYPE: &str = "filters";
 
 use crate::core::service_request_management::service_response::ServiceResponse;
+use crate::endpoints::networks::get::response::networks::Networks;
 
 #[derive(Serialize, Deserialize, Validate, Default, Debug, Clone)]
 pub struct HttpOverviewFiltersResponse {
@@ -15,6 +17,7 @@ pub struct HttpOverviewFiltersResponse {
     pub http_request_methods: Vec<String>,
     #[serde(rename = "httpResponseCodes")]
     pub http_response_codes: Vec<String>,
+    pub networks: Networks,
 }
 
 impl ServiceResponse for HttpOverviewFiltersResponse {
@@ -37,6 +40,7 @@ impl From<HttpOverviewDashboardFiltersDTO> for HttpOverviewFiltersResponse {
             endpoints: value.get_endpoints().to_vec(),
             http_request_methods: value.get_request_methods().to_vec(),
             http_response_codes: value.get_response_codes().to_vec(),
+            networks: Networks::from(value.get_networks()),
         }
     }
 }

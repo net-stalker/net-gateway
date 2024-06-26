@@ -44,7 +44,10 @@ impl ServiceRequestManager for HttpResponsesChartManager {
         Box::new(HttpResponsesRequestDTO::new(
             params.start_date,
             params.end_date,
-            &params.network_id,
+            match params.network_id.as_str() {
+                "null" => None,
+                _ => Some(params.network_id.as_str())
+            },
             filters,
         ))
     }

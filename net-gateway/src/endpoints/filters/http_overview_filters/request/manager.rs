@@ -43,7 +43,6 @@ impl ServiceRequestManager for HttpOverviewFilterManager {
         Box::new(HttpOverviewDashboardFiltersRequestDTO::new(
             params.start_date,
             params.end_date,
-            &params.network_id,
         ))
     }
     
