@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-ff8833a] - 2024-06-26
+
+Updated dashboards filters to have networks, updated requesting charts (#55)
+
+* updated dashbaord filters to have networks, updated requestsing charts
 <!-- [END AUTO UPDATE] -->
 ## [-f8390a6] - 2024-06-26
 
