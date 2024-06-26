@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-f8390a6] - 2024-06-26
+
+fixed cors (#54)
+
+* fixed CORS
 <!-- [END AUTO UPDATE] -->
 ## [-9cba37f] - 2024-06-13
 
