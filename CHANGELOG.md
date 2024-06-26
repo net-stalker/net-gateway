@@ -8,12 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+<!-- [END AUTO UPDATE] -->
+## [-f8390a6] - 2024-06-26
+
+fixed cors (#54)
+
+* fixed CORS
 ## [-9cba37f] - 2024-06-13
 
 implemented endpoint for deleting a single buffered packet (#53)
 
 * implemented endpoint for deleting a single buffered packet
-<!-- [END AUTO UPDATE] -->
 ## [-e3c60fc] - 2024-06-13
 
 Ns 356/provide update network id for buffer (#52)
