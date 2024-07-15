@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- [START AUTO UPDATE] -->
 <!-- Please keep comment here to allow auto-update -->
+## [-25f1375] - 2024-07-15
+
+updated docker file, updated configs (#56)
+
+* updated docker file, updated configs
 <!-- [END AUTO UPDATE] -->
 ## [-ff8833a] - 2024-06-26
 
