@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  net-gateway:
+    build:
+      dockerfile: Dockerfile
+    hostname: net-gateway
+    ports:
+      - "8080:8080"
+    networks: 
+      - net-net
+      - fusionauth_net
+    restart: unless-stopped
+
+networks:
+  net-net:
+    external: true
+  fusionauth_net:
+    external: true

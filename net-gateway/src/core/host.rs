@@ -18,6 +18,8 @@ macro_rules! set_ips {
             if let Err(e) = std::net::IpAddr::from_str(&ip) {
                 panic!("Error parsing {} ip: {}", stringify!($field), e);
             }
+
+            log::info!("Gon an ip: {}:{} for {}", ip, &$config.$field.port, &$config.$field.host_name);
             $config.$field.addr = format!("{}:{}", ip, &$config.$field.port);
         )*
     };

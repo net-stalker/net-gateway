@@ -34,4 +34,5 @@ app = "localhost"
 addr = "http://localhost:9011"
 
 [fusion_auth_api_key]
+# key to local fusion auth
 key = "gw_awXW6h11DZ7ncwyim23-wQ76IAsM947L5p9Wb7yYOR0Erh_yQKCD4"

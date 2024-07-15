@@ -20,3 +20,5 @@ Cargo.lock
 
 # Except the one in the .cargo directory
 !.cargo/config.toml
+
+.env
