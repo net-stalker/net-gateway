@@ -18,7 +18,8 @@ async fn main() -> std::io::Result<()> {
         log::debug!("Running in release mode");
         let config_path = std::env::var("CONFIG_PATH").unwrap();
         let mut config = Config::new(&config_path).build().expect("read config error");
-        set_ips!(config, get_addr_from_host, quin_reporter, quin_inserter);
+        set_ips!(config, get_addr_from_host, quin_reporter, quin_updater, quin_inserter, quin_deleter);
+        log::info!("{config}");
         config
     };
     let config_clone = config.clone();
